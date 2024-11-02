@@ -33,7 +33,7 @@ public abstract class OpModeTemplate extends OpMode {
 
         driveManager = new DriveManager(hardwareManager, telemetry, gamepad_driver);
         intakeManager = new IntakeManager(hardwareManager, telemetry, gamepad_driver);
-//        liftManager = new LiftManager(hardwareManager, telemetry);
+        outtakeManager = new OuttakeManager(hardwareManager, telemetry);
 
     }
 

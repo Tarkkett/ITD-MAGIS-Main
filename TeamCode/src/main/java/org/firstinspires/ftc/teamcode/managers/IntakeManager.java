@@ -24,10 +24,6 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
 
     private _IntakeState state = _IntakeState.HOME;
 
-    private static final int RETRACTED_POS = 0;
-    private static final int EXTENDED_POS = 800;
-    private static final int TRANSFER_POS = 550;
-
     C_PID controller = new C_PID(0.02, 0.0004, 0.002);
 
     private final Map<Transition, Runnable> stateTransitionActions = new HashMap<>();
@@ -87,13 +83,13 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
     public void update(_SlideState targetState) {
         switch (targetState){
             case EXTENDED:
-                targetPos = EXTENDED_POS;
+                targetPos = (int) _SlideState.EXTENDED.getPosition();
                 break;
             case TRANSFER:
-                targetPos = TRANSFER_POS;
+                targetPos = (int) _SlideState.TRANSFER.getPosition();
                 break;
             case RETRACTED:
-                targetPos = RETRACTED_POS;
+                targetPos = (int) _SlideState.RETRACTED.getPosition();
                 break;
         }
     }
@@ -101,13 +97,13 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
     public void update(_BroomState targetState) {
         switch (targetState){
             case STOPPED:
-                hardwareManager.broomServo.setPosition(0.5);
+                hardwareManager.broomServo.setPosition(_BroomState.STOPPED.getPosition());
                 break;
             case INTAKEING:
-                hardwareManager.broomServo.setPosition(1);
+                hardwareManager.broomServo.setPosition(_BroomState.INTAKEING.getPosition());
                 break;
             case TRANSFERING:
-                hardwareManager.broomServo.setPosition(-1);
+                hardwareManager.broomServo.setPosition(_BroomState.TRANSFERING.getPosition());
                 break;
         }
     }
@@ -115,10 +111,10 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
     public void update(_TiltServoState targetState){
         switch (targetState){
             case RAISED:
-                hardwareManager.intakeTiltServo.setPosition(0.65f);
+                hardwareManager.intakeTiltServo.setPosition(_TiltServoState.RAISED.getPosition());
                 break;
             case LOWERED:
-                hardwareManager.intakeTiltServo.setPosition(0f);
+                hardwareManager.intakeTiltServo.setPosition(_TiltServoState.LOWERED.getPosition());
                 break;
         }
     }
@@ -126,20 +122,51 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
     public enum _IntakeState {
         PICKUP,
         HOME,
-        TRANSFER,
+        TRANSFER
     }
     public enum _SlideState {
-        EXTENDED,
-        RETRACTED,
-        TRANSFER,
+        EXTENDED    (800),
+        RETRACTED   (550),
+        TRANSFER    (10);
+
+        private final float position;
+
+        _SlideState(float position) {
+            this.position = position;
+        }
+
+        public float getPosition() {
+            return position;
+        }
     }
     public enum _BroomState {
-        INTAKEING,
-        TRANSFERING,
-        STOPPED
+        INTAKEING   (1),
+        TRANSFERING (-1),
+        STOPPED     (0.5f);
+
+        private final float position;
+
+        _BroomState(float position) {
+            this.position = position;
+        }
+
+        public float getPosition() {
+            return position;
+        }
     }
     public enum _TiltServoState{
-        RAISED,
-        LOWERED
+        RAISED  (0.65f),
+        LOWERED (0f);
+
+        private final float position;
+
+        _TiltServoState(float position) {
+            this.position = position;
+        }
+
+        public float getPosition() {
+            return position;
+        }
+
     }
 }

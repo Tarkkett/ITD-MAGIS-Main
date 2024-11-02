@@ -11,6 +11,8 @@ import org.firstinspires.ftc.teamcode.managers.DriveManager;
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 
+import java.util.Optional;
+
 @TeleOp(name = "Main TeleOp", group = "OpMode")
 public class MainOpMode extends OpModeTemplate {
 
@@ -40,9 +42,10 @@ public class MainOpMode extends OpModeTemplate {
         gamepad_driver.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
                 .whenPressed(() -> CommandScheduler.getInstance().schedule(new SetIntakeStateCommand(IntakeManager._IntakeState.HOME, intakeManager)));
         gamepad_driver.getGamepadButton(GamepadKeys.Button.X)
-                .whenPressed(() -> CommandScheduler.getInstance().schedule(new SetOuttakeStateCommand(OuttakeManager._OuttakeState.HOME, outtakeManager)));
-        gamepad_driver.getGamepadButton(GamepadKeys.Button.Y)
-                .whenPressed(() -> CommandScheduler.getInstance().schedule(new SetOuttakeStateCommand(OuttakeManager._OuttakeState.DEPOSIT, outtakeManager)));
+                .whenPressed(() -> CommandScheduler.getInstance().schedule(new SetOuttakeStateCommand(OuttakeManager._OuttakeState.HOME, outtakeManager, gamepad_driver)));
+        gamepad_driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
+                .whenPressed(() -> CommandScheduler.getInstance().schedule(new SetOuttakeStateCommand(OuttakeManager._OuttakeState.DEPOSIT, outtakeManager, gamepad_driver)));
+
     }
 
     @Override

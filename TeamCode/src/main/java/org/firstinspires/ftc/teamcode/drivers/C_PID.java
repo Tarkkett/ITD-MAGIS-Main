@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @Config
 public class C_PID {
 
-    public static double Kp = 0;
+    private double Kp = 0;
     private double Ki = 0;
     private double Kd = 0;
 
@@ -30,9 +30,11 @@ public class C_PID {
     }
 
     public double update(double target, double state) {
+
+        double currentTime = timer.seconds();
         double error = target - state;
-        integralSum += error * timer.seconds();
-        double derivative = (error - lastError) / timer.seconds();
+        integralSum += error * currentTime;
+        double derivative = (error - lastError) / currentTime;
         lastError = error;
 
         timer.reset();
