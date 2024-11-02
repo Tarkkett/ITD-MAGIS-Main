@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.drivers.C_PID;
 import java.util.HashMap;
 import java.util.Map;
 
+@SuppressWarnings("rawtypes")
 @Config
 public class IntakeManager implements State<IntakeManager._IntakeState> {
 
@@ -22,11 +23,10 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
     public static int currentPos = 0;
 
     private _IntakeState state = _IntakeState.HOME;
-    private _IntakeState previousState = _IntakeState.HOME;
 
-    private int RETRACTED_POS = 0;
-    private int EXTENDED_POS = 800;
-    private int TRANSFER_POS = 550;
+    private static final int RETRACTED_POS = 0;
+    private static final int EXTENDED_POS = 800;
+    private static final int TRANSFER_POS = 550;
 
     C_PID controller = new C_PID(0.02, 0.0004, 0.002);
 
@@ -39,8 +39,20 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
     }
 
     @Override
-    public void SetSubsystemState(_IntakeState state) {
+    public void SetSubsystemState(_IntakeState newState) {
+        if (state != newState) {
+            _IntakeState previousState = state;
+            state = newState;
 
+            Transition transition = new Transition(previousState, newState);
+            Runnable action = stateTransitionActions.get(transition);
+            if (action != null) {
+                action.run();
+            }
+
+            telemetry.addData("Intake State Changed:", newState);
+            telemetry.update();
+        }
     }
 
     @Override
@@ -65,6 +77,7 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
     @Override
     public void InitializeStateTransitionActions() {
         stateTransitionActions.put(new Transition(_IntakeState.HOME, _IntakeState.PICKUP), this::onExtend);
+
     }
 
     private void onExtend() {

@@ -1,15 +1,15 @@
 package org.firstinspires.ftc.teamcode;
 
 import org.firstinspires.ftc.teamcode.managers.DriveManager;
-import org.firstinspires.ftc.teamcode.managers.LiftManager;
+import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 
 public class StateMachine implements Runnable {
 
     DriveManager driveManager;
-    LiftManager liftManager;
+    OuttakeManager liftManager;
     public volatile boolean operational = true;
 
-    public StateMachine(LiftManager liftManager, DriveManager driveManager){
+    public StateMachine(OuttakeManager liftManager, DriveManager driveManager){
         this.liftManager = liftManager;
         this.driveManager = driveManager;
     }

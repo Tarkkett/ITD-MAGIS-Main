@@ -3,10 +3,11 @@ package org.firstinspires.ftc.teamcode.opMode;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import org.firstinspires.ftc.teamcode.State;
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.managers.DriveManager;
 import org.firstinspires.ftc.teamcode.managers.HardwareManager;
-import org.firstinspires.ftc.teamcode.managers.LiftManager;
+import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 
 public abstract class OpModeTemplate extends OpMode {
 
@@ -17,7 +18,7 @@ public abstract class OpModeTemplate extends OpMode {
 
     protected HardwareManager hardwareManager;
     protected DriveManager driveManager;
-    protected LiftManager liftManager;
+    protected OuttakeManager outtakeManager;
     protected IntakeManager intakeManager;
 
     protected Alliance team = Alliance.UNKNOWN;

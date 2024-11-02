@@ -1,18 +1,14 @@
 package org.firstinspires.ftc.teamcode.commands.low_level;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.QuickCommand;
-import org.firstinspires.ftc.teamcode.managers.LiftManager;
+import com.arcrobotics.ftclib.command.InstantCommand;
 
-public class SetLiftPositionCommand extends QuickCommand {
+import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 
-    public SetLiftPositionCommand(LiftManager liftManager, LiftManager.StateEnum stateEnum, Telemetry telemetry) {
+public class SetLiftPositionCommand extends InstantCommand {
+
+    public SetLiftPositionCommand(OuttakeManager liftManager, OuttakeManager._LiftState state) {
         super(() -> {
-            liftManager.SetSubsystemState(stateEnum);
-            if (telemetry != null) {
-                telemetry.addData("Lift State", stateEnum);
-                telemetry.update();
-            }
+            liftManager.update(state);
         });
     }
 }
