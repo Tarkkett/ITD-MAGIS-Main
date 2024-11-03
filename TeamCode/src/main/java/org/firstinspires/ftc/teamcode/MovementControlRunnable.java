@@ -6,6 +6,7 @@ import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.drivers.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.managers.DriveManager;
 import org.firstinspires.ftc.teamcode.managers.HardwareManager;
 
@@ -33,6 +34,8 @@ public class MovementControlRunnable implements Runnable {
         while (running) {
             ElapsedTime loopTime = new ElapsedTime();
             loopTime.reset();
+
+            hardwareManager.odo.update(GoBildaPinpointDriver.readData.ONLY_UPDATE_HEADING);
 
             double y = -gamepad.getLeftY();
             double x = -gamepad.getLeftX();
