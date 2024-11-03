@@ -21,17 +21,37 @@ public class DepositPositionSelector extends CommandBase {
 
     @Override
     public void initialize(){
-
+        manager.selectingProcess = true;
     }
 
     @Override
     public void execute(){
+
+        manager.selectingProcess = true;
+
         if (gamepad_driver.gamepad.a){
-            CommandScheduler.getInstance().schedule(new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HIGH_CHAMBER));
+            CommandScheduler.getInstance().schedule(new SetLiftPositionCommand(manager, OuttakeManager._LiftState.LOW_BUCKET));
             isSelected = true;
+            manager.selectingProcess = false;
         } else if (gamepad_driver.gamepad.b){
+            CommandScheduler.getInstance().schedule(new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HIGH_BUCKET));
+            isSelected = true;
+            manager.selectingProcess = false;
+        }
+        else if (gamepad_driver.gamepad.x){
             CommandScheduler.getInstance().schedule(new SetLiftPositionCommand(manager, OuttakeManager._LiftState.LOW_CHAMBER));
             isSelected = true;
+            manager.selectingProcess = false;
+        }
+        else if (gamepad_driver.gamepad.y){
+            CommandScheduler.getInstance().schedule(new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HIGH_CHAMBER));
+            isSelected = true;
+            manager.selectingProcess = false;
+        }
+        else if (gamepad_driver.gamepad.left_bumper){
+
+            isSelected = true;
+            manager.selectingProcess = false;
         }
     }
 

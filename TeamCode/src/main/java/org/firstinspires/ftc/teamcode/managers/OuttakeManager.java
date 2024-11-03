@@ -17,6 +17,8 @@ import kotlin.math.UMathKt;
 @Config
 public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
 
+    public boolean selectingProcess = false;
+
     HardwareManager hardwareManager;
     Telemetry telemetry;
 
@@ -28,6 +30,7 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
     public static double encoderPos;
 
     private final Map<Transition, Runnable> stateTransitionActions = new HashMap<>();
+    private boolean isTransfer = false;
 
 
     public OuttakeManager(HardwareManager hardwareManager, Telemetry telemetry){
@@ -73,6 +76,17 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
 
         hardwareManager.liftLeft.setPower(power);
         hardwareManager.liftRight.setPower(power);
+
+        CheckForPosition(encoderPos);
+    }
+
+    private void CheckForPosition(double encoderPos) {
+        int threshhold = 20;
+        if (encoderPos > _LiftState.TRANSFER.getPosition() - threshhold && encoderPos < _LiftState.TRANSFER.getPosition() + threshhold){
+            isTransfer = true;
+        }
+        else{ isTransfer = false;}
+
     }
 
     private double Average(float p1, float p2) {
@@ -137,6 +151,10 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
         }
     }
 
+    public boolean isTransfer() {
+        return isTransfer;
+    }
+
     public enum _OuttakeState{
         HOME,
         DEPOSIT,
@@ -147,9 +165,9 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
     public enum _LiftState{
         LOW_CHAMBER (100),
         LOW_RUNG    (200),
-        HIGH_CHAMBER(600),
+        HIGH_CHAMBER(2300),
         HIGH_RUNG   (1000),
-        TRANSFER    (2300),
+        TRANSFER    (600),
         HOME        (50),
         STUCK       (0),
         HIGH_BUCKET (400),
@@ -163,10 +181,6 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
 
         public float getPosition() {
             return position;
-        }
-
-        public Supplier<Object> positionSupplier() {
-            return () -> position;
         }
     }
 

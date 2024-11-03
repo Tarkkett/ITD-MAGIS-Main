@@ -126,8 +126,8 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
     }
     public enum _SlideState {
         EXTENDED    (800),
-        RETRACTED   (550),
-        TRANSFER    (10);
+        TRANSFER    (550),
+        RETRACTED   (10);
 
         private final float position;
 

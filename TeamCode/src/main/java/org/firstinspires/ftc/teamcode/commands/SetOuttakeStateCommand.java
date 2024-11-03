@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.commands;
 
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.ConditionalCommand;
+import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SelectCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
@@ -25,18 +26,27 @@ public class SetOuttakeStateCommand extends SequentialCommandGroup {
 
         manager = outtakeManager;
 
-        if (targetState == OuttakeManager._OuttakeState.HOME){
+        if (targetState == OuttakeManager._OuttakeState.HOME && !manager.selectingProcess){
             addCommands(
                     new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HOME),
+                    new InstantCommand(() -> gamepad_driver.gamepad.rumble(500)),
                     new SetBucketPositionCommand(manager, OuttakeManager._BucketServoState.LOW),
                     new SetSpecimentServoPositionCommand(manager, OuttakeManager._SpecimentServoState.OPEN)
             );
         }
 
-        if (targetState == OuttakeManager._OuttakeState.DEPOSIT){
+        else if (targetState == OuttakeManager._OuttakeState.DEPOSIT){
             addCommands(
                     new DepositPositionSelector(gamepad_driver, manager),
                     
+                    new SetBucketPositionCommand(manager, OuttakeManager._BucketServoState.LOW),
+                    new SetSpecimentServoPositionCommand(manager, OuttakeManager._SpecimentServoState.CLOSED)
+            );
+        }
+
+        else if (targetState == OuttakeManager._OuttakeState.TRANSFER){
+            addCommands(
+                    new SetLiftPositionCommand(manager, OuttakeManager._LiftState.TRANSFER),
                     new SetBucketPositionCommand(manager, OuttakeManager._BucketServoState.LOW),
                     new SetSpecimentServoPositionCommand(manager, OuttakeManager._SpecimentServoState.CLOSED)
             );

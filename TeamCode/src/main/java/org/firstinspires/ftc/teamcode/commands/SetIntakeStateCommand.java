@@ -1,17 +1,21 @@
 package org.firstinspires.ftc.teamcode.commands;
 
+import com.arcrobotics.ftclib.command.ParallelDeadlineGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+import com.arcrobotics.ftclib.command.WaitCommand;
+import com.arcrobotics.ftclib.command.WaitUntilCommand;
 
 import org.firstinspires.ftc.teamcode.commands.low_level.SetBroomStateCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.SetIntakeSlidePositionCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.SetTiltServoPosCommand;
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
+import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 
 public class SetIntakeStateCommand extends SequentialCommandGroup {
 
     IntakeManager manager;
 
-    public SetIntakeStateCommand(IntakeManager._IntakeState intakeState, IntakeManager manager) {
+    public SetIntakeStateCommand(IntakeManager._IntakeState intakeState, IntakeManager manager, OuttakeManager outtakeManager) {
 
         this.manager = manager;
 
@@ -32,9 +36,17 @@ public class SetIntakeStateCommand extends SequentialCommandGroup {
         } else if (intakeState == IntakeManager._IntakeState.TRANSFER) {
             manager.SetSubsystemState(IntakeManager._IntakeState.TRANSFER);
             addCommands(
-                    new SetIntakeSlidePositionCommand(manager, IntakeManager._SlideState.TRANSFER),
-                    new SetBroomStateCommand(manager, IntakeManager._BroomState.TRANSFERING),
-                    new SetTiltServoPosCommand(manager, IntakeManager._TiltServoState.RAISED)
+                    new SequentialCommandGroup(
+                            new WaitUntilCommand(outtakeManager::isTransfer),
+                            new SequentialCommandGroup(
+                                    new WaitCommand(200),
+                                    new SetIntakeSlidePositionCommand(manager, IntakeManager._SlideState.TRANSFER),
+                                    new SetBroomStateCommand(manager, IntakeManager._BroomState.TRANSFERING),
+                                    new SetTiltServoPosCommand(manager, IntakeManager._TiltServoState.RAISED)
+                            )
+
+                    ).withTimeout(300)
+
             );
         }
     }

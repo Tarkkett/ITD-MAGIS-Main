@@ -36,13 +36,15 @@ public class MainOpMode extends OpModeTemplate {
                     new InstantCommand(() -> driveManager.SetSubsystemState(DriveManager.DriveState.UNLOCKED)));
 
         gamepad_driver.getGamepadButton(GamepadKeys.Button.DPAD_UP)
-                .whenPressed(() -> CommandScheduler.getInstance().schedule(new SetIntakeStateCommand(IntakeManager._IntakeState.PICKUP, intakeManager)));
+                .whenPressed(() -> CommandScheduler.getInstance().schedule(new SetIntakeStateCommand(IntakeManager._IntakeState.PICKUP, intakeManager, outtakeManager)));
         gamepad_driver.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
-                .whenPressed(() -> CommandScheduler.getInstance().schedule(new SetIntakeStateCommand(IntakeManager._IntakeState.TRANSFER, intakeManager)));
+                .whenPressed(() -> CommandScheduler.getInstance().schedule(new SetIntakeStateCommand(IntakeManager._IntakeState.TRANSFER, intakeManager, outtakeManager)));
         gamepad_driver.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
-                .whenPressed(() -> CommandScheduler.getInstance().schedule(new SetIntakeStateCommand(IntakeManager._IntakeState.HOME, intakeManager)));
-        gamepad_driver.getGamepadButton(GamepadKeys.Button.X)
+                .whenPressed(() -> CommandScheduler.getInstance().schedule(new SetIntakeStateCommand(IntakeManager._IntakeState.HOME, intakeManager, outtakeManager)));
+        gamepad_driver.getGamepadButton(GamepadKeys.Button.A) //Cross
                 .whenPressed(() -> CommandScheduler.getInstance().schedule(new SetOuttakeStateCommand(OuttakeManager._OuttakeState.HOME, outtakeManager, gamepad_driver)));
+        gamepad_driver.getGamepadButton(GamepadKeys.Button.B) //Circle
+                .whenPressed(() -> CommandScheduler.getInstance().schedule(new SetOuttakeStateCommand(OuttakeManager._OuttakeState.TRANSFER, outtakeManager, gamepad_driver)));
         gamepad_driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
                 .whenPressed(() -> CommandScheduler.getInstance().schedule(new SetOuttakeStateCommand(OuttakeManager._OuttakeState.DEPOSIT, outtakeManager, gamepad_driver)));
 
