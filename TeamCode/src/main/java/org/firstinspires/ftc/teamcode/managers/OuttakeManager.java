@@ -37,6 +37,8 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
 
         this.hardwareManager = hardwareManager;
         this.telemetry = telemetry;
+
+        targetPosition = (int) _LiftState.HOME.getPosition();
     }
 
     @Override
@@ -143,16 +145,20 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
     public void update(_SpecimentServoState targetState) {
         switch (targetState){
             case OPEN:
-                hardwareManager.bucketServo.setPosition(_SpecimentServoState.OPEN.getPosition());
+                hardwareManager.specimentServo.setPosition(_SpecimentServoState.OPEN.getPosition());
                 break;
             case CLOSED:
-                hardwareManager.bucketServo.setPosition(_SpecimentServoState.CLOSED.getPosition());
+                hardwareManager.specimentServo.setPosition(_SpecimentServoState.CLOSED.getPosition());
                 break;
         }
     }
 
     public boolean isTransfer() {
         return isTransfer;
+    }
+
+    public void lowerLiftPosition(int i) {
+        targetPosition -= i;
     }
 
     public enum _OuttakeState{
@@ -167,7 +173,7 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
         LOW_RUNG    (200),
         HIGH_CHAMBER(2300),
         HIGH_RUNG   (1000),
-        TRANSFER    (600),
+        TRANSFER    (100),
         HOME        (50),
         STUCK       (0),
         HIGH_BUCKET (400),
@@ -186,7 +192,7 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
 
     public enum _SpecimentServoState{
         OPEN    (0f),
-        CLOSED  (1f);
+        CLOSED  (0.5f);
 
         private final float position;
 
@@ -200,8 +206,8 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
     }
 
     public enum _BucketServoState{
-        HIGH    (1f),
-        LOW     (0f);
+        HIGH    (0f),
+        LOW     (1f);
 
         private final float position;
 

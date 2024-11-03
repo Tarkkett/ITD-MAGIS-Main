@@ -90,8 +90,6 @@ public class HardwareManager{
         odo = this.hmap.get(GoBildaPinpointDriver.class,"pinpoint");
 
         //========================================================================//
-
-        intake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         intake.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
         liftRight.setDirection(DcMotorSimple.Direction.REVERSE);

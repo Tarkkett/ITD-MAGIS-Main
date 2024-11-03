@@ -56,7 +56,7 @@ public class MovementControlRunnable implements Runnable {
         if (gamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > triggerMargin) {
             return 1.0;
         } else if (gamepad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > triggerMargin) {
-            return 0.2;
+            return 0.4;
         }
         return 0.6;
     }

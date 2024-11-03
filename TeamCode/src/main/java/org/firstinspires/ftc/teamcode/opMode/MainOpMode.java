@@ -7,6 +7,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.commands.SetIntakeStateCommand;
 import org.firstinspires.ftc.teamcode.commands.SetOuttakeStateCommand;
+import org.firstinspires.ftc.teamcode.commands.SpecimentLoweringSelector;
+import org.firstinspires.ftc.teamcode.commands.low_level.SetBucketPositionCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.SetSpecimentServoPositionCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.TransferCommand;
 import org.firstinspires.ftc.teamcode.managers.DriveManager;
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
@@ -37,13 +41,24 @@ public class MainOpMode extends OpModeTemplate {
 
         gamepad_driver.getGamepadButton(GamepadKeys.Button.DPAD_UP)
                 .whenPressed(() -> CommandScheduler.getInstance().schedule(new SetIntakeStateCommand(IntakeManager._IntakeState.PICKUP, intakeManager, outtakeManager)));
-        gamepad_driver.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
-                .whenPressed(() -> CommandScheduler.getInstance().schedule(new SetIntakeStateCommand(IntakeManager._IntakeState.TRANSFER, intakeManager, outtakeManager)));
+//        gamepad_driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
+//                .whenPressed(() -> CommandScheduler.getInstance().schedule(new SetIntakeStateCommand(IntakeManager._IntakeState.TRANSFER, intakeManager, outtakeManager)));
         gamepad_driver.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
                 .whenPressed(() -> CommandScheduler.getInstance().schedule(new SetIntakeStateCommand(IntakeManager._IntakeState.HOME, intakeManager, outtakeManager)));
-        gamepad_driver.getGamepadButton(GamepadKeys.Button.A) //Cross
-                .whenPressed(() -> CommandScheduler.getInstance().schedule(new SetOuttakeStateCommand(OuttakeManager._OuttakeState.HOME, outtakeManager, gamepad_driver)));
-        gamepad_driver.getGamepadButton(GamepadKeys.Button.B) //Circle
+
+        gamepad_driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
+                .whenPressed(() -> CommandScheduler.getInstance().schedule(new TransferCommand(intakeManager, outtakeManager)));
+
+        gamepad_driver.getGamepadButton(GamepadKeys.Button.X)   //Square
+                .toggleWhenActive(new SetBucketPositionCommand(outtakeManager, OuttakeManager._BucketServoState.HIGH),
+                        new SetBucketPositionCommand(outtakeManager, OuttakeManager._BucketServoState.LOW));
+
+        gamepad_driver.getGamepadButton(GamepadKeys.Button.Y)   //Triangle
+                .whenPressed(() -> CommandScheduler.getInstance().schedule(new SpecimentLoweringSelector(gamepad_driver, outtakeManager)));
+
+        gamepad_driver.getGamepadButton(GamepadKeys.Button.A)   //Cross
+                .toggleWhenActive(new SetSpecimentServoPositionCommand(outtakeManager, OuttakeManager._SpecimentServoState.OPEN), new SetSpecimentServoPositionCommand(outtakeManager, OuttakeManager._SpecimentServoState.CLOSED));
+        gamepad_driver.getGamepadButton(GamepadKeys.Button.B)   //Circle
                 .whenPressed(() -> CommandScheduler.getInstance().schedule(new SetOuttakeStateCommand(OuttakeManager._OuttakeState.TRANSFER, outtakeManager, gamepad_driver)));
         gamepad_driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
                 .whenPressed(() -> CommandScheduler.getInstance().schedule(new SetOuttakeStateCommand(OuttakeManager._OuttakeState.DEPOSIT, outtakeManager, gamepad_driver)));

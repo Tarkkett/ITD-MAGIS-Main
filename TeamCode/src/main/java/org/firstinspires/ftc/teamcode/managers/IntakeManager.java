@@ -32,6 +32,8 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
         this.gamepad_driver = gamepadDriver;
         this.telemetry = telemetry;
         this.hardwareManager = hardwareManager;
+
+        targetPos = (int) _SlideState.RETRACTED.getPosition();
     }
 
     @Override
@@ -126,7 +128,7 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
     }
     public enum _SlideState {
         EXTENDED    (800),
-        TRANSFER    (550),
+        TRANSFER    (400),
         RETRACTED   (10);
 
         private final float position;
