@@ -1,22 +1,14 @@
 package org.firstinspires.ftc.teamcode.commands;
 
-import com.arcrobotics.ftclib.command.Command;
-import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
-import com.arcrobotics.ftclib.command.SelectCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
-import com.arcrobotics.ftclib.command.WaitCommand;
-import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 
 import org.firstinspires.ftc.teamcode.commands.low_level.SetBucketPositionCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.SetLiftPositionCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.SetSpecimentServoPositionCommand;
+import org.firstinspires.ftc.teamcode.commands.selectors.DepositPositionSelector;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
-
-import java.util.HashMap;
-import java.util.Optional;
-import java.util.function.Supplier;
 
 public class SetOuttakeStateCommand extends SequentialCommandGroup {
 

@@ -15,6 +15,9 @@ import java.util.Map;
 @Config
 public class IntakeManager implements State<IntakeManager._IntakeState> {
 
+    private static final int MIN_SLIDE_RETRACT = 500;
+    private static final int MAX_SLIDE_EXTEND = 950;
+
     private final HardwareManager hardwareManager;
     private Telemetry telemetry;
     private final GamepadEx gamepad_driver;
@@ -118,6 +121,16 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
             case LOWERED:
                 hardwareManager.intakeTiltServo.setPosition(_TiltServoState.LOWERED.getPosition());
                 break;
+        }
+    }
+
+    public void moveSlide(int i) {
+        int newPos = targetPos + i;
+        if (newPos < MAX_SLIDE_EXTEND && newPos > MIN_SLIDE_RETRACT){
+            targetPos = newPos;
+        }
+        else{
+            gamepad_driver.gamepad.rumbleBlips(3);
         }
     }
 

@@ -38,7 +38,7 @@ public class MovementControlRunnable implements Runnable {
             hardwareManager.odo.update(GoBildaPinpointDriver.readData.ONLY_UPDATE_HEADING);
 
             double y = -gamepad.getLeftY();
-            double x = -gamepad.getLeftX();
+            double x = gamepad.getLeftX();
             double rx = gamepad.getRightX();
             double multiplier = calculatePowerMultiplier();
 
