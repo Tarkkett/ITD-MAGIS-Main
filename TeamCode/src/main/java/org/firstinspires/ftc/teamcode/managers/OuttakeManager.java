@@ -9,9 +9,6 @@ import org.firstinspires.ftc.teamcode.drivers.C_PID;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Supplier;
-
-import kotlin.math.UMathKt;
 
 @SuppressWarnings("rawtypes")
 @Config
@@ -83,11 +80,8 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
     }
 
     private void CheckForPosition(double encoderPos) {
-        int threshhold = 20;
-        if (encoderPos > _LiftState.TRANSFER.getPosition() - threshhold && encoderPos < _LiftState.TRANSFER.getPosition() + threshhold){
-            isTransfer = true;
-        }
-        else{ isTransfer = false;}
+        int threshold = 20;
+        isTransfer = encoderPos > _LiftState.TRANSFER.getPosition() - threshold && encoderPos < _LiftState.TRANSFER.getPosition() + threshold;
 
     }
 
@@ -161,6 +155,7 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
         targetPosition -= i;
     }
 
+    @SuppressWarnings("unused")
     public enum _OuttakeState{
         HOME,
         DEPOSIT,

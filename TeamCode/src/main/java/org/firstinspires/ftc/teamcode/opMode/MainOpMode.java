@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.managers.DriveManager;
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 
+@SuppressWarnings("unused")
 @TeleOp(name = "Main TeleOp", group = "OpMode")
 public class MainOpMode extends OpModeTemplate {
 

@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.drivers;
 
-import android.sax.StartElementListener;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -14,9 +12,10 @@ public class C_PID {
 
     private double integralSum = 0;
 
-    private ElapsedTime timer = new ElapsedTime();
+    private final ElapsedTime timer = new ElapsedTime();
     private double lastError = 0;
 
+    @SuppressWarnings("unused")
     public C_PID(){}
 
     public C_PID(double Kp, double Ki, double Kd) {
@@ -39,8 +38,7 @@ public class C_PID {
 
         timer.reset();
 
-        double output = (error * Kp) + (derivative * Kd) + (integralSum * Ki);
-        return output;
+        return (error * Kp) + (derivative * Kd) + (integralSum * Ki);
 
     }
 }

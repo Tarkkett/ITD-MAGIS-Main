@@ -20,7 +20,7 @@ public class MovementControlRunnable implements Runnable {
 
     private int loopCounter = 0;
     private double headingAngle;
-    private final double triggerMargin = 0.1;
+    private final double TRIGGER_MARGIN = 0.1;
 
     public MovementControlRunnable(Telemetry telemetry, DriveManager driveManager, GamepadEx gamepad, HardwareManager hardwareManager) {
         this.telemetry = telemetry;
@@ -42,7 +42,7 @@ public class MovementControlRunnable implements Runnable {
             double rx = gamepad.getRightX();
             double multiplier = calculatePowerMultiplier();
 
-            if (loopCounter % hardwareManager.IMU_DATA_SAMPLING_RATE == 0) {
+            if (loopCounter % HardwareManager.IMU_DATA_SAMPLING_RATE == 0) {
                 headingAngle = hardwareManager.odo.getHeading();
             }
             loopCounter++;
@@ -56,9 +56,9 @@ public class MovementControlRunnable implements Runnable {
     }
 
     private double calculatePowerMultiplier() {
-        if (gamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > triggerMargin) {
+        if (gamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > TRIGGER_MARGIN) {
             return 1.0;
-        } else if (gamepad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > triggerMargin) {
+        } else if (gamepad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > TRIGGER_MARGIN) {
             return 0.4;
         }
         return 0.6;

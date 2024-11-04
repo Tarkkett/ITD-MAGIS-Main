@@ -11,10 +11,12 @@ public class Transition<S> {
         this.toState = toState;
     }
 
+    @SuppressWarnings("unused")
     public S getFromState() {
         return fromState;
     }
 
+    @SuppressWarnings("unused")
     public S getToState() {
         return toState;
     }

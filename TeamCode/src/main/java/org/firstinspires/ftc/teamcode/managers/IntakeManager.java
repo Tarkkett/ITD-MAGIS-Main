@@ -134,6 +134,7 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
         }
     }
 
+    @SuppressWarnings("unused")
     public enum _IntakeState {
         PICKUP,
         HOME,

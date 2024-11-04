@@ -3,8 +3,6 @@ package org.firstinspires.ftc.teamcode.commands.selectors;
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
-import com.qualcomm.robotcore.hardware.Gamepad;
-
 import org.firstinspires.ftc.teamcode.commands.low_level.SetLiftPositionCommand;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 

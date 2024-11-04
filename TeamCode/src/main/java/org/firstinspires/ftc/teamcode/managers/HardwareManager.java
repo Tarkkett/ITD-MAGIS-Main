@@ -45,10 +45,11 @@ public class HardwareManager{
 
     public GoBildaPinpointDriver odo;
 
-    public static int IMU_DATA_SAMPLING_RATE = 10;
+    public static int IMU_DATA_SAMPLING_RATE = 1;
 
-    private HardwareMap hmap;
-    private Telemetry telemetry;
+    private final HardwareMap hmap;
+    @SuppressWarnings("unused")
+    private final Telemetry telemetry;
 
     public HardwareManager(HardwareMap hmap, Telemetry tel){
         this.hmap = hmap;
@@ -121,6 +122,7 @@ public class HardwareManager{
         odo.resetPosAndIMU();
     }
 
+    @SuppressWarnings("unused")
     public void clearCache(){
         for(LynxModule hub : hubs){
             hub.clearBulkCache();

@@ -7,7 +7,6 @@ import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 
 import org.firstinspires.ftc.teamcode.commands.low_level.LowerLiftSomeBit;
-import org.firstinspires.ftc.teamcode.commands.low_level.SetLiftPositionCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.SetSpecimentServoPositionCommand;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 
