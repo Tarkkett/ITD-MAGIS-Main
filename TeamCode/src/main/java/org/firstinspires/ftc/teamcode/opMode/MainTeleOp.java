@@ -2,11 +2,15 @@ package org.firstinspires.ftc.teamcode.opMode;
 
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.commands.SetIntakeStateCommand;
 import org.firstinspires.ftc.teamcode.commands.SetOuttakeStateCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.SetBroomStateCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.SetServosToDefaultsCommand;
 import org.firstinspires.ftc.teamcode.commands.selectors.SpecimentLoweringSelector;
 import org.firstinspires.ftc.teamcode.commands.low_level.SetBucketPositionCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.SetSpecimentServoPositionCommand;
@@ -18,7 +22,7 @@ import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 
 @SuppressWarnings("unused")
 @TeleOp(name = "Main TeleOp", group = "OpMode")
-public class MainOpMode extends OpModeTemplate {
+public class MainTeleOp extends OpModeTemplate {
 
     @Override
     public void init() {

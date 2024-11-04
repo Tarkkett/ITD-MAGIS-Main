@@ -2,9 +2,14 @@ package org.firstinspires.ftc.teamcode.managers;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+import com.arcrobotics.ftclib.command.WaitCommand;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.State;
+import org.firstinspires.ftc.teamcode.commands.low_level.SetBucketPositionCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.SetTiltServoPosCommand;
 import org.firstinspires.ftc.teamcode.drivers.C_PID;
 
 import java.util.HashMap;
@@ -14,6 +19,8 @@ import java.util.Map;
 @Config
 public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
 
+    private static final int MIN_THRESHOLD =70;
+    private static final int MAX_THRESHOLD =2200;
     public boolean selectingProcess = false;
 
     HardwareManager hardwareManager;
@@ -24,7 +31,7 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
 
     C_PID controller = new C_PID(0.015,0,0.0003);
     public static int targetPosition = 0;
-    public static double encoderPos;
+    public static int encoderPos;
 
     private final Map<Transition, Runnable> stateTransitionActions = new HashMap<>();
     private boolean isTransfer = false;
@@ -36,6 +43,7 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
         this.telemetry = telemetry;
 
         targetPosition = (int) _LiftState.HOME.getPosition();
+
     }
 
     @Override
@@ -85,8 +93,8 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
 
     }
 
-    private double Average(float p1, float p2) {
-        return (p1 + p2) / 2;
+    private int Average(float p1, float p2) {
+        return (int) ((p1 + p2) / 2);
     }
 
     @Override
@@ -152,7 +160,10 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
     }
 
     public void lowerLiftPosition(int i) {
-        targetPosition -= i;
+        int newPos = encoderPos + i;
+        if (newPos > MIN_THRESHOLD && newPos < MAX_THRESHOLD){
+            targetPosition = newPos;
+        }
     }
 
     @SuppressWarnings("unused")
@@ -168,7 +179,7 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
         LOW_RUNG    (200),
         HIGH_CHAMBER(2300),
         HIGH_RUNG   (1000),
-        TRANSFER    (100),
+        TRANSFER    (30),
         HOME        (50),
         STUCK       (0),
         HIGH_BUCKET (400),

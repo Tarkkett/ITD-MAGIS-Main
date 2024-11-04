@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 
 public class IntakePositionSelector extends CommandBase {
 
+    private static final int DISTANCE = 5;
     IntakeManager manager;
     GamepadEx gamepad;
     private boolean isSelected = false;
@@ -21,28 +22,38 @@ public class IntakePositionSelector extends CommandBase {
     }
 
     @Override
+    public void initialize(){
+        manager.isSelectingIntakePosition = true;
+    }
+
+    @Override
     public void execute(){
-        if (gamepad.wasJustPressed(GamepadKeys.Button.DPAD_UP)){
+
+        manager.isSelectingIntakePosition = true;
+
+        if (gamepad.gamepad.dpad_up){
             CommandScheduler.getInstance().schedule(
-                    new MoveIntakeSomeBit(manager, 50)
+                    new MoveIntakeSomeBit(manager, DISTANCE)
             );
         }
-        else if (gamepad.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)){
+        else if (gamepad.gamepad.dpad_down){
             CommandScheduler.getInstance().schedule(
-                    new MoveIntakeSomeBit(manager, -50)
+                    new MoveIntakeSomeBit(manager, -DISTANCE)
             );
         }
-        else if (gamepad.wasJustPressed(GamepadKeys.Button.Y)){
+        else if (gamepad.gamepad.square){
             CommandScheduler.getInstance().schedule(
                     new SetTiltServoPosCommand(manager, IntakeManager._TiltServoState.RAISED)
             );
         }
-        else if (gamepad.wasJustPressed(GamepadKeys.Button.A)){
+        else if (gamepad.gamepad.circle){
             CommandScheduler.getInstance().schedule(
                     new SetTiltServoPosCommand(manager, IntakeManager._TiltServoState.LOWERED)
+
             );
         }
-        else if (gamepad.wasJustPressed(GamepadKeys.Button.B)){
+        else if (gamepad.gamepad.cross){
+            manager.isSelectingIntakePosition = false;
             isSelected = true;
             gamepad.gamepad.rumbleBlips(2);
         }
@@ -50,6 +61,9 @@ public class IntakePositionSelector extends CommandBase {
 
     @Override
     public boolean isFinished() {
+        if (isSelected){
+            manager.isSelectingIntakePosition = false;
+        }
         return isSelected;
     }
 }

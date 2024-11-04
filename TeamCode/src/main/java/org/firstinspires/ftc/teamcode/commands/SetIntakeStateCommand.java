@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.commands;
 
+import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
@@ -25,7 +26,8 @@ public class SetIntakeStateCommand extends SequentialCommandGroup {
                             new SetTiltServoPosCommand(manager, IntakeManager._TiltServoState.LOWERED),
                             new SetBroomStateCommand(manager, IntakeManager._BroomState.INTAKEING)
                     ),
-                    new IntakePositionSelector(manager, gamepad_driver).withTimeout(5000)
+                    new IntakePositionSelector(manager, gamepad_driver),
+                    new InstantCommand(() -> manager.isSelectingIntakePosition = false)
             );
         }
     }

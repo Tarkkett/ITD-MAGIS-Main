@@ -2,10 +2,14 @@ package org.firstinspires.ftc.teamcode.managers;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.State;
+import org.firstinspires.ftc.teamcode.commands.low_level.SetTiltServoPosCommand;
 import org.firstinspires.ftc.teamcode.drivers.C_PID;
 
 import java.util.HashMap;
@@ -19,6 +23,7 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
     private static final int MAX_SLIDE_EXTEND = 950;
 
     private final HardwareManager hardwareManager;
+    public boolean isSelectingIntakePosition = false;
     private Telemetry telemetry;
     private final GamepadEx gamepad_driver;
 
@@ -121,6 +126,9 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
             case LOWERED:
                 hardwareManager.intakeTiltServo.setPosition(_TiltServoState.LOWERED.getPosition());
                 break;
+            case MID:
+                hardwareManager.intakeTiltServo.setPosition(_TiltServoState.MID.getPosition());
+                break;
         }
     }
 
@@ -141,8 +149,8 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
         TRANSFER
     }
     public enum _SlideState {
-        EXTENDED    (800),
-        TRANSFER    (400),
+        EXTENDED    (550),
+        TRANSFER    (330),
         RETRACTED   (10);
 
         private final float position;
@@ -172,7 +180,8 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
     }
     public enum _TiltServoState{
         RAISED  (0.65f),
-        LOWERED (0f);
+        LOWERED (0f),
+        MID (0.25f);
 
         private final float position;
 

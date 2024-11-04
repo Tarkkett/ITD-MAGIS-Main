@@ -38,8 +38,8 @@ public class MovementControlRunnable implements Runnable {
             hardwareManager.odo.update(GoBildaPinpointDriver.readData.ONLY_UPDATE_HEADING);
 
             double y = -gamepad.getLeftY();
-            double x = gamepad.getLeftX();
-            double rx = gamepad.getRightX();
+            double x = -gamepad.getLeftX();
+            double rx = -gamepad.getRightX();
             double multiplier = calculatePowerMultiplier();
 
             if (loopCounter % HardwareManager.IMU_DATA_SAMPLING_RATE == 0) {
@@ -57,11 +57,11 @@ public class MovementControlRunnable implements Runnable {
 
     private double calculatePowerMultiplier() {
         if (gamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > TRIGGER_MARGIN) {
-            return 1.0;
-        } else if (gamepad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > TRIGGER_MARGIN) {
             return 0.4;
+        } else if (gamepad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > TRIGGER_MARGIN) {
+            return 0.2;
         }
-        return 0.6;
+        return 1.0;
     }
 
     public void stop() {

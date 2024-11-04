@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.commands.selectors;
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
+
+import org.firstinspires.ftc.teamcode.commands.low_level.LowerLiftSomeBit;
 import org.firstinspires.ftc.teamcode.commands.low_level.SetLiftPositionCommand;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 
@@ -50,6 +52,12 @@ public class DepositPositionSelector extends CommandBase {
 
             isSelected = true;
             manager.selectingProcess = false;
+        }
+        else if (gamepad_driver.gamepad.dpad_up){
+            CommandScheduler.getInstance().schedule(new LowerLiftSomeBit(manager, 50));
+        }
+        else if (gamepad_driver.gamepad.dpad_down){
+            CommandScheduler.getInstance().schedule(new LowerLiftSomeBit(manager, -50));
         }
     }
 

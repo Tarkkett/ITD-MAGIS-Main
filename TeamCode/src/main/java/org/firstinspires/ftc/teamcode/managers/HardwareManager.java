@@ -100,6 +100,9 @@ public class HardwareManager{
         liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        bucketServo.setPosition(1);
+        intakeTiltServo.setPosition(0.35f);
+
         //========================================================================//
 
         setupBulkReading();
@@ -118,7 +121,7 @@ public class HardwareManager{
 
         odo.setOffsets(-123.7, -42.07);
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED, GoBildaPinpointDriver.EncoderDirection.REVERSED);
         odo.resetPosAndIMU();
     }
 

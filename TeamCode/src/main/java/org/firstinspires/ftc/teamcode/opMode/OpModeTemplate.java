@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.managers.DriveManager;
 import org.firstinspires.ftc.teamcode.managers.HardwareManager;
+import org.firstinspires.ftc.teamcode.managers.NavigationManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 
 public abstract class OpModeTemplate extends OpMode {
@@ -18,6 +19,7 @@ public abstract class OpModeTemplate extends OpMode {
     protected DriveManager driveManager;
     protected OuttakeManager outtakeManager;
     protected IntakeManager intakeManager;
+    protected NavigationManager navigationManager;
 
     protected Alliance team = Alliance.UNKNOWN;
 
@@ -33,6 +35,12 @@ public abstract class OpModeTemplate extends OpMode {
         intakeManager = new IntakeManager(hardwareManager, telemetry, gamepad_driver);
         outtakeManager = new OuttakeManager(hardwareManager, telemetry);
 
+        if (isAuto) SetupAuto();
+
+    }
+
+    private void SetupAuto() {
+        navigationManager = new NavigationManager(hardwareManager, telemetry);
     }
 
     @Override
