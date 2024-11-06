@@ -33,7 +33,7 @@ public class MainTeleOp extends OpModeTemplate {
 
         //Recalibrate IMU on computer
         gamepad_driver.getGamepadButton(GamepadKeys.Button.START)
-                .whenPressed(new InstantCommand(() -> hardwareManager.recalibrateIMU()));
+                .whenPressed(new InstantCommand(() -> drive.pinpoint.recalibrateIMU()));
 
         //Toggle drivetrain lock
         gamepad_driver.getGamepadButton(GamepadKeys.Button.RIGHT_STICK_BUTTON)

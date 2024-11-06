@@ -5,6 +5,7 @@ import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.MovementControlRunnable;
+import org.firstinspires.ftc.teamcode.PinpointDrive;
 import org.firstinspires.ftc.teamcode.State;
 
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import java.util.Map;
 public class DriveManager implements State<DriveManager.DriveState> {
 
     private final HardwareManager hardwareManager;
+    private final PinpointDrive drive;
     private final Telemetry telemetry;
     private final GamepadEx gamepadDriver;
 
@@ -24,22 +26,22 @@ public class DriveManager implements State<DriveManager.DriveState> {
 
     private final Map<Transition, Runnable> stateTransitionActions = new HashMap<>();
 
-    public DriveManager(HardwareManager hardwareManager, Telemetry telemetry, GamepadEx gamepadDriver) {
-
+    public DriveManager(HardwareManager hardwareManager, Telemetry telemetry, GamepadEx gamepadDriver, PinpointDrive drive) {
+        this.drive = drive;
         this.hardwareManager = hardwareManager;
         this.telemetry = telemetry;
         this.gamepadDriver = gamepadDriver;
 
-        configureDrive();
+        configureDrive(this.drive);
         InitializeStateTransitionActions();
     }
 
-    private void configureDrive() {
+    private void configureDrive(PinpointDrive drive) {
 
         hardwareManager.frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         hardwareManager.backRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        movementControlRunnable = new MovementControlRunnable(telemetry, this, gamepadDriver, hardwareManager);
+        movementControlRunnable = new MovementControlRunnable(telemetry, this, gamepadDriver, hardwareManager, drive);
         movementControlThread = new Thread(movementControlRunnable);
         movementControlThread.start();
     }
@@ -91,6 +93,7 @@ public class DriveManager implements State<DriveManager.DriveState> {
     public void loop() {}
 
     public void drive(Pose2d movementVector, double rotationInput, double powerMultiplier) {
+
         double cosHeading = Math.cos(-movementVector.getHeading());
         double sinHeading = Math.sin(-movementVector.getHeading());
 

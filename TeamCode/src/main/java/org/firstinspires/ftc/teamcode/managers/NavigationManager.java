@@ -62,27 +62,6 @@ public class NavigationManager implements State<NavigationManager._AutoState> {
     @Override
     public void loop() {
 
-        FtcDashboard dashboard = FtcDashboard.getInstance();
-        telemetry = dashboard.getTelemetry();
-
-        telemetry.addData("CurrentPos", xEncoder);
-        telemetry.addData("TargetPos", x);
-        telemetry.update();
-
-        xController.tune(xKp, xKi, xKd);
-        yController.tune(yKp, yKi, yKd);
-
-        headingIMU = hardwareManager.odo.getHeading();
-        xEncoder = hardwareManager.odo.getPosX();
-        yEncoder = hardwareManager.odo.getPosY();
-
-        double x_rotated = x * Math.cos(theta) - y * Math.sin(theta);
-        double y_rotated = x * Math.sin(theta) + y * Math.cos(theta);
-
-        hardwareManager.frontLeft.setPower(x_rotated + y_rotated + theta);
-        hardwareManager.backLeft.setPower(x_rotated - y_rotated + theta);
-        hardwareManager.frontRight.setPower(x_rotated - y_rotated - theta);
-        hardwareManager.backRight.setPower(x_rotated + y_rotated - theta);
 
     }
 

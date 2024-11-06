@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.managers;
 
 import android.graphics.Color;
 
+import com.acmerobotics.roadrunner.ftc.GoBildaPinpointDriverRR;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -43,7 +44,7 @@ public class HardwareManager{
     Servo bucketServo;
     Servo specimentServo;
 
-    public GoBildaPinpointDriver odo;
+//    public GoBildaPinpointDriverRR odo;
 
     public static int IMU_DATA_SAMPLING_RATE = 1;
 
@@ -88,7 +89,7 @@ public class HardwareManager{
         bucketServo = this.hmap.get(Servo.class, "bucketServo");
         specimentServo = this.hmap.get(Servo.class, "specimentServo");
 
-        odo = this.hmap.get(GoBildaPinpointDriver.class,"pinpoint");
+//        odo = this.hmap.get(GoBildaPinpointDriverRR.class,"pinpoint");
 
         //========================================================================//
         intake.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
@@ -118,11 +119,11 @@ public class HardwareManager{
     }
 
     private void setupOdometry() {
-
-        odo.setOffsets(-123.7, -42.07);
-        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED, GoBildaPinpointDriver.EncoderDirection.REVERSED);
-        odo.resetPosAndIMU();
+//
+//        odo.setOffsets(-123.7, -42.07);
+//        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+//        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED, GoBildaPinpointDriver.EncoderDirection.REVERSED);
+//        odo.resetPosAndIMU();
     }
 
     @SuppressWarnings("unused")
@@ -139,9 +140,9 @@ public class HardwareManager{
         }
     }
 
-    public void recalibrateIMU() {
-        odo.recalibrateIMU();
-    }
+//    public void recalibrateIMU() {
+//        odo.recalibrateIMU();
+//    }
 
     public void blink() {
         blinks = new ArrayList<>();
