@@ -34,6 +34,6 @@ public class MainAuto extends OpModeTemplate {
 
     @Override
     public void loop() {
-
+        telemetry.addData("HeadingAuto", drive.pinpoint.getPosition());
     }
 }

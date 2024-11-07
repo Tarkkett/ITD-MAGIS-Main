@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.ftc.GoBildaPinpointDriver;
+import com.acmerobotics.roadrunner.ftc.GoBildaPinpointDriverRR;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.managers.DriveManager;
 import org.firstinspires.ftc.teamcode.managers.HardwareManager;
 
@@ -17,7 +19,7 @@ public class MovementControlRunnable implements Runnable {
     private final Telemetry telemetry;
     private final GamepadEx gamepad;
     private volatile boolean running = true;
-    private final PinpointDrive drive;
+    private PinpointDrive drive;
 
     private int loopCounter = 0;
     private double headingAngle;
@@ -37,15 +39,18 @@ public class MovementControlRunnable implements Runnable {
             ElapsedTime loopTime = new ElapsedTime();
             loopTime.reset();
 
-            double y = -gamepad.getLeftY();
-            double x = -gamepad.getLeftX();
-            double rx = -gamepad.getRightX();
+            double y = gamepad.getLeftY();
+            double x = gamepad.getLeftX();
+            double rx = gamepad.getRightX();
             double multiplier = calculatePowerMultiplier();
 
-            if (loopCounter % HardwareManager.IMU_DATA_SAMPLING_RATE == 0) {
-                headingAngle = drive.pinpoint.getHeading();
-            }
+            drive.pinpoint.update(GoBildaPinpointDriver.readData.ONLY_UPDATE_HEADING);
+            drive.pinpoint.update(GoBildaPinpointDriverRR.readData.ONLY_UPDATE_HEADING);
+
+            headingAngle = drive.pinpoint.getPosition().getHeading(AngleUnit.RADIANS);
             loopCounter++;
+
+            telemetry.addData("Heading:", headingAngle);
 
             driveManager.drive(new Pose2d(x, y, new Rotation2d(headingAngle)), rx, multiplier);
         }

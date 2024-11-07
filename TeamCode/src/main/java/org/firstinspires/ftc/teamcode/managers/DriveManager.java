@@ -14,7 +14,7 @@ import java.util.Map;
 public class DriveManager implements State<DriveManager.DriveState> {
 
     private final HardwareManager hardwareManager;
-    private final PinpointDrive drive;
+    private PinpointDrive drive;
     private final Telemetry telemetry;
     private final GamepadEx gamepadDriver;
 
@@ -38,8 +38,8 @@ public class DriveManager implements State<DriveManager.DriveState> {
 
     private void configureDrive(PinpointDrive drive) {
 
-        hardwareManager.frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        hardwareManager.backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        hardwareManager.frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        hardwareManager.backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         movementControlRunnable = new MovementControlRunnable(telemetry, this, gamepadDriver, hardwareManager, drive);
         movementControlThread = new Thread(movementControlRunnable);
