@@ -129,6 +129,9 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
             case MID:
                 hardwareManager.intakeTiltServo.setPosition(_TiltServoState.MID.getPosition());
                 break;
+            case PACKED:
+                hardwareManager.intakeTiltServo.setPosition(_TiltServoState.PACKED.getPosition());
+                break;
         }
     }
 
@@ -181,7 +184,8 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
     public enum _TiltServoState{
         RAISED  (0.65f),
         LOWERED (0f),
-        MID (0.25f);
+        MID (0.25f),
+        PACKED(0.75f);
 
         private final float position;
 

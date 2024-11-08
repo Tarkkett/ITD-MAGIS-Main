@@ -29,6 +29,7 @@ public class HardwareManager{
     Blinker.Step blinkRed = new Blinker.Step();
 
     DcMotorEx frontLeft;
+    DcMotorEx legMotor;
     DcMotorEx frontRight;
     DcMotorEx backLeft;
     DcMotorEx backRight;
@@ -83,6 +84,8 @@ public class HardwareManager{
 
         intake = this.hmap.get(DcMotorEx.class, "intakeMotor");
 
+        legMotor = this.hmap.get(DcMotorEx.class, "legMotor");
+
         broomServo = this.hmap.get(Servo.class, "broomServo");
         intakeTiltServo = this.hmap.get(Servo.class, "intakeTiltServo");
 
@@ -98,11 +101,15 @@ public class HardwareManager{
         liftLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        legMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         bucketServo.setPosition(1);
-        intakeTiltServo.setPosition(0.35f);
+        intakeTiltServo.setPosition(0.42f);
+        specimentServo.setPosition(0.5f);
 
         //========================================================================//
 

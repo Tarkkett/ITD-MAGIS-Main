@@ -31,10 +31,6 @@ public class MainTeleOp extends OpModeTemplate {
         telemetry.addData(":","Init passed..!");
         telemetry.setAutoClear(true);
 
-        //Recalibrate IMU on computer
-        gamepad_driver.getGamepadButton(GamepadKeys.Button.START)
-                .whenPressed(new InstantCommand(() -> drive.pinpoint.recalibrateIMU()));
-
         //Toggle drivetrain lock
         gamepad_driver.getGamepadButton(GamepadKeys.Button.RIGHT_STICK_BUTTON)
                 .toggleWhenActive(new InstantCommand(() -> driveManager.SetSubsystemState(DriveManager.DriveState.LOCKED)),
@@ -60,8 +56,8 @@ public class MainTeleOp extends OpModeTemplate {
                         new SetBucketPositionCommand(outtakeManager, OuttakeManager._BucketServoState.LOW));
 
         //Speciment lower sequence command
-        gamepad_driver.getGamepadButton(GamepadKeys.Button.Y)   //Triangle
-                .whenPressed(() -> CommandScheduler.getInstance().schedule(new SpecimentLoweringSelector(gamepad_driver, outtakeManager)));
+//        gamepad_driver.getGamepadButton(GamepadKeys.Button.Y)   //Triangle
+//                .whenPressed(() -> CommandScheduler.getInstance().schedule(new SpecimentLoweringSelector(gamepad_driver, outtakeManager)));
 
         //Toggle speciment claw
         gamepad_driver.getGamepadButton(GamepadKeys.Button.A)   //Cross
@@ -84,6 +80,11 @@ public class MainTeleOp extends OpModeTemplate {
         CommandScheduler.getInstance().run();
         intakeManager.loop();
         outtakeManager.loop();
+        ascentManager.loop();
+
+        if (gamepad_driver.gamepad.options){
+            drive.pinpoint.resetPosAndIMU();
+        }
 
     }
 

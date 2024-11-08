@@ -6,6 +6,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.PinpointDrive;
+import org.firstinspires.ftc.teamcode.managers.AscentManager;
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.managers.DriveManager;
 import org.firstinspires.ftc.teamcode.managers.HardwareManager;
@@ -24,7 +25,7 @@ public abstract class OpModeTemplate extends OpMode {
     protected DriveManager driveManager;
     protected OuttakeManager outtakeManager;
     protected IntakeManager intakeManager;
-    protected NavigationManager navigationManager;
+    protected AscentManager ascentManager;
 
     PinpointDrive drive;
     private Pose2d staringPos = new Pose2d(new Vector2d(0,0), 0);
@@ -48,14 +49,15 @@ public abstract class OpModeTemplate extends OpMode {
 
         if (!isAuto) {driveManager = new DriveManager(hardwareManager, telemetry, gamepad_driver, drive);}
         intakeManager = new IntakeManager(hardwareManager, telemetry, gamepad_driver);
-        outtakeManager = new OuttakeManager(hardwareManager, telemetry);
+        outtakeManager = new OuttakeManager(hardwareManager, telemetry, intakeManager);
+        ascentManager = new AscentManager(hardwareManager, telemetry, gamepad_codriver, outtakeManager, intakeManager);
 
         if (isAuto) SetupAuto();
 
     }
 
     private void SetupAuto() {
-        navigationManager = new NavigationManager(hardwareManager, telemetry);
+
     }
 
     @Override

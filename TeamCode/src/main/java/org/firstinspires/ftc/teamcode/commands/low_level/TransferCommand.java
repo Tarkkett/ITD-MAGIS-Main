@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 public class TransferCommand extends SequentialCommandGroup {
 
     public TransferCommand(IntakeManager intake, OuttakeManager outtake){
-        if (!intake.isSelectingIntakePosition) {
+        if (!intake.isSelectingIntakePosition && !outtake.selectingProcess) {
             addCommands(
 
                     new ParallelCommandGroup(
