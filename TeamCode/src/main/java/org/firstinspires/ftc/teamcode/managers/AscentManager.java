@@ -7,6 +7,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.State;
 import org.firstinspires.ftc.teamcode.commands.low_level.LowerLiftSomeBit;
 import org.firstinspires.ftc.teamcode.commands.low_level.PrepLiftForAscentCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.UncoupleLiftPIDCommand;
 
 public class AscentManager implements State<DriveManager.DriveState> {
 
@@ -44,15 +45,24 @@ public class AscentManager implements State<DriveManager.DriveState> {
     @Override
     public void loop() {
         if (gamepad_codriver.gamepad.triangle){
-            CommandScheduler.getInstance().schedule(
-                    new LowerLiftSomeBit(outtakeManager, 150)
-            );
+            hardwareManager.liftLeft.setPower(0.2);
+            hardwareManager.liftRight.setPower(0.2);
         }
         else if (gamepad_codriver.gamepad.cross){
+            hardwareManager.liftLeft.setPower(-0.2);
+            hardwareManager.liftRight.setPower(-0.2);
+        }
+        else if (gamepad_codriver.gamepad.left_bumper){
             CommandScheduler.getInstance().schedule(
-                    new LowerLiftSomeBit(outtakeManager, -150)
+                    new UncoupleLiftPIDCommand(outtakeManager, true)
             );
-        } else if (gamepad_codriver.gamepad.dpad_down) {
+        }
+        else if (gamepad_codriver.gamepad.right_bumper){
+            CommandScheduler.getInstance().schedule(
+                    new UncoupleLiftPIDCommand(outtakeManager, false)
+            );
+        }
+        else if (gamepad_codriver.gamepad.dpad_down) {
             hardwareManager.legMotor.setPower(-0.6);
         }
         else if (gamepad_codriver.gamepad.dpad_up) {

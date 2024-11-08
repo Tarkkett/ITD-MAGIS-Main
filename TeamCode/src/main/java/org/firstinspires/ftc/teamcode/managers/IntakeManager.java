@@ -182,10 +182,10 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
         }
     }
     public enum _TiltServoState{
-        RAISED  (0.65f),
+        RAISED  (0.84f),
         LOWERED (0f),
-        MID (0.25f),
-        PACKED(0.75f);
+        MID (0.5f),
+        PACKED(0.95f);
 
         private final float position;
 

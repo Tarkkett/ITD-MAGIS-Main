@@ -38,6 +38,8 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
 
     private boolean isAutoLoop = true;
 
+    _LiftMode mode = _LiftMode.AUTO;
+
     public OuttakeManager(HardwareManager hardwareManager, Telemetry telemetry, IntakeManager intakeManager){
 
         this.hardwareManager = hardwareManager;
@@ -83,8 +85,10 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
         telemetry.addData("TargetPosLift", targetPosition);
         telemetry.update();
 
-        hardwareManager.liftLeft.setPower(power);
-        hardwareManager.liftRight.setPower(power);
+        if (mode == _LiftMode.AUTO) {
+            hardwareManager.liftLeft.setPower(power);
+            hardwareManager.liftRight.setPower(power);
+        }
 
         CheckForPosition(encoderPos);
     }
@@ -136,7 +140,7 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
     }
 
     public void update(_BucketServoState targetState) {
-        if (!intakeManager.isSelectingIntakePosition){
+//        if (!intakeManager.isSelectingIntakePosition){
             switch (targetState){
                 case LOW:
                     hardwareManager.bucketServo.setPosition(_BucketServoState.LOW.getPosition());
@@ -145,7 +149,7 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
                     hardwareManager.bucketServo.setPosition(_BucketServoState.HIGH.getPosition());
                     break;
             }
-        }
+//        }
     }
 
     public void update(_SpecimentServoState targetState) {
@@ -182,6 +186,14 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
                 return false;
             }
         };
+    }
+
+    public void updateMode(boolean isAuto) {
+        if (isAuto){
+            mode = _LiftMode.AUTO;
+        } else{
+            mode = _LiftMode.MANUAL;
+        }
     }
 
     public class LoopLift implements Action {
@@ -279,6 +291,12 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
         public float getPosition() {
             return position;
         }
+    }
+
+    public enum _LiftMode{
+        MANUAL,
+        AUTO;
+
     }
 
     public enum _BucketServoState{

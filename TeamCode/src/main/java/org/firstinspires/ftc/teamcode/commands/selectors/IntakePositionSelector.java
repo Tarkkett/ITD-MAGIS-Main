@@ -52,7 +52,7 @@ public class IntakePositionSelector extends CommandBase {
 
             );
         }
-        else if (gamepad.gamepad.left_stick_button){
+        else if (gamepad.gamepad.cross){
             manager.isSelectingIntakePosition = false;
             isSelected = true;
             gamepad.gamepad.rumbleBlips(2);

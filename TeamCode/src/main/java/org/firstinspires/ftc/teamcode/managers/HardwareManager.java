@@ -108,7 +108,7 @@ public class HardwareManager{
         legMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         bucketServo.setPosition(1);
-        intakeTiltServo.setPosition(0.42f);
+        intakeTiltServo.setPosition(0.55f);
         specimentServo.setPosition(0.5f);
 
         //========================================================================//

@@ -100,7 +100,7 @@ public class MainAuto extends OpModeTemplate {
                     outtakeManager.OpenCloseSpeciment(true),
                     //Go park
                     drive.actionBuilder(new Pose2d(-29.5, -4, 0))
-                            .strafeTo(new Vector2d(-5, 45))
+                            .strafeToLinearHeading(new Vector2d(-5, 45), Math.toRadians(180))
                             .build(),
                     outtakeManager.stop()
 

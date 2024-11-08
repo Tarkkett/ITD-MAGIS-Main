@@ -37,8 +37,8 @@ public class MainTeleOp extends OpModeTemplate {
                     new InstantCommand(() -> driveManager.SetSubsystemState(DriveManager.DriveState.UNLOCKED)));
 
         //Go to pickup settings
-        gamepad_driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
-                .whenPressed(() -> CommandScheduler.getInstance().schedule(new SetIntakeStateCommand(IntakeManager._IntakeState.PICKUP, intakeManager, gamepad_driver)));
+//        gamepad_driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
+//                .whenPressed(() -> CommandScheduler.getInstance().schedule(new SetIntakeStateCommand(IntakeManager._IntakeState.PICKUP, intakeManager, gamepad_driver)));
 
         //Intake home command
         gamepad_driver.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
@@ -46,12 +46,16 @@ public class MainTeleOp extends OpModeTemplate {
                         .schedule(new SetIntakeStateCommand(IntakeManager._IntakeState.HOME, intakeManager, gamepad_driver)
                                 .andThen(new SetTiltServoPosCommand(intakeManager, IntakeManager._TiltServoState.LOWERED))));
 
+        gamepad_driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
+                .toggleWhenPressed(
+                        new SetIntakeStateCommand(IntakeManager._IntakeState.PICKUP, intakeManager, gamepad_driver),
+                        new TransferCommand(intakeManager, outtakeManager));
         //Transfer command
-        gamepad_driver.getGamepadButton(GamepadKeys.Button.DPAD_UP)
-                .whenPressed(() -> CommandScheduler.getInstance().schedule(new TransferCommand(intakeManager, outtakeManager)));
+//        gamepad_driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
+//                .whenPressed(() -> CommandScheduler.getInstance().schedule(new TransferCommand(intakeManager, outtakeManager)));
 
         //Toggle bucket position
-        gamepad_driver.getGamepadButton(GamepadKeys.Button.X)   //Square
+        gamepad_codriver.getGamepadButton(GamepadKeys.Button.X)   //Square
                 .toggleWhenActive(new SetBucketPositionCommand(outtakeManager, OuttakeManager._BucketServoState.HIGH),
                         new SetBucketPositionCommand(outtakeManager, OuttakeManager._BucketServoState.LOW));
 
