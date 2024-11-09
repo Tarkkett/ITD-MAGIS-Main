@@ -45,12 +45,12 @@ public class AscentManager implements State<DriveManager.DriveState> {
     @Override
     public void loop() {
         if (gamepad_codriver.gamepad.triangle){
-            hardwareManager.liftLeft.setPower(0.2);
-            hardwareManager.liftRight.setPower(0.2);
+            hardwareManager.liftLeft.setPower(1);
+            hardwareManager.liftRight.setPower(1);
         }
         else if (gamepad_codriver.gamepad.cross){
-            hardwareManager.liftLeft.setPower(-0.2);
-            hardwareManager.liftRight.setPower(-0.2);
+            hardwareManager.liftLeft.setPower(-1);
+            hardwareManager.liftRight.setPower(-1);
         }
         else if (gamepad_codriver.gamepad.left_bumper){
             CommandScheduler.getInstance().schedule(
@@ -63,14 +63,21 @@ public class AscentManager implements State<DriveManager.DriveState> {
             );
         }
         else if (gamepad_codriver.gamepad.dpad_down) {
-            hardwareManager.legMotor.setPower(-0.6);
+            hardwareManager.legMotor.setPower(-1);
         }
         else if (gamepad_codriver.gamepad.dpad_up) {
-            hardwareManager.legMotor.setPower(0.6);
+            hardwareManager.legMotor.setPower(1);
         }
         else if(gamepad_codriver.gamepad.circle){
             CommandScheduler.getInstance().schedule(new PrepLiftForAscentCommand(intakeManager, outtakeManager));
         }
-        else hardwareManager.legMotor.setPower(0);
+        else{
+            if (outtakeManager.mode == OuttakeManager._LiftMode.MANUAL) {
+                hardwareManager.legMotor.setPower(0);
+                hardwareManager.liftRight.setPower(0);
+                hardwareManager.liftLeft.setPower(0);
+            }
+        }
+
     }
 }

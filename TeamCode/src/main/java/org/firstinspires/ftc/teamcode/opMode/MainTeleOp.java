@@ -59,12 +59,8 @@ public class MainTeleOp extends OpModeTemplate {
                 .toggleWhenActive(new SetBucketPositionCommand(outtakeManager, OuttakeManager._BucketServoState.HIGH),
                         new SetBucketPositionCommand(outtakeManager, OuttakeManager._BucketServoState.LOW));
 
-        //Speciment lower sequence command
-//        gamepad_driver.getGamepadButton(GamepadKeys.Button.Y)   //Triangle
-//                .whenPressed(() -> CommandScheduler.getInstance().schedule(new SpecimentLoweringSelector(gamepad_driver, outtakeManager)));
-
         //Toggle speciment claw
-        gamepad_driver.getGamepadButton(GamepadKeys.Button.A)   //Cross
+        gamepad_codriver.getGamepadButton(GamepadKeys.Button.RIGHT_STICK_BUTTON)   //Cross
                 .toggleWhenActive(new SetSpecimentServoPositionCommand(outtakeManager, OuttakeManager._SpecimentServoState.OPEN), new SetSpecimentServoPositionCommand(outtakeManager, OuttakeManager._SpecimentServoState.CLOSED));
 
         //Go to deposit settings

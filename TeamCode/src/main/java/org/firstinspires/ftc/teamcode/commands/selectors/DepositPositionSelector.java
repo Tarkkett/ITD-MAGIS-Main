@@ -32,17 +32,13 @@ public class DepositPositionSelector extends CommandBase {
 
         manager.selectingProcess = true;
 
-        if (gamepad_driver.gamepad.a){
-            CommandScheduler.getInstance().schedule(new SetLiftPositionCommand(manager, OuttakeManager._LiftState.LOW_BUCKET));
-            isSelected = true;
-            manager.selectingProcess = false;
-        } else if (gamepad_driver.gamepad.b){
+        if (gamepad_driver.gamepad.b){
             CommandScheduler.getInstance().schedule(new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HIGH_CHAMBER));
             isSelected = true;
             manager.selectingProcess = false;
         }
         else if (gamepad_driver.gamepad.x){
-            CommandScheduler.getInstance().schedule(new SetLiftPositionCommand(manager, OuttakeManager._LiftState.LOW_CHAMBER));
+            CommandScheduler.getInstance().schedule(new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HOME));
             isSelected = true;
             manager.selectingProcess = false;
         }
@@ -62,12 +58,11 @@ public class DepositPositionSelector extends CommandBase {
         else if (gamepad_driver.gamepad.dpad_down){
             CommandScheduler.getInstance().schedule(new LowerLiftSomeBit(manager, -50));
         }
-        if (gamepad_driver.gamepad.share){
+        if (gamepad_driver.gamepad.cross){
+            //Create dedicated command
             CommandScheduler.getInstance().schedule(
                     new SequentialCommandGroup(
-                            new LowerLiftSomeBit(manager, -500),
-                            new WaitCommand(500),
-                            new SetSpecimentServoPositionCommand(manager, OuttakeManager._SpecimentServoState.OPEN)
+                            new LowerLiftSomeBit(manager, -550)
                     )
             );
             isSelected = true;

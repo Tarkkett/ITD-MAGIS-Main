@@ -61,7 +61,7 @@ public class MainAuto extends OpModeTemplate {
                     //Drive to Deposit Speciment from start pos
                     new ParallelAction(
                         outtakeManager.driveLift(1500),
-                        drive.actionBuilder(beginPose).strafeToConstantHeading(new Vector2d(-29.5,0)).build()
+                        drive.actionBuilder(beginPose).strafeToConstantHeading(new Vector2d(-29.6,0)).build()
 
                     ),
                     //Score Points
@@ -79,7 +79,7 @@ public class MainAuto extends OpModeTemplate {
                             ),
                             //Drive to pick up 2nd speciment
                             new SequentialAction(
-                                    drive.actionBuilder(new Pose2d(-29.5,0, 0)).strafeToLinearHeading(new Vector2d(-10, 40), Math.toRadians(180))
+                                    drive.actionBuilder(new Pose2d(-29.6,0, 0)).strafeToLinearHeading(new Vector2d(-10, 40), Math.toRadians(180))
                                             .strafeToConstantHeading(new Vector2d(-2.2, 40))
                                             .build(),
 
@@ -90,7 +90,7 @@ public class MainAuto extends OpModeTemplate {
                                     outtakeManager.driveLift(1500),
                                     new SleepAction(0.5),
                                     //Drive to Chamber 2nd time
-                                    drive.actionBuilder(new Pose2d(-2.2, 40, Math.toRadians(180))).strafeToLinearHeading(new Vector2d(-29.5, -4), Math.toRadians(0)).build()
+                                    drive.actionBuilder(new Pose2d(-2.2, 40, Math.toRadians(180))).strafeToLinearHeading(new Vector2d(-29.7, -4), Math.toRadians(0)).build()
                             )
                     ),
                     //Score 2nd speciment
@@ -99,9 +99,27 @@ public class MainAuto extends OpModeTemplate {
                     new SleepAction(0.5),
                     outtakeManager.OpenCloseSpeciment(true),
                     //Go park
-                    drive.actionBuilder(new Pose2d(-29.5, -4, 0))
-                            .strafeToLinearHeading(new Vector2d(-5, 45), Math.toRadians(180))
-                            .build(),
+                        outtakeManager.driveLift(10),
+                        //=============
+                        drive.actionBuilder(new Pose2d(-29.7, -4, 0))
+                                .strafeToLinearHeading(new Vector2d(-28, -4), Math.toRadians(90))
+                                .strafeToConstantHeading(new Vector2d(-28, 28))
+                                .strafeToConstantHeading(new Vector2d(-55, 28))
+                                .strafeToConstantHeading(new Vector2d(-55, 43))
+                                .strafeToConstantHeading(new Vector2d(-5, 43))
+                                .turnTo(Math.toRadians(180))
+//                                .strafeToConstantHeading(new Vector2d(-30, 43))
+//                                .strafeToConstantHeading(new Vector2d(-2, 43))
+
+                                        .build(),
+//                    drive.actionBuilder(new Pose2d(-29.6, -4, 0))
+//                            .strafeToLinearHeading(new Vector2d(-5, 45), Math.toRadians(180))
+//                            .build(),
+//                        outtakeManager.OpenCloseSpeciment(false),
+//                    outtakeManager.driveLift(1500),
+//                        new SleepAction(0.5),
+//                        //Drive to Chamber 2nd time
+//                        drive.actionBuilder(new Pose2d(-2.2, 40, Math.toRadians(180))).strafeToLinearHeading(new Vector2d(-29.7, -4), Math.toRadians(0)).build(),
                     outtakeManager.stop()
 
                 )
