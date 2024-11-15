@@ -7,6 +7,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.MovementControlRunnable;
 import org.firstinspires.ftc.teamcode.PinpointDrive;
 import org.firstinspires.ftc.teamcode.State;
+import org.firstinspires.ftc.teamcode.util.GamepadPlus;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,34 +15,28 @@ import java.util.Map;
 public class DriveManager implements State<DriveManager.DriveState> {
 
     private final HardwareManager hardwareManager;
-    private PinpointDrive drive;
     private final Telemetry telemetry;
-    private final GamepadEx gamepadDriver;
+    private final GamepadPlus gamepadDriver;
 
     private DriveState state = DriveState.LOCKED;
-    private DriveState previousState = DriveState.LOCKED;
 
     private Thread movementControlThread;
     private MovementControlRunnable movementControlRunnable;
 
     private final Map<Transition, Runnable> stateTransitionActions = new HashMap<>();
 
-    public DriveManager(HardwareManager hardwareManager, Telemetry telemetry, GamepadEx gamepadDriver, PinpointDrive drive) {
-        this.drive = drive;
+    public DriveManager(HardwareManager hardwareManager, Telemetry telemetry, GamepadPlus gamepadDriver, PinpointDrive drive) {
         this.hardwareManager = hardwareManager;
         this.telemetry = telemetry;
         this.gamepadDriver = gamepadDriver;
 
-        configureDrive(this.drive);
+        configureDrive(drive);
         InitializeStateTransitionActions();
     }
 
     private void configureDrive(PinpointDrive drive) {
 
-        hardwareManager.frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        hardwareManager.backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        movementControlRunnable = new MovementControlRunnable(telemetry, this, gamepadDriver, hardwareManager, drive);
+        movementControlRunnable = new MovementControlRunnable(telemetry, this, gamepadDriver, drive);
         movementControlThread = new Thread(movementControlRunnable);
         movementControlThread.start();
     }
@@ -49,6 +44,7 @@ public class DriveManager implements State<DriveManager.DriveState> {
     @Override
     public void InitializeStateTransitionActions() {
 
+        //*State machine should control this later
         stateTransitionActions.put(new Transition(DriveState.LOCKED, DriveState.UNLOCKED), this::onUnlock);
         stateTransitionActions.put(new Transition(DriveState.UNLOCKED, DriveState.LOCKED), this::onLock);
     }
@@ -56,7 +52,7 @@ public class DriveManager implements State<DriveManager.DriveState> {
     @Override
     public void SetSubsystemState(DriveState newState) {
         if (state != newState) {
-            previousState = state;
+            DriveState previousState = state;
             state = newState;
 
             Transition transition = new Transition(previousState, newState);
@@ -117,6 +113,7 @@ public class DriveManager implements State<DriveManager.DriveState> {
     }
 
     public void stopMovementControlThread() {
+
         if (movementControlRunnable != null) {
             movementControlRunnable.stop();
         }

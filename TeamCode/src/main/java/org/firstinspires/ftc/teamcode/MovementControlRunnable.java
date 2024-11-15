@@ -10,26 +10,21 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.managers.DriveManager;
-import org.firstinspires.ftc.teamcode.managers.HardwareManager;
 
 public class MovementControlRunnable implements Runnable {
 
     private final DriveManager driveManager;
-    private final HardwareManager hardwareManager;
     private final Telemetry telemetry;
     private final GamepadEx gamepad;
     private volatile boolean running = true;
     private PinpointDrive drive;
-
-    private int loopCounter = 0;
     private double headingAngle;
     private final double TRIGGER_MARGIN = 0.1;
 
-    public MovementControlRunnable(Telemetry telemetry, DriveManager driveManager, GamepadEx gamepad, HardwareManager hardwareManager, PinpointDrive drive) {
+    public MovementControlRunnable(Telemetry telemetry, DriveManager driveManager, GamepadEx gamepad, PinpointDrive drive) {
         this.telemetry = telemetry;
         this.driveManager = driveManager;
         this.gamepad = gamepad;
-        this.hardwareManager = hardwareManager;
         this.drive = drive;
     }
 
@@ -48,7 +43,6 @@ public class MovementControlRunnable implements Runnable {
             drive.pinpoint.update(GoBildaPinpointDriverRR.readData.ONLY_UPDATE_HEADING);
 
             headingAngle = drive.pinpoint.getPosition().getHeading(AngleUnit.RADIANS);
-            loopCounter++;
 
             telemetry.addData("Heading:", headingAngle);
 

@@ -24,49 +24,47 @@ import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 @TeleOp(name = "Main TeleOp", group = "OpMode")
 public class MainTeleOp extends OpModeTemplate {
 
+    //! "Better Comments" plugin is advised
     @Override
     public void init() {
+
         initSystems(false);
 
-        telemetry.addData(":","Init passed..!");
         telemetry.setAutoClear(true);
 
-        //Toggle drivetrain lock
-        gamepad_driver.getGamepadButton(GamepadKeys.Button.RIGHT_STICK_BUTTON)
+        //* Toggle drivetrain lock
+        gamepad_driver.getGamepadButton(gamepad_driver.rightStick)
                 .toggleWhenActive(new InstantCommand(() -> driveManager.SetSubsystemState(DriveManager.DriveState.LOCKED)),
                     new InstantCommand(() -> driveManager.SetSubsystemState(DriveManager.DriveState.UNLOCKED)));
 
-        //Go to pickup settings
-//        gamepad_driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
-//                .whenPressed(() -> CommandScheduler.getInstance().schedule(new SetIntakeStateCommand(IntakeManager._IntakeState.PICKUP, intakeManager, gamepad_driver)));
-
-        //Intake home command
-        gamepad_driver.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
+        //* Intake home command
+        gamepad_driver.getGamepadButton(gamepad_driver.dpad_Down)
                 .whenPressed(() -> CommandScheduler.getInstance()
                         .schedule(new SetIntakeStateCommand(IntakeManager._IntakeState.HOME, intakeManager, gamepad_driver)
                                 .andThen(new SetTiltServoPosCommand(intakeManager, IntakeManager._TiltServoState.LOWERED))));
 
-        gamepad_driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
+        //* Toggle between intake and transfer
+        gamepad_driver.getGamepadButton(gamepad_driver.leftBumper)
                 .toggleWhenPressed(
                         new SetIntakeStateCommand(IntakeManager._IntakeState.PICKUP, intakeManager, gamepad_driver),
                         new TransferCommand(intakeManager, outtakeManager));
-        //Transfer command
-//        gamepad_driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
-//                .whenPressed(() -> CommandScheduler.getInstance().schedule(new TransferCommand(intakeManager, outtakeManager)));
 
-        //Toggle bucket position
-        gamepad_codriver.getGamepadButton(GamepadKeys.Button.X)   //Square
+        //* Toggle bucket position
+        gamepad_codriver.getGamepadButton(gamepad_driver.square)
                 .toggleWhenActive(new SetBucketPositionCommand(outtakeManager, OuttakeManager._BucketServoState.HIGH),
                         new SetBucketPositionCommand(outtakeManager, OuttakeManager._BucketServoState.LOW));
 
-        //Toggle speciment claw
-        gamepad_codriver.getGamepadButton(GamepadKeys.Button.RIGHT_STICK_BUTTON)   //Cross
+        //* Toggle speciment claw
+        gamepad_codriver.getGamepadButton(gamepad_driver.cross)
                 .toggleWhenActive(new SetSpecimentServoPositionCommand(outtakeManager, OuttakeManager._SpecimentServoState.OPEN), new SetSpecimentServoPositionCommand(outtakeManager, OuttakeManager._SpecimentServoState.CLOSED));
 
-        //Go to deposit settings
-        gamepad_driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
+        //* Go to deposit settings
+        gamepad_driver.getGamepadButton(gamepad_driver.rightBumper)
                 .whenPressed(() -> CommandScheduler.getInstance().schedule(new SetOuttakeStateCommand(OuttakeManager._OuttakeState.DEPOSIT, outtakeManager, gamepad_driver)));
 
+        //* Reset IMU
+        gamepad_driver.getGamepadButton(gamepad_driver.options)
+                .whenPressed(new InstantCommand(() -> drive.pinpoint.resetPosAndIMU()));
     }
 
     @Override
@@ -81,11 +79,6 @@ public class MainTeleOp extends OpModeTemplate {
         intakeManager.loop();
         outtakeManager.loop();
         ascentManager.loop();
-
-        if (gamepad_driver.gamepad.options){
-            drive.pinpoint.resetPosAndIMU();
-        }
-
     }
 
     @Override

@@ -1,26 +1,14 @@
 package org.firstinspires.ftc.teamcode.opMode;
 
 import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
-import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
-import com.arcrobotics.ftclib.command.CommandScheduler;
-import com.arcrobotics.ftclib.command.InstantCommand;
-import com.arcrobotics.ftclib.command.SequentialCommandGroup;
-import com.arcrobotics.ftclib.command.WaitCommand;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.teamcode.PinpointDrive;
-import org.firstinspires.ftc.teamcode.commands.ActionCommand;
-import org.firstinspires.ftc.teamcode.commands.auto.DriveToPositionCommand;
-import org.firstinspires.ftc.teamcode.commands.low_level.SetLiftPositionCommand;
-import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 @Autonomous(name = "Main Auto", group = "OpMode", preselectTeleOp = "Main TeleOp")
 @SuppressWarnings("unused")

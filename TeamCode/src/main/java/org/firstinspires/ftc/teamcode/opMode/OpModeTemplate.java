@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.opMode;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.PinpointDrive;
@@ -10,16 +9,16 @@ import org.firstinspires.ftc.teamcode.managers.AscentManager;
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.managers.DriveManager;
 import org.firstinspires.ftc.teamcode.managers.HardwareManager;
-import org.firstinspires.ftc.teamcode.managers.NavigationManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
+import org.firstinspires.ftc.teamcode.util.GamepadPlus;
 
 public abstract class OpModeTemplate extends OpMode {
 
     protected boolean teamSelected = false;
     protected boolean sideSelected = false;
 
-    protected GamepadEx gamepad_driver;
-    protected GamepadEx gamepad_codriver;
+    protected GamepadPlus gamepad_driver;
+    protected GamepadPlus gamepad_codriver;
 
     protected HardwareManager hardwareManager;
     protected DriveManager driveManager;
@@ -28,7 +27,7 @@ public abstract class OpModeTemplate extends OpMode {
     protected AscentManager ascentManager;
 
     PinpointDrive drive;
-    private Pose2d staringPos = new Pose2d(new Vector2d(0,0), 0);
+    private final Pose2d staringPos = new Pose2d(new Vector2d(0,0), 0);
 
     protected boolean isAuto = false;
 
@@ -41,23 +40,28 @@ public abstract class OpModeTemplate extends OpMode {
 
         this.isAuto = isAuto;
 
-        hardwareManager = HardwareManager.getInstance(hardwareMap, telemetry);
+        hardwareManager = HardwareManager.getInstance(hardwareMap);
         hardwareManager.InitHw();
 
-        gamepad_driver = new GamepadEx(gamepad1);
-        gamepad_codriver = new GamepadEx(gamepad2);
+        gamepad_driver = new GamepadPlus(gamepad1);
+        gamepad_codriver = new GamepadPlus(gamepad2);
 
-        if (!isAuto) {driveManager = new DriveManager(hardwareManager, telemetry, gamepad_driver, drive);}
         intakeManager = new IntakeManager(hardwareManager, telemetry, gamepad_driver);
         outtakeManager = new OuttakeManager(hardwareManager, telemetry, intakeManager);
         ascentManager = new AscentManager(hardwareManager, telemetry, gamepad_codriver, outtakeManager, intakeManager);
 
-        if (isAuto) SetupAuto();
+        if (isAuto){
+            SetupAuto();
+        } else {
+            driveManager = new DriveManager(hardwareManager, telemetry, gamepad_driver, drive);
+        }
 
     }
 
     private void SetupAuto() {
 
+        //...
+        //* Continue in init_loop()
     }
 
     @Override
@@ -110,10 +114,7 @@ public abstract class OpModeTemplate extends OpMode {
     public enum Alliance {
         RED,
         BLUE,
-        UNKNOWN;
-        public double adjust(double input) {
-            return this == RED ? input : -input;
-        }
+        UNKNOWN
     }
     public enum Side {
         RIGHT,

@@ -45,27 +45,24 @@ public class HardwareManager{
     Servo bucketServo;
     Servo specimentServo;
 
-//    public GoBildaPinpointDriverRR odo;
-
-    public static int IMU_DATA_SAMPLING_RATE = 1;
+    public static int IMU_DATA_SAMPLING_RATE = 10;
 
     private final HardwareMap hmap;
-    @SuppressWarnings("unused")
-    private final Telemetry telemetry;
 
-    public HardwareManager(HardwareMap hmap, Telemetry tel){
+    public HardwareManager(HardwareMap hmap){
         this.hmap = hmap;
-        this.telemetry = tel;
     }
 
-    public static HardwareManager getInstance(HardwareMap hmap, Telemetry telemetry) {
+    public static HardwareManager getInstance(HardwareMap hmap) {
         if (instance == null) {
-            instance = new HardwareManager(hmap, telemetry);
+            instance = new HardwareManager(hmap);
         }
         return instance;
     }
 
     public void InitHw(){
+
+        //?===============================SETUP================================//
 
         hubs = this.hmap.getAll(LynxModule.class);
 
@@ -73,11 +70,6 @@ public class HardwareManager{
         frontRight = this.hmap.get(DcMotorEx.class, "frontRight");
         backLeft = this.hmap.get(DcMotorEx.class, "backLeft");
         backRight = this.hmap.get(DcMotorEx.class, "backRight");
-
-        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         liftLeft = this.hmap.get(DcMotorEx.class, "liftLeft");
         liftRight = this.hmap.get(DcMotorEx.class, "liftRight");
@@ -92,9 +84,18 @@ public class HardwareManager{
         bucketServo = this.hmap.get(Servo.class, "bucketServo");
         specimentServo = this.hmap.get(Servo.class, "specimentServo");
 
-//        odo = this.hmap.get(GoBildaPinpointDriverRR.class,"pinpoint");
+        //! Odometry setup in Pinpoint class!
 
-        //========================================================================//
+        //?===========================CONFIGURATION================================//
+
+        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         intake.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
         liftRight.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -107,14 +108,14 @@ public class HardwareManager{
 
         legMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        //FIXME: Transfer these to main
         bucketServo.setPosition(1);
         intakeTiltServo.setPosition(0.55f);
         specimentServo.setPosition(0.5f);
 
-        //========================================================================//
+        //?========================QUALITY FUNCTIONS===============================//
 
         setupBulkReading();
-        setupOdometry();
         blink();
 
     }
@@ -123,14 +124,6 @@ public class HardwareManager{
         for(LynxModule hub : hubs){
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
-    }
-
-    private void setupOdometry() {
-//
-//        odo.setOffsets(-123.7, -42.07);
-//        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-//        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED, GoBildaPinpointDriver.EncoderDirection.REVERSED);
-//        odo.resetPosAndIMU();
     }
 
     @SuppressWarnings("unused")
@@ -146,10 +139,6 @@ public class HardwareManager{
             hub.setConstant(color);
         }
     }
-
-//    public void recalibrateIMU() {
-//        odo.recalibrateIMU();
-//    }
 
     public void blink() {
         blinks = new ArrayList<>();
