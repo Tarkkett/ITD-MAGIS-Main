@@ -69,8 +69,6 @@ public class MainAuto extends OpModeTemplate {
                     new SleepAction(0.5),
                     outtakeManager.OpenCloseSpeciment(true),
                     new SleepAction(0.2),
-//                    trajectoryFromChamberToPushingPos
-                        //=========
                     new ParallelAction(
                             //Home Lift
                             new SequentialAction(
@@ -100,7 +98,6 @@ public class MainAuto extends OpModeTemplate {
                     outtakeManager.OpenCloseSpeciment(true),
                     //Go park
                         outtakeManager.driveLift(10),
-                        //=============
                         drive.actionBuilder(new Pose2d(-29.7, -4, 0))
                                 .strafeToLinearHeading(new Vector2d(-28, -4), Math.toRadians(90))
                                 .strafeToConstantHeading(new Vector2d(-28, 28))
@@ -130,9 +127,6 @@ public class MainAuto extends OpModeTemplate {
 
     @Override
     public void loop() {
-//        CommandScheduler.getInstance().run();
-//        outtakeManager.loop();
-//        intakeManager.loop();
 
     }
 }
