@@ -1,15 +1,14 @@
 package org.firstinspires.ftc.teamcode.managers;
 
+import androidx.annotation.NonNull;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.arcrobotics.ftclib.command.CommandScheduler;
-import com.arcrobotics.ftclib.command.SequentialCommandGroup;
-import com.arcrobotics.ftclib.command.WaitCommand;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.State;
-import org.firstinspires.ftc.teamcode.commands.low_level.SetBucketPositionCommand;
-import org.firstinspires.ftc.teamcode.commands.low_level.SetTiltServoPosCommand;
 import org.firstinspires.ftc.teamcode.drivers.C_PID;
 
 import java.util.HashMap;
@@ -24,25 +23,30 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
     public boolean selectingProcess = false;
 
     HardwareManager hardwareManager;
+    IntakeManager intakeManager;
     Telemetry telemetry;
 
     OuttakeManager._OuttakeState state;
     OuttakeManager._OuttakeState previousState;
 
     C_PID controller = new C_PID(0.015,0,0.0003);
-    public static int targetPosition = 0;
-    public static int encoderPos;
+    public int targetPosition;
+    public int encoderPos;
 
     private final Map<Transition, Runnable> stateTransitionActions = new HashMap<>();
     private boolean isTransfer = false;
 
+    private boolean isAutoLoop = true;
 
-    public OuttakeManager(HardwareManager hardwareManager, Telemetry telemetry){
+    _LiftMode mode = _LiftMode.AUTO;
+
+    public OuttakeManager(HardwareManager hardwareManager, Telemetry telemetry, IntakeManager intakeManager){
 
         this.hardwareManager = hardwareManager;
         this.telemetry = telemetry;
+        this.intakeManager = intakeManager;
 
-        targetPosition = (int) _LiftState.HOME.getPosition();
+//        targetPosition = (int) _LiftState.HOME.getPosition();
 
     }
 
@@ -81,8 +85,10 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
         telemetry.addData("TargetPosLift", targetPosition);
         telemetry.update();
 
-        hardwareManager.liftLeft.setPower(power);
-        hardwareManager.liftRight.setPower(power);
+        if (mode == _LiftMode.AUTO) {
+            hardwareManager.liftLeft.setPower(power);
+            hardwareManager.liftRight.setPower(power);
+        }
 
         CheckForPosition(encoderPos);
     }
@@ -134,14 +140,16 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
     }
 
     public void update(_BucketServoState targetState) {
-        switch (targetState){
-            case LOW:
-                hardwareManager.bucketServo.setPosition(_BucketServoState.LOW.getPosition());
-                break;
-            case HIGH:
-                hardwareManager.bucketServo.setPosition(_BucketServoState.HIGH.getPosition());
-                break;
-        }
+//        if (!intakeManager.isSelectingIntakePosition){
+            switch (targetState){
+                case LOW:
+                    hardwareManager.bucketServo.setPosition(_BucketServoState.LOW.getPosition());
+                    break;
+                case HIGH:
+                    hardwareManager.bucketServo.setPosition(_BucketServoState.HIGH.getPosition());
+                    break;
+            }
+//        }
     }
 
     public void update(_SpecimentServoState targetState) {
@@ -166,6 +174,73 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
         }
     }
 
+    public Action stop() {
+        return new Action(){
+        private boolean initialize = false;
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                if (!initialize){
+                    isAutoLoop = false;
+                    initialize = true;
+                }
+                return false;
+            }
+        };
+    }
+
+    public void updateMode(boolean isAuto) {
+        if (isAuto){
+            mode = _LiftMode.AUTO;
+        } else{
+            mode = _LiftMode.MANUAL;
+        }
+    }
+
+    public class LoopLift implements Action {
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+
+                if (isAutoLoop) {
+                    loop();
+                }
+                else{ return false;}
+//                encoderPos = Average(hardwareManager.liftLeft.getCurrentPosition(), hardwareManager.liftRight.getCurrentPosition());
+//
+//                double power = controller.update(targetPosition, encoderPos);
+//                hardwareManager.liftLeft.setPower(power);
+//                hardwareManager.liftRight.setPower(power);
+//                telemetry.addData("target", targetPosition);
+//                telemetry.addData("encoder", encoderPos);
+//                telemetry.update();
+
+                return true;
+
+            };
+
+
+    }
+    public Action loopLift(){
+        return new LoopLift();
+    }
+
+    public Action OpenCloseSpeciment(boolean isOpen) {
+        return new Action(){
+            private boolean initialize = false;
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                if (!initialize){
+                    if (isOpen){
+                        hardwareManager.specimentServo.setPosition(0);
+                    }
+                    else hardwareManager.specimentServo.setPosition(0.5);
+                    initialize = true;
+                }
+                return false;
+            }
+        };
+    }
+
     @SuppressWarnings("unused")
     public enum _OuttakeState{
         HOME,
@@ -174,15 +249,22 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
         TRANSFER
     }
 
+    public boolean isAtPosition(int position, int targetPosition, int margin){
+        if (position < targetPosition + margin && position > targetPosition - margin){
+            return false;
+        }
+        else return true;
+    }
+
     public enum _LiftState{
         LOW_CHAMBER (100),
         LOW_RUNG    (200),
-        HIGH_CHAMBER(2300),
+        HIGH_CHAMBER(1400),
         HIGH_RUNG   (1000),
         TRANSFER    (30),
         HOME        (50),
         STUCK       (0),
-        HIGH_BUCKET (400),
+        HIGH_BUCKET (2300),
         LOW_BUCKET  (1200);
 
         private final float position;
@@ -211,6 +293,12 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
         }
     }
 
+    public enum _LiftMode{
+        MANUAL,
+        AUTO;
+
+    }
+
     public enum _BucketServoState{
         HIGH    (0f),
         LOW     (1f);
@@ -226,4 +314,24 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
         }
     }
 
+    public void SetNewPosition(int targetPosition){
+        this.targetPosition = targetPosition;
+    }
+
+    public Action driveLift(int position){
+        return new Action(){
+
+            private boolean initialized = false;
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                if (!initialized){
+                    targetPosition = position;
+                    initialized = true;
+                }
+                return isAtPosition(encoderPos, targetPosition, 10);
+
+            }
+        };
+
+    }
 }

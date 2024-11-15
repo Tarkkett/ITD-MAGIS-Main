@@ -1,7 +1,12 @@
 package org.firstinspires.ftc.teamcode.opMode;
 
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+
+import org.firstinspires.ftc.teamcode.PinpointDrive;
+import org.firstinspires.ftc.teamcode.managers.AscentManager;
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.managers.DriveManager;
 import org.firstinspires.ftc.teamcode.managers.HardwareManager;
@@ -11,6 +16,7 @@ import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 public abstract class OpModeTemplate extends OpMode {
 
     protected boolean teamSelected = false;
+    protected boolean sideSelected = false;
 
     protected GamepadEx gamepad_driver;
     protected GamepadEx gamepad_codriver;
@@ -19,11 +25,21 @@ public abstract class OpModeTemplate extends OpMode {
     protected DriveManager driveManager;
     protected OuttakeManager outtakeManager;
     protected IntakeManager intakeManager;
-    protected NavigationManager navigationManager;
+    protected AscentManager ascentManager;
+
+    PinpointDrive drive;
+    private Pose2d staringPos = new Pose2d(new Vector2d(0,0), 0);
+
+    protected boolean isAuto = false;
 
     protected Alliance team = Alliance.UNKNOWN;
+    protected Side side = Side.UNKNOWN;
 
     protected void initSystems(boolean isAuto){
+
+        drive = new PinpointDrive(hardwareMap, staringPos);
+
+        this.isAuto = isAuto;
 
         hardwareManager = HardwareManager.getInstance(hardwareMap, telemetry);
         hardwareManager.InitHw();
@@ -31,21 +47,42 @@ public abstract class OpModeTemplate extends OpMode {
         gamepad_driver = new GamepadEx(gamepad1);
         gamepad_codriver = new GamepadEx(gamepad2);
 
-        driveManager = new DriveManager(hardwareManager, telemetry, gamepad_driver);
+        if (!isAuto) {driveManager = new DriveManager(hardwareManager, telemetry, gamepad_driver, drive);}
         intakeManager = new IntakeManager(hardwareManager, telemetry, gamepad_driver);
-        outtakeManager = new OuttakeManager(hardwareManager, telemetry);
+        outtakeManager = new OuttakeManager(hardwareManager, telemetry, intakeManager);
+        ascentManager = new AscentManager(hardwareManager, telemetry, gamepad_codriver, outtakeManager, intakeManager);
 
         if (isAuto) SetupAuto();
 
     }
 
     private void SetupAuto() {
-        navigationManager = new NavigationManager(hardwareManager, telemetry);
+
     }
 
     @Override
     public void init_loop() {
         PromptUserForAllianceSelection();
+        if (isAuto) PromptUserForSideSelection();
+    }
+
+    private void PromptUserForSideSelection() {
+        if (sideSelected){
+            telemetry.clearAll();
+            telemetry.addData("Side selected", side.name());
+        }
+        else {
+            telemetry.addLine("▲ for LEFT, ⵝ for RIGHT;");
+
+            if (gamepad1.triangle){
+                side = Side.LEFT;
+                sideSelected = true;
+            }
+            else if (gamepad1.cross) {
+                side = Side.RIGHT;
+                sideSelected = true;
+            }
+        }
     }
 
     private void PromptUserForAllianceSelection() {
@@ -54,7 +91,6 @@ public abstract class OpModeTemplate extends OpMode {
             telemetry.addData("Team selected", team.name());
         }
         else{
-            telemetry.clearAll();
             telemetry.addLine("■ for BLUE, ● for RED;");
 
             if (gamepad1.square){
@@ -78,5 +114,10 @@ public abstract class OpModeTemplate extends OpMode {
         public double adjust(double input) {
             return this == RED ? input : -input;
         }
+    }
+    public enum Side {
+        RIGHT,
+        LEFT,
+        UNKNOWN
     }
 }

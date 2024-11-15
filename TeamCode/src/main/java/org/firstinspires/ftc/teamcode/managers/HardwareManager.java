@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.managers;
 
 import android.graphics.Color;
 
+import com.acmerobotics.roadrunner.ftc.GoBildaPinpointDriverRR;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -28,6 +29,7 @@ public class HardwareManager{
     Blinker.Step blinkRed = new Blinker.Step();
 
     DcMotorEx frontLeft;
+    DcMotorEx legMotor;
     DcMotorEx frontRight;
     DcMotorEx backLeft;
     DcMotorEx backRight;
@@ -43,7 +45,7 @@ public class HardwareManager{
     Servo bucketServo;
     Servo specimentServo;
 
-    public GoBildaPinpointDriver odo;
+//    public GoBildaPinpointDriverRR odo;
 
     public static int IMU_DATA_SAMPLING_RATE = 1;
 
@@ -82,13 +84,15 @@ public class HardwareManager{
 
         intake = this.hmap.get(DcMotorEx.class, "intakeMotor");
 
+        legMotor = this.hmap.get(DcMotorEx.class, "legMotor");
+
         broomServo = this.hmap.get(Servo.class, "broomServo");
         intakeTiltServo = this.hmap.get(Servo.class, "intakeTiltServo");
 
         bucketServo = this.hmap.get(Servo.class, "bucketServo");
         specimentServo = this.hmap.get(Servo.class, "specimentServo");
 
-        odo = this.hmap.get(GoBildaPinpointDriver.class,"pinpoint");
+//        odo = this.hmap.get(GoBildaPinpointDriverRR.class,"pinpoint");
 
         //========================================================================//
         intake.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
@@ -97,11 +101,15 @@ public class HardwareManager{
         liftLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        legMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         bucketServo.setPosition(1);
-        intakeTiltServo.setPosition(0.35f);
+        intakeTiltServo.setPosition(0.55f);
+        specimentServo.setPosition(0.5f);
 
         //========================================================================//
 
@@ -118,11 +126,11 @@ public class HardwareManager{
     }
 
     private void setupOdometry() {
-
-        odo.setOffsets(-123.7, -42.07);
-        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED, GoBildaPinpointDriver.EncoderDirection.REVERSED);
-        odo.resetPosAndIMU();
+//
+//        odo.setOffsets(-123.7, -42.07);
+//        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+//        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED, GoBildaPinpointDriver.EncoderDirection.REVERSED);
+//        odo.resetPosAndIMU();
     }
 
     @SuppressWarnings("unused")
@@ -139,9 +147,9 @@ public class HardwareManager{
         }
     }
 
-    public void recalibrateIMU() {
-        odo.recalibrateIMU();
-    }
+//    public void recalibrateIMU() {
+//        odo.recalibrateIMU();
+//    }
 
     public void blink() {
         blinks = new ArrayList<>();

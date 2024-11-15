@@ -31,18 +31,14 @@ public class MainTeleOp extends OpModeTemplate {
         telemetry.addData(":","Init passed..!");
         telemetry.setAutoClear(true);
 
-        //Recalibrate IMU on computer
-        gamepad_driver.getGamepadButton(GamepadKeys.Button.START)
-                .whenPressed(new InstantCommand(() -> hardwareManager.recalibrateIMU()));
-
         //Toggle drivetrain lock
         gamepad_driver.getGamepadButton(GamepadKeys.Button.RIGHT_STICK_BUTTON)
                 .toggleWhenActive(new InstantCommand(() -> driveManager.SetSubsystemState(DriveManager.DriveState.LOCKED)),
                     new InstantCommand(() -> driveManager.SetSubsystemState(DriveManager.DriveState.UNLOCKED)));
 
         //Go to pickup settings
-        gamepad_driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
-                .whenPressed(() -> CommandScheduler.getInstance().schedule(new SetIntakeStateCommand(IntakeManager._IntakeState.PICKUP, intakeManager, gamepad_driver)));
+//        gamepad_driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
+//                .whenPressed(() -> CommandScheduler.getInstance().schedule(new SetIntakeStateCommand(IntakeManager._IntakeState.PICKUP, intakeManager, gamepad_driver)));
 
         //Intake home command
         gamepad_driver.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
@@ -50,21 +46,21 @@ public class MainTeleOp extends OpModeTemplate {
                         .schedule(new SetIntakeStateCommand(IntakeManager._IntakeState.HOME, intakeManager, gamepad_driver)
                                 .andThen(new SetTiltServoPosCommand(intakeManager, IntakeManager._TiltServoState.LOWERED))));
 
+        gamepad_driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
+                .toggleWhenPressed(
+                        new SetIntakeStateCommand(IntakeManager._IntakeState.PICKUP, intakeManager, gamepad_driver),
+                        new TransferCommand(intakeManager, outtakeManager));
         //Transfer command
-        gamepad_driver.getGamepadButton(GamepadKeys.Button.DPAD_UP)
-                .whenPressed(() -> CommandScheduler.getInstance().schedule(new TransferCommand(intakeManager, outtakeManager)));
+//        gamepad_driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
+//                .whenPressed(() -> CommandScheduler.getInstance().schedule(new TransferCommand(intakeManager, outtakeManager)));
 
         //Toggle bucket position
-        gamepad_driver.getGamepadButton(GamepadKeys.Button.X)   //Square
+        gamepad_codriver.getGamepadButton(GamepadKeys.Button.X)   //Square
                 .toggleWhenActive(new SetBucketPositionCommand(outtakeManager, OuttakeManager._BucketServoState.HIGH),
                         new SetBucketPositionCommand(outtakeManager, OuttakeManager._BucketServoState.LOW));
 
-        //Speciment lower sequence command
-        gamepad_driver.getGamepadButton(GamepadKeys.Button.Y)   //Triangle
-                .whenPressed(() -> CommandScheduler.getInstance().schedule(new SpecimentLoweringSelector(gamepad_driver, outtakeManager)));
-
         //Toggle speciment claw
-        gamepad_driver.getGamepadButton(GamepadKeys.Button.A)   //Cross
+        gamepad_codriver.getGamepadButton(GamepadKeys.Button.RIGHT_STICK_BUTTON)   //Cross
                 .toggleWhenActive(new SetSpecimentServoPositionCommand(outtakeManager, OuttakeManager._SpecimentServoState.OPEN), new SetSpecimentServoPositionCommand(outtakeManager, OuttakeManager._SpecimentServoState.CLOSED));
 
         //Go to deposit settings
@@ -84,6 +80,11 @@ public class MainTeleOp extends OpModeTemplate {
         CommandScheduler.getInstance().run();
         intakeManager.loop();
         outtakeManager.loop();
+        ascentManager.loop();
+
+        if (gamepad_driver.gamepad.options){
+            drive.pinpoint.resetPosAndIMU();
+        }
 
     }
 

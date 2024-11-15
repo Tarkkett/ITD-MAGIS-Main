@@ -34,7 +34,7 @@ public class SpecimentLoweringSelector extends CommandBase {
         if (gamepad_driver.gamepad.a){
             CommandScheduler.getInstance().schedule(
                     new SequentialCommandGroup(
-                            new LowerLiftSomeBit(manager, -100),
+                            new LowerLiftSomeBit(manager, -800),
                             new WaitCommand(500),
                             new SetSpecimentServoPositionCommand(manager, OuttakeManager._SpecimentServoState.OPEN)
                     )

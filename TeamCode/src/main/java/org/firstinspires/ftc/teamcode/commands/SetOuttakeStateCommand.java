@@ -29,10 +29,10 @@ public class SetOuttakeStateCommand extends SequentialCommandGroup {
 
         else if (targetState == OuttakeManager._OuttakeState.DEPOSIT){
             addCommands(
-                    new DepositPositionSelector(gamepad_driver, manager),
+                new SetBucketPositionCommand(manager, OuttakeManager._BucketServoState.LOW),
+                new SetSpecimentServoPositionCommand(manager, OuttakeManager._SpecimentServoState.CLOSED),
+                new DepositPositionSelector(gamepad_driver, manager)
                     
-                    new SetBucketPositionCommand(manager, OuttakeManager._BucketServoState.LOW),
-                    new SetSpecimentServoPositionCommand(manager, OuttakeManager._SpecimentServoState.CLOSED)
             );
         }
 
