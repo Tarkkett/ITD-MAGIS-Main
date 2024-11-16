@@ -2,14 +2,10 @@ package org.firstinspires.ftc.teamcode.managers;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.arcrobotics.ftclib.command.CommandScheduler;
-import com.arcrobotics.ftclib.command.SequentialCommandGroup;
-import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.State;
-import org.firstinspires.ftc.teamcode.commands.low_level.SetTiltServoPosCommand;
 import org.firstinspires.ftc.teamcode.drivers.C_PID;
 
 import java.util.HashMap;
@@ -104,33 +100,48 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
         }
     }
 
-    public void update(_BroomState targetState) {
+    public void update(_GripState targetState) {
         switch (targetState){
-            case STOPPED:
-                hardwareManager.broomServo.setPosition(_BroomState.STOPPED.getPosition());
+            case GRIP:
+                hardwareManager.gripServo.setPosition(_GripState.GRIP.getPosition());
                 break;
-            case INTAKEING:
-                hardwareManager.broomServo.setPosition(_BroomState.INTAKEING.getPosition());
+            case RELEASE:
+                hardwareManager.gripServo.setPosition(_GripState.RELEASE.getPosition());
                 break;
-            case TRANSFERING:
-                hardwareManager.broomServo.setPosition(_BroomState.TRANSFERING.getPosition());
-                break;
+//            case TRANSFERING:
+//                hardwareManager.gripServo.setPosition(_GripState.TRANSFERING.getPosition());
+//                break;
         }
     }
 
     public void update(_TiltServoState targetState){
         switch (targetState){
-            case RAISED:
-                hardwareManager.intakeTiltServo.setPosition(_TiltServoState.RAISED.getPosition());
+            case TRANSFER:
+                hardwareManager.intakeTiltServo.setPosition(_TiltServoState.TRANSFER.getPosition());
                 break;
             case LOWERED:
                 hardwareManager.intakeTiltServo.setPosition(_TiltServoState.LOWERED.getPosition());
                 break;
-            case MID:
-                hardwareManager.intakeTiltServo.setPosition(_TiltServoState.MID.getPosition());
+            case AIMING:
+                hardwareManager.intakeTiltServo.setPosition(_TiltServoState.AIMING.getPosition());
                 break;
             case PACKED:
                 hardwareManager.intakeTiltServo.setPosition(_TiltServoState.PACKED.getPosition());
+                break;
+        }
+    }
+
+    public void update(_YawServoState targetState, double i){
+        switch (targetState){
+            case TRANSFER:
+                hardwareManager.yawServo.setPosition(_YawServoState.TRANSFER.getPosition());
+                break;
+            case PICKUP_DEFAULT:
+                hardwareManager.yawServo.setPosition(_YawServoState.PICKUP_DEFAULT.getPosition());
+                break;
+            case MANUAL:
+                double currentPos = hardwareManager.yawServo.getPosition();
+                hardwareManager.yawServo.setPosition(currentPos + i);
                 break;
         }
     }
@@ -153,7 +164,7 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
     }
     public enum _SlideState {
         EXTENDED    (550),
-        TRANSFER    (330),
+        TRANSFER    (10),
         RETRACTED   (10);
 
         private final float position;
@@ -166,14 +177,13 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
             return position;
         }
     }
-    public enum _BroomState {
-        INTAKEING   (1),
-        TRANSFERING (-1),
-        STOPPED     (0.5f);
+    public enum _GripState {
+        RELEASE(0.3f),
+        GRIP(0.8f);
 
         private final float position;
 
-        _BroomState(float position) {
+        _GripState(float position) {
             this.position = position;
         }
 
@@ -182,14 +192,32 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
         }
     }
     public enum _TiltServoState{
-        RAISED  (0.84f),
-        LOWERED (0f),
-        MID (0.5f),
-        PACKED(0.95f);
+        TRANSFER(0.32f),
+        LOWERED (0.93f),
+        AIMING(0.8f),
+        PACKED(0.40f);
 
         private final float position;
 
         _TiltServoState(float position) {
+            this.position = position;
+        }
+
+        public float getPosition() {
+            return position;
+        }
+
+    }
+
+    public enum _YawServoState{
+        TRANSFER(0.2f),
+        PICKUP_DEFAULT(0.93f),
+        //Increment for manual
+        MANUAL(0.1f);
+
+        private final float position;
+
+        _YawServoState(float position) {
             this.position = position;
         }
 

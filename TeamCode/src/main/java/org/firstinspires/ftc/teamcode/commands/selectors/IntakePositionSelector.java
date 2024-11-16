@@ -2,21 +2,24 @@ package org.firstinspires.ftc.teamcode.commands.selectors;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.command.CommandScheduler;
-import com.arcrobotics.ftclib.gamepad.GamepadEx;
-import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+import com.arcrobotics.ftclib.command.WaitCommand;
 
+import org.firstinspires.ftc.teamcode.commands.low_level.AdjustYawServoCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.MoveIntakeSomeBit;
+import org.firstinspires.ftc.teamcode.commands.low_level.SetGripStateCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.SetTiltServoPosCommand;
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
+import org.firstinspires.ftc.teamcode.util.GamepadPlus;
 
 public class IntakePositionSelector extends CommandBase {
 
     private static final int DISTANCE = 5;
     IntakeManager manager;
-    GamepadEx gamepad;
+    GamepadPlus gamepad;
     private boolean isSelected = false;
 
-    public IntakePositionSelector(IntakeManager manager, GamepadEx gamepad_driver) {
+    public IntakePositionSelector(IntakeManager manager, GamepadPlus gamepad_driver) {
         this.manager = manager;
         gamepad = gamepad_driver;
     }
@@ -31,32 +34,51 @@ public class IntakePositionSelector extends CommandBase {
 
         manager.isSelectingIntakePosition = true;
 
-        if (gamepad.gamepad.dpad_up){
+        if (gamepad.isDown(gamepad.dpad_Up)){
             CommandScheduler.getInstance().schedule(
                     new MoveIntakeSomeBit(manager, DISTANCE)
             );
         }
-        else if (gamepad.gamepad.dpad_down){
+        else if (gamepad.isDown(gamepad.dpad_Down)){
             CommandScheduler.getInstance().schedule(
                     new MoveIntakeSomeBit(manager, -DISTANCE)
             );
         }
-        else if (gamepad.gamepad.square){
+        else if (gamepad.isDown(gamepad.square)){
             CommandScheduler.getInstance().schedule(
-                    new SetTiltServoPosCommand(manager, IntakeManager._TiltServoState.RAISED)
+                new SequentialCommandGroup(
+                    new SetTiltServoPosCommand(manager, IntakeManager._TiltServoState.AIMING),
+                    new WaitCommand(100),
+                    new SetGripStateCommand(manager, IntakeManager._GripState.RELEASE)
+                )
             );
         }
-        else if (gamepad.gamepad.circle){
+        else if (gamepad.isDown(gamepad.circle)){
             CommandScheduler.getInstance().schedule(
-                    new SetTiltServoPosCommand(manager, IntakeManager._TiltServoState.LOWERED)
+                new SequentialCommandGroup(
+                    new SetTiltServoPosCommand(manager, IntakeManager._TiltServoState.LOWERED),
+                    new WaitCommand(500),
+                    new SetGripStateCommand(manager, IntakeManager._GripState.GRIP)
+                )
+            );
+        }
+        else if (gamepad.leftTrigger() > 0.2) {
+            CommandScheduler.getInstance().schedule(
+            new AdjustYawServoCommand(manager, IntakeManager._YawServoState.MANUAL, 0.05f));
+        }
+        else if (gamepad.rightTrigger() > 0.2) {
+            CommandScheduler.getInstance().schedule(
+            new AdjustYawServoCommand(manager, IntakeManager._YawServoState.MANUAL, -0.05f));
+        }
 
-            );
-        }
-        else if (gamepad.gamepad.cross){
-            manager.isSelectingIntakePosition = false;
-            isSelected = true;
-            gamepad.gamepad.rumbleBlips(2);
-        }
+//        else if (gamepad.isDown(gamepad.dpad_Left)) {
+//            CommandScheduler.getInstance().schedule(
+//            new AdjustYawServoCommand(manager, IntakeManager._YawServoState.TRANSFER, 0)
+//            );
+//        }
+//        else if (gamepad.isDown(gamepad.dpad_Right)) {
+//            new AdjustYawServoCommand(manager, IntakeManager._YawServoState.PICKUP_DEFAULT, 0);
+//        }
     }
 
     @Override

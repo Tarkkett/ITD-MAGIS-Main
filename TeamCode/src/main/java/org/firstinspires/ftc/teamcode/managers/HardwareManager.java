@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.managers;
 
 import android.graphics.Color;
 
-import com.acmerobotics.roadrunner.ftc.GoBildaPinpointDriverRR;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -10,9 +9,6 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.drivers.GoBildaPinpointDriver;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,8 +35,9 @@ public class HardwareManager{
 
     DcMotorEx intake;
 
-    Servo broomServo;
+    Servo gripServo;
     Servo intakeTiltServo;
+    Servo yawServo;
 
     Servo bucketServo;
     Servo specimentServo;
@@ -78,8 +75,9 @@ public class HardwareManager{
 
         legMotor = this.hmap.get(DcMotorEx.class, "legMotor");
 
-        broomServo = this.hmap.get(Servo.class, "broomServo");
+        gripServo = this.hmap.get(Servo.class, "gripServo");
         intakeTiltServo = this.hmap.get(Servo.class, "intakeTiltServo");
+        yawServo = this.hmap.get(Servo.class, "yawServo");
 
         bucketServo = this.hmap.get(Servo.class, "bucketServo");
         specimentServo = this.hmap.get(Servo.class, "specimentServo");
@@ -108,10 +106,12 @@ public class HardwareManager{
 
         legMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        //! Servo Rihgt on programmer is 1 in code!
         //FIXME: Transfer these to main
         bucketServo.setPosition(1);
-        intakeTiltServo.setPosition(0.55f);
+        intakeTiltServo.setPosition(0.7f);
         specimentServo.setPosition(0.5f);
+        yawServo.setPosition(0.5f);
 
         //?========================QUALITY FUNCTIONS===============================//
 

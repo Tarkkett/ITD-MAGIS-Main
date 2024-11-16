@@ -13,7 +13,7 @@ public class SetServosToDefaultsCommand extends SequentialCommandGroup {
                 new WaitCommand(500),
                 new SetBucketPositionCommand(outtakeManager, OuttakeManager._BucketServoState.LOW),
                 new WaitCommand(1000),
-                new SetTiltServoPosCommand(intakeManager, IntakeManager._TiltServoState.RAISED)
+                new SetTiltServoPosCommand(intakeManager, IntakeManager._TiltServoState.TRANSFER)
         );
 
     }

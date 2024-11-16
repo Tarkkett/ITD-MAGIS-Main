@@ -2,20 +2,15 @@ package org.firstinspires.ftc.teamcode.opMode;
 
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.CommandScheduler;
-import com.arcrobotics.ftclib.command.SequentialCommandGroup;
-import com.arcrobotics.ftclib.command.WaitCommand;
-import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.commands.SetIntakeStateCommand;
 import org.firstinspires.ftc.teamcode.commands.SetOuttakeStateCommand;
-import org.firstinspires.ftc.teamcode.commands.low_level.SetBroomStateCommand;
-import org.firstinspires.ftc.teamcode.commands.low_level.SetServosToDefaultsCommand;
-import org.firstinspires.ftc.teamcode.commands.selectors.SpecimentLoweringSelector;
+import org.firstinspires.ftc.teamcode.commands.low_level.AdjustYawServoCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.SetBucketPositionCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.SetSpecimentServoPositionCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.SetTiltServoPosCommand;
-import org.firstinspires.ftc.teamcode.commands.low_level.TransferCommand;
+import org.firstinspires.ftc.teamcode.commands.TransferCommand;
 import org.firstinspires.ftc.teamcode.managers.DriveManager;
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
@@ -37,11 +32,11 @@ public class MainTeleOp extends OpModeTemplate {
                 .toggleWhenActive(new InstantCommand(() -> driveManager.SetSubsystemState(DriveManager.DriveState.LOCKED)),
                     new InstantCommand(() -> driveManager.SetSubsystemState(DriveManager.DriveState.UNLOCKED)));
 
-        //* Intake home command
-        gamepad_driver.getGamepadButton(gamepad_driver.dpad_Down)
-                .whenPressed(() -> CommandScheduler.getInstance()
-                        .schedule(new SetIntakeStateCommand(IntakeManager._IntakeState.HOME, intakeManager, gamepad_driver)
-                                .andThen(new SetTiltServoPosCommand(intakeManager, IntakeManager._TiltServoState.LOWERED))));
+        //* Intake home command - not really needed
+//        gamepad_driver.getGamepadButton(gamepad_driver.dpad_Down)
+//                .whenPressed(() -> CommandScheduler.getInstance()
+//                        .schedule(new SetIntakeStateCommand(IntakeManager._IntakeState.HOME, intakeManager, gamepad_driver)
+//                                .andThen(new SetTiltServoPosCommand(intakeManager, IntakeManager._TiltServoState.LOWERED))));
 
         //* Toggle between intake and transfer
         gamepad_driver.getGamepadButton(gamepad_driver.leftBumper)
@@ -65,6 +60,8 @@ public class MainTeleOp extends OpModeTemplate {
         //* Reset IMU
         gamepad_driver.getGamepadButton(gamepad_driver.options)
                 .whenPressed(new InstantCommand(() -> drive.pinpoint.resetPosAndIMU()));
+
+        gamepad_driver.getGamepadButton(gamepad_driver.leftStick).whenPressed(new AdjustYawServoCommand(intakeManager, IntakeManager._YawServoState.TRANSFER, 0));
     }
 
     @Override
