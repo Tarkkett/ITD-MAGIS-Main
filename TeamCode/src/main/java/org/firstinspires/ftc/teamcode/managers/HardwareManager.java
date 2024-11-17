@@ -39,8 +39,9 @@ public class HardwareManager{
     Servo intakeTiltServo;
     Servo yawServo;
 
-    Servo bucketServo;
+    Servo outtakeTiltServo;
     Servo specimentServo;
+    Servo outtakeClawServo;
 
     public static int IMU_DATA_SAMPLING_RATE = 10;
 
@@ -79,8 +80,9 @@ public class HardwareManager{
         intakeTiltServo = this.hmap.get(Servo.class, "intakeTiltServo");
         yawServo = this.hmap.get(Servo.class, "yawServo");
 
-        bucketServo = this.hmap.get(Servo.class, "bucketServo");
+        outtakeTiltServo = this.hmap.get(Servo.class, "outtakeTiltServo");
         specimentServo = this.hmap.get(Servo.class, "specimentServo");
+        outtakeClawServo = this.hmap.get(Servo.class, "outtakeClawServo");
 
         //! Odometry setup in Pinpoint class!
 
@@ -108,7 +110,7 @@ public class HardwareManager{
 
         //! Servo Rihgt on programmer is 1 in code!
         //FIXME: Transfer these to main
-        bucketServo.setPosition(1);
+        outtakeTiltServo.setPosition(1);
         intakeTiltServo.setPosition(0.7f);
         specimentServo.setPosition(0.5f);
         yawServo.setPosition(0.5f);

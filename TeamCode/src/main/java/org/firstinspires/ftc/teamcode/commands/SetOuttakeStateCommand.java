@@ -4,7 +4,7 @@ import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 
-import org.firstinspires.ftc.teamcode.commands.low_level.SetBucketPositionCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.SetOuttakeTiltServoCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.SetLiftPositionCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.SetSpecimentServoPositionCommand;
 import org.firstinspires.ftc.teamcode.commands.selectors.DepositPositionSelector;
@@ -22,14 +22,14 @@ public class SetOuttakeStateCommand extends SequentialCommandGroup {
             addCommands(
                     new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HOME),
                     new InstantCommand(() -> gamepad_driver.gamepad.rumble(500)),
-                    new SetBucketPositionCommand(manager, OuttakeManager._BucketServoState.LOW),
+                    new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.LOW),
                     new SetSpecimentServoPositionCommand(manager, OuttakeManager._SpecimentServoState.OPEN)
             );
         }
 
         else if (targetState == OuttakeManager._OuttakeState.DEPOSIT){
             addCommands(
-                new SetBucketPositionCommand(manager, OuttakeManager._BucketServoState.LOW),
+                new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.LOW),
                 new SetSpecimentServoPositionCommand(manager, OuttakeManager._SpecimentServoState.CLOSED),
                 new DepositPositionSelector(gamepad_driver, manager)
                     
@@ -39,7 +39,7 @@ public class SetOuttakeStateCommand extends SequentialCommandGroup {
         else if (targetState == OuttakeManager._OuttakeState.TRANSFER){
             addCommands(
                     new SetLiftPositionCommand(manager, OuttakeManager._LiftState.TRANSFER),
-                    new SetBucketPositionCommand(manager, OuttakeManager._BucketServoState.LOW),
+                    new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.LOW),
                     new SetSpecimentServoPositionCommand(manager, OuttakeManager._SpecimentServoState.CLOSED)
             );
         }

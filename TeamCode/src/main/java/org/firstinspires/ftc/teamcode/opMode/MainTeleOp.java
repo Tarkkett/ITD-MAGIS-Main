@@ -7,9 +7,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.commands.SetIntakeStateCommand;
 import org.firstinspires.ftc.teamcode.commands.SetOuttakeStateCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.AdjustYawServoCommand;
-import org.firstinspires.ftc.teamcode.commands.low_level.SetBucketPositionCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.SetOuttakeTiltServoCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.SetSpecimentServoPositionCommand;
-import org.firstinspires.ftc.teamcode.commands.low_level.SetTiltServoPosCommand;
 import org.firstinspires.ftc.teamcode.commands.TransferCommand;
 import org.firstinspires.ftc.teamcode.managers.DriveManager;
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
@@ -46,8 +45,8 @@ public class MainTeleOp extends OpModeTemplate {
 
         //* Toggle bucket position
         gamepad_codriver.getGamepadButton(gamepad_driver.square)
-                .toggleWhenActive(new SetBucketPositionCommand(outtakeManager, OuttakeManager._BucketServoState.HIGH),
-                        new SetBucketPositionCommand(outtakeManager, OuttakeManager._BucketServoState.LOW));
+                .toggleWhenActive(new SetOuttakeTiltServoCommand(outtakeManager, OuttakeManager._OuttakeTiltServoState.HIGH),
+                        new SetOuttakeTiltServoCommand(outtakeManager, OuttakeManager._OuttakeTiltServoState.LOW));
 
         //* Toggle speciment claw
         gamepad_codriver.getGamepadButton(gamepad_driver.cross)

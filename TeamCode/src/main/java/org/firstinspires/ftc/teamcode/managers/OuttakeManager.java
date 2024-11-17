@@ -139,14 +139,14 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
         }
     }
 
-    public void update(_BucketServoState targetState) {
+    public void update(_OuttakeTiltServoState targetState) {
 //        if (!intakeManager.isSelectingIntakePosition){
             switch (targetState){
                 case LOW:
-                    hardwareManager.bucketServo.setPosition(_BucketServoState.LOW.getPosition());
+                    hardwareManager.outtakeTiltServo.setPosition(_OuttakeTiltServoState.LOW.getPosition());
                     break;
                 case HIGH:
-                    hardwareManager.bucketServo.setPosition(_BucketServoState.HIGH.getPosition());
+                    hardwareManager.outtakeTiltServo.setPosition(_OuttakeTiltServoState.HIGH.getPosition());
                     break;
             }
 //        }
@@ -159,6 +159,17 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
                 break;
             case CLOSED:
                 hardwareManager.specimentServo.setPosition(_SpecimentServoState.CLOSED.getPosition());
+                break;
+        }
+    }
+
+    public void update(_OuttakeClawServoState targetState) {
+        switch (targetState){
+            case GRIP:
+                hardwareManager.outtakeClawServo.setPosition(_OuttakeClawServoState.GRIP.getPosition());
+                break;
+            case RELEASE:
+                hardwareManager.outtakeClawServo.setPosition(_OuttakeClawServoState.RELEASE.getPosition());
                 break;
         }
     }
@@ -197,28 +208,16 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
     }
 
     public class LoopLift implements Action {
-
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-
                 if (isAutoLoop) {
                     loop();
                 }
                 else{ return false;}
-//                encoderPos = Average(hardwareManager.liftLeft.getCurrentPosition(), hardwareManager.liftRight.getCurrentPosition());
-//
-//                double power = controller.update(targetPosition, encoderPos);
-//                hardwareManager.liftLeft.setPower(power);
-//                hardwareManager.liftRight.setPower(power);
-//                telemetry.addData("target", targetPosition);
-//                telemetry.addData("encoder", encoderPos);
-//                telemetry.update();
 
                 return true;
 
-            };
-
-
+            }
     }
     public Action loopLift(){
         return new LoopLift();
@@ -295,17 +294,17 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
 
     public enum _LiftMode{
         MANUAL,
-        AUTO;
+        AUTO
 
     }
 
-    public enum _BucketServoState{
+    public enum _OuttakeTiltServoState {
         HIGH    (0f),
-        LOW     (1f);
+        LOW     (0.77f);
 
         private final float position;
 
-        _BucketServoState(float position) {
+        _OuttakeTiltServoState(float position) {
             this.position = position;
         }
 
@@ -314,8 +313,19 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
         }
     }
 
-    public void SetNewPosition(int targetPosition){
-        this.targetPosition = targetPosition;
+    public enum _OuttakeClawServoState {
+        GRIP    (0.75f),
+        RELEASE     (0.15f);
+
+        private final float position;
+
+        _OuttakeClawServoState(float position) {
+            this.position = position;
+        }
+
+        public float getPosition() {
+            return position;
+        }
     }
 
     public Action driveLift(int position){

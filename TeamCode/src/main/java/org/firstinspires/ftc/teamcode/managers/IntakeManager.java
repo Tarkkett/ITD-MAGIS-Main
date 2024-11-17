@@ -26,6 +26,12 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
     public static int targetPos = 100;
     public static int currentPos = 0;
 
+    //! For testing purpose only!
+    public static double servoTestPos;
+    public static double upPos = 0.5;
+    public static double downPos = 0.5;
+
+    //!===========================
     private _IntakeState state = _IntakeState.HOME;
 
     C_PID controller = new C_PID(0.02, 0.0004, 0.002);
@@ -73,6 +79,10 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
 
         double power = controller.update(targetPos, currentPos);
         hardwareManager.intake.setPower(power);
+
+
+//?        hardwareManager.intakeTiltServo.setPosition(downPos);
+//?        hardwareManager.outtakeTiltServo.setPosition(upPos);
 
     }
 
@@ -164,8 +174,9 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
     }
     public enum _SlideState {
         EXTENDED    (550),
-        TRANSFER    (10),
-        RETRACTED   (10);
+        TRANSFER    (0),
+        RETRACTED   (10),
+        TRANSFER_WAIT(50);
 
         private final float position;
 
@@ -194,7 +205,7 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
     public enum _TiltServoState{
         TRANSFER(0.32f),
         LOWERED (0.93f),
-        AIMING(0.8f),
+        AIMING(0.87f),
         PACKED(0.40f);
 
         private final float position;
@@ -210,7 +221,7 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
     }
 
     public enum _YawServoState{
-        TRANSFER(0.2f),
+        TRANSFER(0.29f),
         PICKUP_DEFAULT(0.93f),
         //Increment for manual
         MANUAL(0.1f);

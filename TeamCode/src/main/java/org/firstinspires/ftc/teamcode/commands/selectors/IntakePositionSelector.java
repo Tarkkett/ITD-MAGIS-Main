@@ -62,13 +62,13 @@ public class IntakePositionSelector extends CommandBase {
                 )
             );
         }
-        else if (gamepad.leftTrigger() > 0.2) {
-            CommandScheduler.getInstance().schedule(
-            new AdjustYawServoCommand(manager, IntakeManager._YawServoState.MANUAL, 0.05f));
-        }
-        else if (gamepad.rightTrigger() > 0.2) {
+        else if (gamepad.leftTrigger() > 0.9) {
             CommandScheduler.getInstance().schedule(
             new AdjustYawServoCommand(manager, IntakeManager._YawServoState.MANUAL, -0.05f));
+        }
+        else if (gamepad.rightTrigger() > 0.9) {
+            CommandScheduler.getInstance().schedule(
+            new AdjustYawServoCommand(manager, IntakeManager._YawServoState.MANUAL, 0.05f));
         }
 
 //        else if (gamepad.isDown(gamepad.dpad_Left)) {
