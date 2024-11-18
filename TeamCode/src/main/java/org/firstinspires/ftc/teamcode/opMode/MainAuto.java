@@ -11,13 +11,12 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 @Autonomous(name = "Main Auto", group = "OpMode", preselectTeleOp = "Main TeleOp")
-@SuppressWarnings("unused")
 public class MainAuto extends OpModeTemplate {
 
     Pose2d beginPose = new Pose2d(0, 0, 0);
 
     Action trajectoryFromChamberToPushingPos;
-    Action demoTrajectory;
+    Action testTrajectory;
 
     @Override
     public void init() {
@@ -26,19 +25,20 @@ public class MainAuto extends OpModeTemplate {
     @Override
     public void start(){
         trajectoryFromChamberToPushingPos = drive.actionBuilder(new Pose2d(-29.5,0,0))
-                .splineToConstantHeading(new Vector2d(-27,0), 0)
-                .splineToLinearHeading(new Pose2d(-27,23, Math.toRadians(90)),0)
-                .splineToConstantHeading(new Vector2d(-37, 35), 0)
-                .splineToConstantHeading(new Vector2d(-48, 42), 0)
-                .build();
+            .splineToConstantHeading(new Vector2d(-27,0), 0)
+            .splineToLinearHeading(new Pose2d(-27,23, Math.toRadians(90)),0)
+            .splineToConstantHeading(new Vector2d(-37, 35), 0)
+            .splineToConstantHeading(new Vector2d(-48, 42), 0)
+            .build();
 
-        demoTrajectory = drive.actionBuilder(new Pose2d(0,0,0))
-                .splineToConstantHeading(new Vector2d(-20,0), 0)
-                .splineToConstantHeading(new Vector2d(0, 15), 0)
-                .splineToConstantHeading(new Vector2d(0, -15), 0)
-                .splineToConstantHeading(new Vector2d(-20, 0), 0)
-                .build();
+        testTrajectory = drive.actionBuilder(new Pose2d(0,0,0))
+            .splineToConstantHeading(new Vector2d(-20,0), 0)
+            .splineToConstantHeading(new Vector2d(0, 15), 0)
+            .splineToConstantHeading(new Vector2d(0, -15), 0)
+            .splineToConstantHeading(new Vector2d(-20, 0), 0)
+            .build();
 
+        //!This blocks everything -> :C
         Actions.runBlocking(
             new ParallelAction(
 
@@ -58,26 +58,29 @@ public class MainAuto extends OpModeTemplate {
                     outtakeManager.OpenCloseSpeciment(true),
                     new SleepAction(0.2),
                     new ParallelAction(
-                            //Home Lift
-                            new SequentialAction(
-                                    new SleepAction(0.2),
-                                    outtakeManager.driveLift(5)
-                            ),
-                            //Drive to pick up 2nd speciment
-                            new SequentialAction(
-                                    drive.actionBuilder(new Pose2d(-29.6,0, 0)).strafeToLinearHeading(new Vector2d(-10, 40), Math.toRadians(180))
-                                            .strafeToConstantHeading(new Vector2d(-2.2, 40))
-                                            .build(),
+                        //Home Lift
+                        new SequentialAction(
+                            new SleepAction(0.2),
+                            outtakeManager.driveLift(5)
+                        ),
+                        //Drive to pick up 2nd speciment
+                        new SequentialAction(
+                            drive.actionBuilder(new Pose2d(-29.6,0, 0))
+                                .strafeToLinearHeading(new Vector2d(-10, 40), Math.toRadians(180))
+                                .strafeToConstantHeading(new Vector2d(-2.2, 40))
+                                .build(),
 
-                                    //Grab Speciment
-                                    outtakeManager.OpenCloseSpeciment(false),
-                                    new SleepAction(0.7),
-                                    //Raise Lift
-                                    outtakeManager.driveLift(1500),
-                                    new SleepAction(0.5),
-                                    //Drive to Chamber 2nd time
-                                    drive.actionBuilder(new Pose2d(-2.2, 40, Math.toRadians(180))).strafeToLinearHeading(new Vector2d(-29.7, -4), Math.toRadians(0)).build()
-                            )
+                            //Grab Speciment
+                            outtakeManager.OpenCloseSpeciment(false),
+                            new SleepAction(0.7),
+                            //Raise Lift
+                            outtakeManager.driveLift(1500),
+                            new SleepAction(0.5),
+                            //Drive to Chamber 2nd time
+                            drive.actionBuilder(new Pose2d(-2.2, 40, Math.toRadians(180)))
+                                .strafeToLinearHeading(new Vector2d(-29.7, -4), Math.toRadians(0))
+                                .build()
+                        )
                     ),
                     //Score 2nd speciment
                     new SleepAction(1),
@@ -105,6 +108,8 @@ public class MainAuto extends OpModeTemplate {
 //                        new SleepAction(0.5),
 //                        //Drive to Chamber 2nd time
 //                        drive.actionBuilder(new Pose2d(-2.2, 40, Math.toRadians(180))).strafeToLinearHeading(new Vector2d(-29.7, -4), Math.toRadians(0)).build(),
+
+                    //!Super important!
                     outtakeManager.stop()
 
                 )

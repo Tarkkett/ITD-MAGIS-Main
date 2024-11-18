@@ -6,8 +6,8 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 
-import org.firstinspires.ftc.teamcode.commands.low_level.LowerLiftSomeBit;
-import org.firstinspires.ftc.teamcode.commands.low_level.SetSpecimentServoPositionCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.outtake.MoveLiftSomeBit;
+import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetSpecimentServoPositionCommand;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 
 public class SpecimentLoweringSelector extends CommandBase {
@@ -34,7 +34,7 @@ public class SpecimentLoweringSelector extends CommandBase {
         if (gamepad_driver.gamepad.a){
             CommandScheduler.getInstance().schedule(
                     new SequentialCommandGroup(
-                            new LowerLiftSomeBit(manager, -800),
+                            new MoveLiftSomeBit(manager, -800),
                             new WaitCommand(500),
                             new SetSpecimentServoPositionCommand(manager, OuttakeManager._SpecimentServoState.OPEN)
                     )

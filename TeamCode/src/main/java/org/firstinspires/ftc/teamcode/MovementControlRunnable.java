@@ -44,8 +44,6 @@ public class MovementControlRunnable implements Runnable {
 
             headingAngle = drive.pinpoint.getPosition().getHeading(AngleUnit.RADIANS);
 
-            telemetry.addData("Heading:", headingAngle);
-
             driveManager.drive(new Pose2d(x, y, new Rotation2d(headingAngle)), rx, multiplier);
         }
     }

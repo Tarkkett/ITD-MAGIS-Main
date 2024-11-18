@@ -5,13 +5,13 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
 
-import org.firstinspires.ftc.teamcode.commands.low_level.AdjustYawServoCommand;
-import org.firstinspires.ftc.teamcode.commands.low_level.SetGripStateCommand;
-import org.firstinspires.ftc.teamcode.commands.low_level.SetOuttakeTiltServoCommand;
-import org.firstinspires.ftc.teamcode.commands.low_level.SetIntakeSlidePositionCommand;
-import org.firstinspires.ftc.teamcode.commands.low_level.SetLiftPositionCommand;
-import org.firstinspires.ftc.teamcode.commands.low_level.SetOuttakeClawStateCommand;
-import org.firstinspires.ftc.teamcode.commands.low_level.SetTiltServoPosCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.intake.AdjustYawServoCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeGripStateCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeTiltServoCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeSlidePositionCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetLiftPositionCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeClawStateCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeTiltServoPosCommand;
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 
@@ -23,8 +23,8 @@ public class TransferCommand extends SequentialCommandGroup {
             addCommands(
                     new ParallelCommandGroup(
                             new SetIntakeSlidePositionCommand(intake, IntakeManager._SlideState.TRANSFER_WAIT),
-                            new SetTiltServoPosCommand(intake, IntakeManager._TiltServoState.TRANSFER),
-                            new SetGripStateCommand(intake, IntakeManager._GripState.GRIP),
+                            new SetIntakeTiltServoPosCommand(intake, IntakeManager._TiltServoState.TRANSFER),
+                            new SetIntakeGripStateCommand(intake, IntakeManager._GripState.GRIP),
                             new AdjustYawServoCommand(intake, IntakeManager._YawServoState.TRANSFER, 0)
                     ),
                     new WaitCommand(300),
@@ -40,7 +40,7 @@ public class TransferCommand extends SequentialCommandGroup {
                             new SetOuttakeClawStateCommand(outtake, OuttakeManager._OuttakeClawServoState.GRIP),
                             new WaitCommand(250),
                             new SetIntakeSlidePositionCommand(intake, IntakeManager._SlideState.EXTENDED),
-                            new SetGripStateCommand(intake, IntakeManager._GripState.RELEASE),
+                            new SetIntakeGripStateCommand(intake, IntakeManager._GripState.RELEASE),
                             new WaitCommand(250),
                             new SetOuttakeTiltServoCommand(outtake, OuttakeManager._OuttakeTiltServoState.HIGH)
 //

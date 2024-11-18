@@ -4,9 +4,9 @@ import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 
-import org.firstinspires.ftc.teamcode.commands.low_level.SetOuttakeTiltServoCommand;
-import org.firstinspires.ftc.teamcode.commands.low_level.SetLiftPositionCommand;
-import org.firstinspires.ftc.teamcode.commands.low_level.SetSpecimentServoPositionCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeTiltServoCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetLiftPositionCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetSpecimentServoPositionCommand;
 import org.firstinspires.ftc.teamcode.commands.selectors.DepositPositionSelector;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 

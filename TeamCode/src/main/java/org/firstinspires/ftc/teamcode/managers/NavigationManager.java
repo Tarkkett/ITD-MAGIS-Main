@@ -1,10 +1,9 @@
 package org.firstinspires.ftc.teamcode.managers;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.State;
+import org.firstinspires.ftc.teamcode.util.State;
 import org.firstinspires.ftc.teamcode.drivers.C_PID;
 
 @Config

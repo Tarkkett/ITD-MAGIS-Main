@@ -6,15 +6,14 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.commands.SetIntakeStateCommand;
 import org.firstinspires.ftc.teamcode.commands.SetOuttakeStateCommand;
-import org.firstinspires.ftc.teamcode.commands.low_level.AdjustYawServoCommand;
-import org.firstinspires.ftc.teamcode.commands.low_level.SetOuttakeTiltServoCommand;
-import org.firstinspires.ftc.teamcode.commands.low_level.SetSpecimentServoPositionCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.intake.AdjustYawServoCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeTiltServoCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetSpecimentServoPositionCommand;
 import org.firstinspires.ftc.teamcode.commands.TransferCommand;
 import org.firstinspires.ftc.teamcode.managers.DriveManager;
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 
-@SuppressWarnings("unused")
 @TeleOp(name = "Main TeleOp", group = "OpMode")
 public class MainTeleOp extends OpModeTemplate {
 
@@ -30,12 +29,6 @@ public class MainTeleOp extends OpModeTemplate {
         gamepad_driver.getGamepadButton(gamepad_driver.rightStick)
                 .toggleWhenActive(new InstantCommand(() -> driveManager.SetSubsystemState(DriveManager.DriveState.LOCKED)),
                     new InstantCommand(() -> driveManager.SetSubsystemState(DriveManager.DriveState.UNLOCKED)));
-
-        //* Intake home command - not really needed
-//        gamepad_driver.getGamepadButton(gamepad_driver.dpad_Down)
-//                .whenPressed(() -> CommandScheduler.getInstance()
-//                        .schedule(new SetIntakeStateCommand(IntakeManager._IntakeState.HOME, intakeManager, gamepad_driver)
-//                                .andThen(new SetTiltServoPosCommand(intakeManager, IntakeManager._TiltServoState.LOWERED))));
 
         //* Toggle between intake and transfer
         gamepad_driver.getGamepadButton(gamepad_driver.leftBumper)
@@ -60,12 +53,6 @@ public class MainTeleOp extends OpModeTemplate {
         gamepad_driver.getGamepadButton(gamepad_driver.options)
                 .whenPressed(new InstantCommand(() -> drive.pinpoint.resetPosAndIMU()));
 
-        gamepad_driver.getGamepadButton(gamepad_driver.leftStick).whenPressed(new AdjustYawServoCommand(intakeManager, IntakeManager._YawServoState.TRANSFER, 0));
-    }
-
-    @Override
-    public void start(){
-        driveManager.SetSubsystemState(DriveManager.DriveState.UNLOCKED);
     }
 
     @Override

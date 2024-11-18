@@ -5,7 +5,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.State;
+import org.firstinspires.ftc.teamcode.util.State;
 import org.firstinspires.ftc.teamcode.drivers.C_PID;
 
 import java.util.HashMap;
@@ -23,15 +23,9 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
     private Telemetry telemetry;
     private final GamepadEx gamepad_driver;
 
-    public static int targetPos = 100;
-    public static int currentPos = 0;
+    public int targetPosition = 100;
+    public int currentPos = 0;
 
-    //! For testing purpose only!
-    public static double servoTestPos;
-    public static double upPos = 0.5;
-    public static double downPos = 0.5;
-
-    //!===========================
     private _IntakeState state = _IntakeState.HOME;
 
     C_PID controller = new C_PID(0.02, 0.0004, 0.002);
@@ -43,7 +37,7 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
         this.telemetry = telemetry;
         this.hardwareManager = hardwareManager;
 
-        targetPos = (int) _SlideState.RETRACTED.getPosition();
+        targetPosition = (int) _SlideState.RETRACTED.getPosition();
     }
 
     @Override
@@ -74,15 +68,11 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
         telemetry = dashboard.getTelemetry();
         currentPos = hardwareManager.intake.getCurrentPosition();
         telemetry.addData("CurrentPos", currentPos);
-        telemetry.addData("TargetPos", targetPos);
+        telemetry.addData("TargetPos", targetPosition);
         telemetry.update();
 
-        double power = controller.update(targetPos, currentPos);
+        double power = controller.update(targetPosition, currentPos);
         hardwareManager.intake.setPower(power);
-
-
-//?        hardwareManager.intakeTiltServo.setPosition(downPos);
-//?        hardwareManager.outtakeTiltServo.setPosition(upPos);
 
     }
 
@@ -99,13 +89,13 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
     public void update(_SlideState targetState) {
         switch (targetState){
             case EXTENDED:
-                targetPos = (int) _SlideState.EXTENDED.getPosition();
+                targetPosition = (int) _SlideState.EXTENDED.getPosition();
                 break;
             case TRANSFER:
-                targetPos = (int) _SlideState.TRANSFER.getPosition();
+                targetPosition = (int) _SlideState.TRANSFER.getPosition();
                 break;
             case RETRACTED:
-                targetPos = (int) _SlideState.RETRACTED.getPosition();
+                targetPosition = (int) _SlideState.RETRACTED.getPosition();
                 break;
         }
     }
@@ -157,9 +147,9 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
     }
 
     public void moveSlide(int i) {
-        int newPos = targetPos + i;
+        int newPos = targetPosition + i;
         if (newPos < MAX_SLIDE_EXTEND && newPos > MIN_SLIDE_RETRACT){
-            targetPos = newPos;
+            targetPosition = newPos;
         }
         else{
             gamepad_driver.gamepad.rumbleBlips(3);

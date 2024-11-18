@@ -1,12 +1,11 @@
 package org.firstinspires.ftc.teamcode.managers;
 
-import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.geometry.Pose2d;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.MovementControlRunnable;
 import org.firstinspires.ftc.teamcode.PinpointDrive;
-import org.firstinspires.ftc.teamcode.State;
+import org.firstinspires.ftc.teamcode.util.State;
 import org.firstinspires.ftc.teamcode.util.GamepadPlus;
 
 import java.util.HashMap;

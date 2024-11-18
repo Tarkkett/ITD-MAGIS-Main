@@ -5,10 +5,10 @@ import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 
-import org.firstinspires.ftc.teamcode.commands.low_level.AdjustYawServoCommand;
-import org.firstinspires.ftc.teamcode.commands.low_level.MoveIntakeSomeBit;
-import org.firstinspires.ftc.teamcode.commands.low_level.SetGripStateCommand;
-import org.firstinspires.ftc.teamcode.commands.low_level.SetTiltServoPosCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.intake.AdjustYawServoCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.intake.MoveIntakeSomeBit;
+import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeGripStateCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeTiltServoPosCommand;
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.util.GamepadPlus;
 
@@ -17,7 +17,6 @@ public class IntakePositionSelector extends CommandBase {
     private static final int DISTANCE = 5;
     IntakeManager manager;
     GamepadPlus gamepad;
-    private boolean isSelected = false;
 
     public IntakePositionSelector(IntakeManager manager, GamepadPlus gamepad_driver) {
         this.manager = manager;
@@ -25,67 +24,48 @@ public class IntakePositionSelector extends CommandBase {
     }
 
     @Override
-    public void initialize(){
+    public void initialize() {
         manager.isSelectingIntakePosition = true;
     }
 
     @Override
-    public void execute(){
+    public void execute() {
 
         manager.isSelectingIntakePosition = true;
 
-        if (gamepad.isDown(gamepad.dpad_Up)){
+        if (gamepad.isDown(gamepad.dpad_Up)) {
             CommandScheduler.getInstance().schedule(
                     new MoveIntakeSomeBit(manager, DISTANCE)
             );
-        }
-        else if (gamepad.isDown(gamepad.dpad_Down)){
+        } else if (gamepad.isDown(gamepad.dpad_Down)) {
             CommandScheduler.getInstance().schedule(
                     new MoveIntakeSomeBit(manager, -DISTANCE)
             );
-        }
-        else if (gamepad.isDown(gamepad.square)){
+        } else if (gamepad.isDown(gamepad.square)) {
             CommandScheduler.getInstance().schedule(
-                new SequentialCommandGroup(
-                    new SetTiltServoPosCommand(manager, IntakeManager._TiltServoState.AIMING),
-                    new WaitCommand(100),
-                    new SetGripStateCommand(manager, IntakeManager._GripState.RELEASE)
-                )
+                    new SequentialCommandGroup(
+                            new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.AIMING),
+                            new WaitCommand(100),
+                            new SetIntakeGripStateCommand(manager, IntakeManager._GripState.RELEASE)
+                    )
             );
-        }
-        else if (gamepad.isDown(gamepad.circle)){
+        } else if (gamepad.isDown(gamepad.circle)) {
             CommandScheduler.getInstance().schedule(
-                new SequentialCommandGroup(
-                    new SetTiltServoPosCommand(manager, IntakeManager._TiltServoState.LOWERED),
-                    new WaitCommand(500),
-                    new SetGripStateCommand(manager, IntakeManager._GripState.GRIP)
-                )
+                    new SequentialCommandGroup(
+                            new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.LOWERED),
+                            new WaitCommand(500),
+                            new SetIntakeGripStateCommand(manager, IntakeManager._GripState.GRIP)
+                    )
             );
-        }
-        else if (gamepad.leftTrigger() > 0.9) {
+        } else if (gamepad.leftTrigger() > 0.9) {
             CommandScheduler.getInstance().schedule(
-            new AdjustYawServoCommand(manager, IntakeManager._YawServoState.MANUAL, -0.05f));
-        }
-        else if (gamepad.rightTrigger() > 0.9) {
+                    new AdjustYawServoCommand(manager, IntakeManager._YawServoState.MANUAL, -0.01f));
+        } else if (gamepad.rightTrigger() > 0.9) {
             CommandScheduler.getInstance().schedule(
-            new AdjustYawServoCommand(manager, IntakeManager._YawServoState.MANUAL, 0.05f));
+                    new AdjustYawServoCommand(manager, IntakeManager._YawServoState.MANUAL, 0.01f));
         }
 
-//        else if (gamepad.isDown(gamepad.dpad_Left)) {
-//            CommandScheduler.getInstance().schedule(
-//            new AdjustYawServoCommand(manager, IntakeManager._YawServoState.TRANSFER, 0)
-//            );
-//        }
-//        else if (gamepad.isDown(gamepad.dpad_Right)) {
-//            new AdjustYawServoCommand(manager, IntakeManager._YawServoState.PICKUP_DEFAULT, 0);
-//        }
     }
 
-    @Override
-    public boolean isFinished() {
-        if (isSelected){
-            manager.isSelectingIntakePosition = false;
-        }
-        return isSelected;
-    }
 }
+

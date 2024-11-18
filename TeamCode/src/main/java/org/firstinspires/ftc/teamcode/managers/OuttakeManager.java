@@ -8,7 +8,7 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.State;
+import org.firstinspires.ftc.teamcode.util.State;
 import org.firstinspires.ftc.teamcode.drivers.C_PID;
 
 import java.util.HashMap;

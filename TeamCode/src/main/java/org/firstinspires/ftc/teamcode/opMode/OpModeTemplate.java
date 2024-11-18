@@ -2,9 +2,17 @@ package org.firstinspires.ftc.teamcode.opMode;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.PinpointDrive;
+import org.firstinspires.ftc.teamcode.commands.low_level.SetServosToDefaultsCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.intake.AdjustYawServoCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeTiltServoPosCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeTiltServoCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetSpecimentServoPositionCommand;
 import org.firstinspires.ftc.teamcode.managers.AscentManager;
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.managers.DriveManager;
@@ -56,6 +64,14 @@ public abstract class OpModeTemplate extends OpMode {
             driveManager = new DriveManager(hardwareManager, telemetry, gamepad_driver, drive);
         }
 
+        SetSystemDefaults();
+
+    }
+
+    private void SetSystemDefaults() {
+        CommandScheduler.getInstance().schedule(
+                new SetServosToDefaultsCommand(outtakeManager, intakeManager)
+        );
     }
 
     private void SetupAuto() {
@@ -66,6 +82,7 @@ public abstract class OpModeTemplate extends OpMode {
 
     @Override
     public void init_loop() {
+        CommandScheduler.getInstance().run();
         PromptUserForAllianceSelection();
         if (isAuto) PromptUserForSideSelection();
     }

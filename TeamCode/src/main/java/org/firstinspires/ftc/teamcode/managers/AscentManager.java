@@ -4,8 +4,7 @@ import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.State;
-import org.firstinspires.ftc.teamcode.commands.low_level.LowerLiftSomeBit;
+import org.firstinspires.ftc.teamcode.util.State;
 import org.firstinspires.ftc.teamcode.commands.low_level.PrepLiftForAscentCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.UncoupleLiftPIDCommand;
 

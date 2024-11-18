@@ -108,13 +108,6 @@ public class HardwareManager{
 
         legMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        //! Servo Rihgt on programmer is 1 in code!
-        //FIXME: Transfer these to main
-        outtakeTiltServo.setPosition(1);
-        intakeTiltServo.setPosition(0.7f);
-        specimentServo.setPosition(0.5f);
-        yawServo.setPosition(0.5f);
-
         //?========================QUALITY FUNCTIONS===============================//
 
         setupBulkReading();
@@ -124,6 +117,7 @@ public class HardwareManager{
 
     private void setupBulkReading() {
         for(LynxModule hub : hubs){
+            //! Auto for now -> setup manual in the near future!
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
     }
