@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.commands.selectors;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
@@ -12,15 +13,20 @@ import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeTiltSer
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.util.GamepadPlus;
 
+@Config
 public class IntakePositionSelector extends CommandBase {
 
     private static final int DISTANCE = 5;
     IntakeManager manager;
-    GamepadPlus gamepad;
+    GamepadPlus gamepad_driver;
+    GamepadPlus gamepad_codriver;
 
-    public IntakePositionSelector(IntakeManager manager, GamepadPlus gamepad_driver) {
+    public static double shiftAngleCustom = 0;
+
+    public IntakePositionSelector(IntakeManager manager, GamepadPlus gamepad_driver, GamepadPlus gamepad_codriver) {
         this.manager = manager;
-        gamepad = gamepad_driver;
+        this.gamepad_driver = gamepad_driver;
+        this.gamepad_codriver = gamepad_codriver;
     }
 
     @Override
@@ -33,15 +39,15 @@ public class IntakePositionSelector extends CommandBase {
 
         manager.isSelectingIntakePosition = true;
 
-        if (gamepad.isDown(gamepad.dpad_Up)) {
+        if (gamepad_driver.isDown(gamepad_driver.dpad_Up)) {
             CommandScheduler.getInstance().schedule(
                     new MoveIntakeSomeBit(manager, DISTANCE)
             );
-        } else if (gamepad.isDown(gamepad.dpad_Down)) {
+        } else if (gamepad_driver.isDown(gamepad_driver.dpad_Down)) {
             CommandScheduler.getInstance().schedule(
                     new MoveIntakeSomeBit(manager, -DISTANCE)
             );
-        } else if (gamepad.isDown(gamepad.square)) {
+        } else if (gamepad_driver.isDown(gamepad_driver.square)) {
             CommandScheduler.getInstance().schedule(
                     new SequentialCommandGroup(
                             new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.AIMING),
@@ -49,7 +55,7 @@ public class IntakePositionSelector extends CommandBase {
                             new SetIntakeGripStateCommand(manager, IntakeManager._GripState.RELEASE)
                     )
             );
-        } else if (gamepad.isDown(gamepad.circle)) {
+        } else if (gamepad_driver.isDown(gamepad_driver.circle)) {
             CommandScheduler.getInstance().schedule(
                     new SequentialCommandGroup(
                             new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.LOWERED),
@@ -57,13 +63,14 @@ public class IntakePositionSelector extends CommandBase {
                             new SetIntakeGripStateCommand(manager, IntakeManager._GripState.GRIP)
                     )
             );
-        } else if (gamepad.leftTrigger() > 0.9) {
-            CommandScheduler.getInstance().schedule(
-                    new AdjustYawServoCommand(manager, IntakeManager._YawServoState.MANUAL, -0.01f));
-        } else if (gamepad.rightTrigger() > 0.9) {
-            CommandScheduler.getInstance().schedule(
-                    new AdjustYawServoCommand(manager, IntakeManager._YawServoState.MANUAL, 0.01f));
         }
+        double yawServoAngle = Math.atan2(gamepad_codriver.getRightX(), gamepad_codriver.getRightY());
+        double shiftAngle = yawServoAngle+ Math.toRadians(shiftAngleCustom);
+        double wrapped_angle = Math.atan2(Math.sin(shiftAngle), Math.cos(shiftAngle));
+        double normalized_angle = (wrapped_angle + Math.PI) / (2 * Math.PI);
+        manager.controlYawAngle(normalized_angle);
+
+
 
     }
 

@@ -156,6 +156,12 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
         }
     }
 
+    public void controlYawAngle(double yawServoAngle) {
+        if (isSelectingIntakePosition){
+            hardwareManager.yawServo.setPosition(yawServoAngle);
+        }
+    }
+
     @SuppressWarnings("unused")
     public enum _IntakeState {
         PICKUP,
@@ -196,7 +202,7 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
         TRANSFER(0.32f),
         LOWERED (0.93f),
         AIMING(0.87f),
-        PACKED(0.40f);
+        PACKED(0.29f);
 
         private final float position;
 
@@ -214,7 +220,8 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
         TRANSFER(0.29f),
         PICKUP_DEFAULT(0.93f),
         //Increment for manual
-        MANUAL(0.1f);
+        MANUAL(0.1f),
+        PACKED(0.2f);
 
         private final float position;
 

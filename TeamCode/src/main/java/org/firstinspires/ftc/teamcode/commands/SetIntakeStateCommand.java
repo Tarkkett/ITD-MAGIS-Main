@@ -15,7 +15,7 @@ public class SetIntakeStateCommand extends SequentialCommandGroup {
 
     IntakeManager manager;
 
-    public SetIntakeStateCommand(IntakeManager._IntakeState intakeState, IntakeManager manager, GamepadPlus gamepad_driver) {
+    public SetIntakeStateCommand(IntakeManager._IntakeState intakeState, IntakeManager manager, GamepadPlus gamepad_driver, GamepadPlus gamepad_codriver) {
 
         this.manager = manager;
 
@@ -26,7 +26,7 @@ public class SetIntakeStateCommand extends SequentialCommandGroup {
                             new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.AIMING),
                             new SetIntakeGripStateCommand(manager, IntakeManager._GripState.RELEASE)
                     ),
-                    new IntakePositionSelector(manager, gamepad_driver),
+                    new IntakePositionSelector(manager, gamepad_driver, gamepad_codriver),
                     new InstantCommand(() -> manager.isSelectingIntakePosition = false)
             );
         } else if (intakeState == IntakeManager._IntakeState.HOME) {

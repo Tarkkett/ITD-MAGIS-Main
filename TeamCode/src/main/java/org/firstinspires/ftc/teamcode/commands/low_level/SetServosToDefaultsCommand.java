@@ -15,10 +15,10 @@ public class SetServosToDefaultsCommand extends SequentialCommandGroup {
         addCommands(
                 new SetSpecimentServoPositionCommand(outtakeManager, OuttakeManager._SpecimentServoState.CLOSED),
                 new SetOuttakeTiltServoCommand(outtakeManager, OuttakeManager._OuttakeTiltServoState.HIGH),
-                new WaitCommand(300),
+                new WaitCommand(1000),
                 new AdjustYawServoCommand(intakeManager, IntakeManager._YawServoState.TRANSFER),
                 new SetIntakeTiltServoPosCommand(intakeManager, IntakeManager._TiltServoState.PACKED),
-                new WaitCommand(300),
+                new WaitCommand(1200),
                 new SetOuttakeTiltServoCommand(outtakeManager, OuttakeManager._OuttakeTiltServoState.LOW)
         );
 

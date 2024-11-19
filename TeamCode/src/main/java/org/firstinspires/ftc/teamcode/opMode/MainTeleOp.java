@@ -33,7 +33,7 @@ public class MainTeleOp extends OpModeTemplate {
         //* Toggle between intake and transfer
         gamepad_driver.getGamepadButton(gamepad_driver.leftBumper)
                 .toggleWhenPressed(
-                        new SetIntakeStateCommand(IntakeManager._IntakeState.PICKUP, intakeManager, gamepad_driver),
+                        new SetIntakeStateCommand(IntakeManager._IntakeState.PICKUP, intakeManager, gamepad_driver, gamepad_codriver),
                         new TransferCommand(intakeManager, outtakeManager));
 
         //* Toggle bucket position
