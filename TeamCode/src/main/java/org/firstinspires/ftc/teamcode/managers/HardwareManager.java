@@ -35,13 +35,13 @@ public class HardwareManager{
 
     DcMotorEx intake;
 
-    Servo gripServo;
-    Servo intakeTiltServo;
-    Servo yawServo;
+    public Servo gripServo;
+    public Servo intakeTiltServo;
+    public Servo yawServo;
 
-    Servo outtakeTiltServo;
-    Servo specimentServo;
-    Servo outtakeClawServo;
+    public Servo outtakeTiltServo;
+    public Servo specimentServo;
+    public Servo outtakeClawServo;
 
     public static int IMU_DATA_SAMPLING_RATE = 10;
 

@@ -61,11 +61,16 @@ public class DriveManager implements Manager<DriveManager._DriveState> {
         double frontRightPower = (adjustedY - adjustedX - rotationInput) / maxMagnitude;
         double backRightPower = (adjustedY + adjustedX - rotationInput) / maxMagnitude;
 
-        if (managerState != _DriveState.LOCKED) {
+        if (managerState == _DriveState.UNLOCKED) {
             hardwareManager.frontLeft.setPower(frontLeftPower * powerMultiplier);
             hardwareManager.backLeft.setPower(backLeftPower * powerMultiplier);
             hardwareManager.frontRight.setPower(frontRightPower * powerMultiplier);
             hardwareManager.backRight.setPower(backRightPower * powerMultiplier);
+        }
+        else {
+            if (gamepadDriver.gamepad.left_stick_x > 0.1 || gamepadDriver.gamepad.right_stick_x > 0.1){
+                gamepadDriver.rumble(100);
+            }
         }
     }
 
@@ -82,6 +87,15 @@ public class DriveManager implements Manager<DriveManager._DriveState> {
                 Thread.currentThread().interrupt();
             }
         }
+    }
+
+    public void onLocked() {
+        hardwareManager.lockDrivetrain();
+        gamepadDriver.gamepad.setLedColor(1, 0, 0, 100000);
+    }
+
+    public void onUnlocked(){
+        gamepadDriver.gamepad.setLedColor(0, 1, 0, 100000);
     }
 
     public enum _DriveState {

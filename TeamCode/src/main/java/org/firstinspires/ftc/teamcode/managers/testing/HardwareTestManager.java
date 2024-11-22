@@ -1,8 +1,12 @@
-package org.firstinspires.ftc.teamcode.managers;
+package org.firstinspires.ftc.teamcode.managers.testing;
 
 import com.acmerobotics.dashboard.config.Config;
 
 import org.firstinspires.ftc.teamcode.drivers.C_PID;
+import org.firstinspires.ftc.teamcode.managers.DriveManager;
+import org.firstinspires.ftc.teamcode.managers.HardwareManager;
+import org.firstinspires.ftc.teamcode.managers.IntakeManager;
+import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 
 @Config
 public class HardwareTestManager{
@@ -45,6 +49,7 @@ public class HardwareTestManager{
         outtakeController.tune(OUTTAKE_Kp, OUTTAKE_Ki, OUTTAKE_Kd);
 
         //? Intake
+
         hardware.intakeTiltServo.setPosition(intakeTiltServoPos);
         hardware.gripServo.setPosition(intakeClawServoPos);
         hardware.yawServo.setPosition(intakeYawServoPos);

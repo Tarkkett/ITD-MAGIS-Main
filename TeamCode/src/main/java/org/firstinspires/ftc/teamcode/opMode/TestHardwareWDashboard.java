@@ -1,10 +1,9 @@
 package org.firstinspires.ftc.teamcode.opMode;
 
 import com.arcrobotics.ftclib.command.CommandScheduler;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.managers.HardwareTestManager;
+import org.firstinspires.ftc.teamcode.managers.testing.HardwareTestManager;
 
 @TeleOp(name = "TestAllHardware", group = "Testing")
 public class TestHardwareWDashboard extends OpModeTemplate {

@@ -71,6 +71,8 @@ public class StateMachine implements State<StateMachine._RobotState> {
         switch (driveState){
             case LOCKED:
                 driveManager.onLocked();
+            case UNLOCKED:
+                driveManager.onUnlocked();
         }
     }
 
