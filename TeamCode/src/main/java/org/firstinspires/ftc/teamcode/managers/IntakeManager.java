@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.managers;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.qualcomm.robotcore.eventloop.SyncdDevice;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.util.State;
@@ -13,7 +14,7 @@ import java.util.Map;
 
 @SuppressWarnings("rawtypes")
 @Config
-public class IntakeManager implements State<IntakeManager._IntakeState> {
+public class IntakeManager implements Manager<IntakeManager._IntakeState> {
 
     private static final int MIN_SLIDE_RETRACT = 500;
     private static final int MAX_SLIDE_EXTEND = 950;
@@ -23,14 +24,12 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
     private Telemetry telemetry;
     private final GamepadEx gamepad_driver;
 
-    public int targetPosition = 100;
+    public int targetPosition;
     public int currentPos = 0;
 
-    private _IntakeState state = _IntakeState.HOME;
+    private _IntakeState managerState = _IntakeState.HOME;
 
     C_PID controller = new C_PID(0.02, 0.0004, 0.002);
-
-    private final Map<Transition, Runnable> stateTransitionActions = new HashMap<>();
 
     public IntakeManager(HardwareManager hardwareManager, Telemetry telemetry, GamepadEx gamepadDriver) {
         this.gamepad_driver = gamepadDriver;
@@ -38,28 +37,6 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
         this.hardwareManager = hardwareManager;
 
         targetPosition = (int) _SlideState.RETRACTED.getPosition();
-    }
-
-    @Override
-    public void SetSubsystemState(_IntakeState newState) {
-        if (state != newState) {
-            _IntakeState previousState = state;
-            state = newState;
-
-            Transition transition = new Transition(previousState, newState);
-            Runnable action = stateTransitionActions.get(transition);
-            if (action != null) {
-                action.run();
-            }
-
-            telemetry.addData("Intake State Changed:", newState);
-            telemetry.update();
-        }
-    }
-
-    @Override
-    public _IntakeState GetSubsystemState() {
-        return state;
     }
 
     @Override
@@ -77,13 +54,13 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
     }
 
     @Override
-    public void InitializeStateTransitionActions() {
-        stateTransitionActions.put(new Transition(_IntakeState.HOME, _IntakeState.PICKUP), this::onExtend);
-
-    }
-
-    private void onExtend() {
-
+    public _IntakeState GetManagerState() {
+        if (isSelectingIntakePosition){
+            return _IntakeState.INTAKE;
+        }
+        else{
+            return _IntakeState.IDLE;
+        }
     }
 
     public void update(_SlideState targetState) {
@@ -108,9 +85,6 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
             case RELEASE:
                 hardwareManager.gripServo.setPosition(_GripState.RELEASE.getPosition());
                 break;
-//            case TRANSFERING:
-//                hardwareManager.gripServo.setPosition(_GripState.TRANSFERING.getPosition());
-//                break;
         }
     }
 
@@ -162,12 +136,6 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
         }
     }
 
-    @SuppressWarnings("unused")
-    public enum _IntakeState {
-        PICKUP,
-        HOME,
-        TRANSFER
-    }
     public enum _SlideState {
         EXTENDED    (550),
         TRANSFER    (0),
@@ -215,7 +183,6 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
         }
 
     }
-
     public enum _YawServoState{
         TRANSFER(0.29f),
         PICKUP_DEFAULT(0.93f),
@@ -233,5 +200,11 @@ public class IntakeManager implements State<IntakeManager._IntakeState> {
             return position;
         }
 
+    }
+
+    public enum _IntakeState{
+        INTAKE,
+        IDLE,
+        HOME
     }
 }

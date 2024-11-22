@@ -8,7 +8,10 @@ import org.firstinspires.ftc.teamcode.util.State;
 import org.firstinspires.ftc.teamcode.commands.low_level.PrepLiftForAscentCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.UncoupleLiftPIDCommand;
 
-public class AscentManager implements State<DriveManager.DriveState> {
+public class AscentManager implements State<DriveManager._DriveState> {
+
+
+    //! This class needs refactoring
 
     HardwareManager hardwareManager;
 
@@ -32,12 +35,12 @@ public class AscentManager implements State<DriveManager.DriveState> {
     }
 
     @Override
-    public void SetSubsystemState(DriveManager.DriveState state) {
+    public void SetSubsystemState(DriveManager._DriveState state) {
 
     }
 
     @Override
-    public DriveManager.DriveState GetSubsystemState() {
+    public DriveManager._DriveState GetSubsystemState() {
         return null;
     }
 

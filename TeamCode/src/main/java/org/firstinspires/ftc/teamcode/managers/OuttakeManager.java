@@ -16,7 +16,7 @@ import java.util.Map;
 
 @SuppressWarnings("rawtypes")
 @Config
-public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
+public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
 
     private static final int MIN_THRESHOLD =70;
     private static final int MAX_THRESHOLD =2200;
@@ -26,8 +26,7 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
     IntakeManager intakeManager;
     Telemetry telemetry;
 
-    OuttakeManager._OuttakeState state;
-    OuttakeManager._OuttakeState previousState;
+    private OuttakeManager._OuttakeState managerState;
 
     C_PID controller = new C_PID(0.015,0,0.0003);
     public int targetPosition;
@@ -46,36 +45,10 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
         this.telemetry = telemetry;
         this.intakeManager = intakeManager;
 
-//        targetPosition = (int) _LiftState.HOME.getPosition();
-
     }
-
-    @Override
-    public void SetSubsystemState(_OuttakeState newState) {
-        if (state != newState) {
-            previousState = state;
-            state = newState;
-
-            Transition transition = new Transition(previousState, newState);
-            Runnable action = stateTransitionActions.get(transition);
-            if (action != null) {
-                action.run();
-            }
-
-            telemetry.addData("Intake State Changed:", newState);
-            telemetry.update();
-        }
-    }
-
-    @Override
-    public OuttakeManager._OuttakeState GetSubsystemState() {
-        return state;
-    }
-
 
     @Override
     public void loop() {
-
         encoderPos = Average(hardwareManager.liftLeft.getCurrentPosition(), hardwareManager.liftRight.getCurrentPosition());
         double power = controller.update(targetPosition, encoderPos);
 
@@ -93,6 +66,14 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
         CheckForPosition(encoderPos);
     }
 
+    @Override
+    public _OuttakeState GetManagerState() {
+        if (selectingProcess){
+            return _OuttakeState.DEPOSIT;
+        }
+        else return _OuttakeState.IDLE;
+    }
+
     private void CheckForPosition(double encoderPos) {
         int threshold = 20;
         isTransfer = encoderPos > _LiftState.TRANSFER.getPosition() - threshold && encoderPos < _LiftState.TRANSFER.getPosition() + threshold;
@@ -101,11 +82,6 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
 
     private int Average(float p1, float p2) {
         return (int) ((p1 + p2) / 2);
-    }
-
-    @Override
-    public void InitializeStateTransitionActions() {
-
     }
 
     public void update(_LiftState targetState) {
@@ -245,7 +221,7 @@ public class OuttakeManager implements State<OuttakeManager._OuttakeState> {
         HOME,
         DEPOSIT,
         SPECIMENT_GRAB,
-        TRANSFER
+        IDLE, TRANSFER
     }
 
     public boolean isAtPosition(int position, int targetPosition, int margin){

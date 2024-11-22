@@ -64,14 +64,18 @@ public class IntakePositionSelector extends CommandBase {
                     )
             );
         }
-        double yawServoAngle = Math.atan2(gamepad_codriver.getRightX(), gamepad_codriver.getRightY());
+        ControlYawManually(gamepad_codriver. getRightX(), gamepad_codriver.getRightY());
+
+
+    }
+
+    private void ControlYawManually(double rightX, double rightY) {
+
+        double yawServoAngle = Math.atan2(rightX, rightY);
         double shiftAngle = yawServoAngle+ Math.toRadians(shiftAngleCustom);
         double wrapped_angle = Math.atan2(Math.sin(shiftAngle), Math.cos(shiftAngle));
         double normalized_angle = (wrapped_angle + Math.PI) / (2 * Math.PI);
         manager.controlYawAngle(normalized_angle);
-
-
-
     }
 
 }

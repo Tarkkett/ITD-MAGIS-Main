@@ -6,13 +6,12 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.commands.SetIntakeStateCommand;
 import org.firstinspires.ftc.teamcode.commands.SetOuttakeStateCommand;
-import org.firstinspires.ftc.teamcode.commands.low_level.intake.AdjustYawServoCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeTiltServoCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetSpecimentServoPositionCommand;
 import org.firstinspires.ftc.teamcode.commands.TransferCommand;
 import org.firstinspires.ftc.teamcode.managers.DriveManager;
-import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
+import org.firstinspires.ftc.teamcode.managers.StateMachine;
 
 @TeleOp(name = "Main TeleOp", group = "OpMode")
 public class MainTeleOp extends OpModeTemplate {
@@ -27,31 +26,37 @@ public class MainTeleOp extends OpModeTemplate {
 
         //* Toggle drivetrain lock
         gamepad_driver.getGamepadButton(gamepad_driver.rightStick)
-                .toggleWhenActive(new InstantCommand(() -> driveManager.SetSubsystemState(DriveManager.DriveState.LOCKED)),
-                    new InstantCommand(() -> driveManager.SetSubsystemState(DriveManager.DriveState.UNLOCKED)));
+                .toggleWhenActive(
+                    new InstantCommand(() -> stateMachine.SetSubsystemState(DriveManager._DriveState.LOCKED)),
+                    new InstantCommand(() -> stateMachine.SetSubsystemState(DriveManager._DriveState.UNLOCKED)));
 
         //* Toggle between intake and transfer
         gamepad_driver.getGamepadButton(gamepad_driver.leftBumper)
                 .toggleWhenPressed(
-                        new SetIntakeStateCommand(IntakeManager._IntakeState.PICKUP, intakeManager, gamepad_driver, gamepad_codriver),
-                        new TransferCommand(intakeManager, outtakeManager));
+                        new InstantCommand(() -> stateMachine.SetSubsystemState(StateMachine._RobotState.INTAKE)),
+                        new InstantCommand(() -> stateMachine.SetSubsystemState(StateMachine._RobotState.TRANSFER)));
+
+        //* Go to deposit settings
+        gamepad_driver.getGamepadButton(gamepad_driver.rightBumper)
+                .whenPressed(
+                        new InstantCommand(() -> stateMachine.SetSubsystemState(StateMachine._RobotState.DEPOSIT)));
 
         //* Toggle bucket position
         gamepad_codriver.getGamepadButton(gamepad_driver.square)
-                .toggleWhenActive(new SetOuttakeTiltServoCommand(outtakeManager, OuttakeManager._OuttakeTiltServoState.HIGH),
+                .toggleWhenActive(
+                        new SetOuttakeTiltServoCommand(outtakeManager, OuttakeManager._OuttakeTiltServoState.HIGH),
                         new SetOuttakeTiltServoCommand(outtakeManager, OuttakeManager._OuttakeTiltServoState.LOW));
 
         //* Toggle speciment claw
         gamepad_codriver.getGamepadButton(gamepad_driver.cross)
-                .toggleWhenActive(new SetSpecimentServoPositionCommand(outtakeManager, OuttakeManager._SpecimentServoState.OPEN), new SetSpecimentServoPositionCommand(outtakeManager, OuttakeManager._SpecimentServoState.CLOSED));
-
-        //* Go to deposit settings
-        gamepad_driver.getGamepadButton(gamepad_driver.rightBumper)
-                .whenPressed(() -> CommandScheduler.getInstance().schedule(new SetOuttakeStateCommand(OuttakeManager._OuttakeState.DEPOSIT, outtakeManager, gamepad_driver)));
+                .toggleWhenActive(
+                        new SetSpecimentServoPositionCommand(outtakeManager, OuttakeManager._SpecimentServoState.OPEN),
+                        new SetSpecimentServoPositionCommand(outtakeManager, OuttakeManager._SpecimentServoState.CLOSED));
 
         //* Reset IMU
         gamepad_driver.getGamepadButton(gamepad_driver.options)
-                .whenPressed(new InstantCommand(() -> drive.pinpoint.resetPosAndIMU()));
+                .whenPressed(
+                        new InstantCommand(() -> drive.pinpoint.resetPosAndIMU()));
 
     }
 
@@ -62,6 +67,7 @@ public class MainTeleOp extends OpModeTemplate {
         intakeManager.loop();
         outtakeManager.loop();
         ascentManager.loop();
+        stateMachine.loop();
     }
 
     @Override

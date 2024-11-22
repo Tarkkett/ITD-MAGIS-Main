@@ -11,18 +11,16 @@ import org.firstinspires.ftc.teamcode.util.GamepadPlus;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DriveManager implements State<DriveManager.DriveState> {
+public class DriveManager implements Manager<DriveManager._DriveState> {
 
     private final HardwareManager hardwareManager;
     private final Telemetry telemetry;
     private final GamepadPlus gamepadDriver;
 
-    private DriveState state = DriveState.LOCKED;
+    private _DriveState managerState = _DriveState.LOCKED;
 
     private Thread movementControlThread;
     private MovementControlRunnable movementControlRunnable;
-
-    private final Map<Transition, Runnable> stateTransitionActions = new HashMap<>();
 
     public DriveManager(HardwareManager hardwareManager, Telemetry telemetry, GamepadPlus gamepadDriver, PinpointDrive drive) {
         this.hardwareManager = hardwareManager;
@@ -30,7 +28,6 @@ public class DriveManager implements State<DriveManager.DriveState> {
         this.gamepadDriver = gamepadDriver;
 
         configureDrive(drive);
-        InitializeStateTransitionActions();
     }
 
     private void configureDrive(PinpointDrive drive) {
@@ -41,51 +38,12 @@ public class DriveManager implements State<DriveManager.DriveState> {
     }
 
     @Override
-    public void InitializeStateTransitionActions() {
-
-        //*State machine should control this later
-        stateTransitionActions.put(new Transition(DriveState.LOCKED, DriveState.UNLOCKED), this::onUnlock);
-        stateTransitionActions.put(new Transition(DriveState.UNLOCKED, DriveState.LOCKED), this::onLock);
-    }
-
-    @Override
-    public void SetSubsystemState(DriveState newState) {
-        if (state != newState) {
-            DriveState previousState = state;
-            state = newState;
-
-            Transition transition = new Transition(previousState, newState);
-            Runnable action = stateTransitionActions.get(transition);
-            if (action != null) {
-                action.run();
-            }
-
-            telemetry.addData("Drive State Changed:", newState);
-            telemetry.update();
-        }
-    }
-
-    private void onUnlock() {
-        telemetry.addLine("Drive system unlocked and ready to move.");
-        telemetry.update();
-
-
-    }
-
-    private void onLock() {
-        telemetry.addLine("Drive system locked.");
-        telemetry.update();
-        hardwareManager.lockDrivetrain();
-
-    }
-
-    @Override
-    public DriveState GetSubsystemState(){
-        return state;
-    }
-
-    @Override
     public void loop() {}
+
+    @Override
+    public _DriveState GetManagerState() {
+        return managerState;
+    }
 
     public void drive(Pose2d movementVector, double rotationInput, double powerMultiplier) {
 
@@ -103,7 +61,7 @@ public class DriveManager implements State<DriveManager.DriveState> {
         double frontRightPower = (adjustedY - adjustedX - rotationInput) / maxMagnitude;
         double backRightPower = (adjustedY + adjustedX - rotationInput) / maxMagnitude;
 
-        if (GetSubsystemState() != DriveState.LOCKED) {
+        if (managerState != _DriveState.LOCKED) {
             hardwareManager.frontLeft.setPower(frontLeftPower * powerMultiplier);
             hardwareManager.backLeft.setPower(backLeftPower * powerMultiplier);
             hardwareManager.frontRight.setPower(frontRightPower * powerMultiplier);
@@ -126,7 +84,7 @@ public class DriveManager implements State<DriveManager.DriveState> {
         }
     }
 
-    public enum DriveState {
+    public enum _DriveState {
         UNLOCKED,
         LOCKED
     }
