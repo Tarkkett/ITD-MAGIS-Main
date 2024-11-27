@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.commands;
 
-import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 
@@ -13,20 +12,22 @@ import org.firstinspires.ftc.teamcode.util.GamepadPlus;
 
 public class SetIntakeStateCommand extends SequentialCommandGroup {
 
-    IntakeManager manager;
 
-    public SetIntakeStateCommand(IntakeManager manager, GamepadPlus gamepad_driver, GamepadPlus gamepad_codriver) {
+    public SetIntakeStateCommand(IntakeManager._IntakeState targetState, IntakeManager manager, GamepadPlus gamepad_driver, GamepadPlus gamepad_codriver) {
 
-        this.manager = manager;
+        switch (targetState){
+            case INTAKE:
+                addCommands(
+                        new ParallelCommandGroup(
+                                new SetIntakeSlidePositionCommand(manager, IntakeManager._SlideState.EXTENDED),
+                                new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.AIMING),
+                                new SetIntakeGripStateCommand(manager, IntakeManager._GripState.RELEASE)
+                        ),
+                        new IntakePositionSelector(manager, gamepad_driver, gamepad_codriver)
+                );
+                break;
 
-        addCommands(
-                new ParallelCommandGroup(
-                        new SetIntakeSlidePositionCommand(manager, IntakeManager._SlideState.EXTENDED),
-                        new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.AIMING),
-                        new SetIntakeGripStateCommand(manager, IntakeManager._GripState.RELEASE)
-                ),
-                new IntakePositionSelector(manager, gamepad_driver, gamepad_codriver)
-                        .whenFinished(() -> manager.isSelectingIntakePosition = false)
-        );
+
+        }
     }
 }

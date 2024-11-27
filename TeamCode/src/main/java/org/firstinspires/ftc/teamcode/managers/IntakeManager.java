@@ -3,14 +3,9 @@ package org.firstinspires.ftc.teamcode.managers;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
-import com.qualcomm.robotcore.eventloop.SyncdDevice;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.util.State;
 import org.firstinspires.ftc.teamcode.drivers.C_PID;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @SuppressWarnings("rawtypes")
 @Config
@@ -20,7 +15,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     private static final int MAX_SLIDE_EXTEND = 950;
 
     private final HardwareManager hardwareManager;
-    public boolean isSelectingIntakePosition = false;
+    public boolean selectingProcess = false;
     private Telemetry telemetry;
     private final GamepadEx gamepad_driver;
 
@@ -55,7 +50,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
 
     @Override
     public _IntakeState GetManagerState() {
-        if (isSelectingIntakePosition){
+        if (selectingProcess){
             return _IntakeState.INTAKE;
         }
         else{
@@ -131,7 +126,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     }
 
     public void controlYawAngle(double yawServoAngle) {
-        if (isSelectingIntakePosition){
+        if (selectingProcess){
             hardwareManager.yawServo.setPosition(yawServoAngle);
         }
     }

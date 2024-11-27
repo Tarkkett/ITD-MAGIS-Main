@@ -9,39 +9,38 @@ import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetLiftPosition
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetSpecimentServoPositionCommand;
 import org.firstinspires.ftc.teamcode.commands.selectors.DepositPositionSelector;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
+import org.firstinspires.ftc.teamcode.util.GamepadPlus;
 
 public class SetOuttakeStateCommand extends SequentialCommandGroup {
 
-    OuttakeManager manager;
+    public SetOuttakeStateCommand(OuttakeManager._OuttakeState targetState, OuttakeManager manager, GamepadPlus gamepad_driver, GamepadPlus gamepad_codriver) {
 
-    public SetOuttakeStateCommand(OuttakeManager._OuttakeState targetState, OuttakeManager outtakeManager, GamepadEx gamepad_driver) {
+        switch (targetState){
+            case HOME:
+                if (!manager.selectingProcess){
+                    addCommands(
+                            new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HOME),
+                            new InstantCommand(() -> gamepad_driver.rumble(500)),
+                            new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.LOW),
+                            new SetSpecimentServoPositionCommand(manager, OuttakeManager._SpecimentServoState.OPEN)
+                    );
+                }
+                break;
+            case TRANSFER:
+                addCommands(
+                        new SetLiftPositionCommand(manager, OuttakeManager._LiftState.TRANSFER),
+                        new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.LOW),
+                        new SetSpecimentServoPositionCommand(manager, OuttakeManager._SpecimentServoState.CLOSED)
+                );
+                break;
+            case DEPOSIT:
+                addCommands(
+                        new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.LOW),
+                        new SetSpecimentServoPositionCommand(manager, OuttakeManager._SpecimentServoState.CLOSED),
+                        new DepositPositionSelector(gamepad_driver, manager)
 
-        manager = outtakeManager;
-
-        if (targetState == OuttakeManager._OuttakeState.HOME && !manager.selectingProcess){
-            addCommands(
-                    new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HOME),
-                    new InstantCommand(() -> gamepad_driver.gamepad.rumble(500)),
-                    new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.LOW),
-                    new SetSpecimentServoPositionCommand(manager, OuttakeManager._SpecimentServoState.OPEN)
-            );
-        }
-
-        else if (targetState == OuttakeManager._OuttakeState.DEPOSIT){
-            addCommands(
-                new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.LOW),
-                new SetSpecimentServoPositionCommand(manager, OuttakeManager._SpecimentServoState.CLOSED),
-                new DepositPositionSelector(gamepad_driver, manager)
-                    
-            );
-        }
-
-        else if (targetState == OuttakeManager._OuttakeState.TRANSFER){
-            addCommands(
-                    new SetLiftPositionCommand(manager, OuttakeManager._LiftState.TRANSFER),
-                    new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.LOW),
-                    new SetSpecimentServoPositionCommand(manager, OuttakeManager._SpecimentServoState.CLOSED)
-            );
+                );
+                break;
         }
     }
 }

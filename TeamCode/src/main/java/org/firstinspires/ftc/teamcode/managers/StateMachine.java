@@ -1,13 +1,26 @@
 package org.firstinspires.ftc.teamcode.managers;
 
+import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+import com.qualcomm.robotcore.robot.RobotState;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.commands.SetIntakeStateCommand;
+import org.firstinspires.ftc.teamcode.commands.SetOuttakeStateCommand;
+import org.firstinspires.ftc.teamcode.commands.TransferCommand;
+import org.firstinspires.ftc.teamcode.util.GamepadPlus;
 import org.firstinspires.ftc.teamcode.util.State;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class StateMachine implements State<StateMachine._RobotState> {
 
     private static StateMachine instance;
 
     public _RobotState robotState = _RobotState.HOME;
+    public _RobotState previousState;
 
     private OuttakeManager outtakeManager;
     private IntakeManager intakeManager;
@@ -16,33 +29,100 @@ public class StateMachine implements State<StateMachine._RobotState> {
     IntakeManager._IntakeState intakeState;
     OuttakeManager._OuttakeState outtakeState;
     DriveManager._DriveState driveState;
-    
-    
+
+    GamepadPlus gamepad_driver;
+    GamepadPlus gamepad_codriver;
+
+    private final Map<Transition, Runnable> stateTransitionActions = new HashMap<>();
 
     Telemetry tel;
 
 
-    public StateMachine(OuttakeManager outtake, IntakeManager intake, DriveManager drive, Telemetry tel){
+
+    public StateMachine(OuttakeManager outtake, IntakeManager intake, DriveManager drive, Telemetry tel, GamepadPlus gamepad_driver, GamepadPlus gamepad_codriver){
         this.outtakeManager = outtake;
         this.intakeManager = intake;
         this.tel = tel;
+        this.gamepad_codriver = gamepad_codriver;
+        this.gamepad_driver = gamepad_driver;
     }
 
-    public static StateMachine getInstance(OuttakeManager outtake, IntakeManager intake, DriveManager drive, Telemetry tel) {
+    public static StateMachine getInstance(OuttakeManager outtake, IntakeManager intake, DriveManager drive, Telemetry tel, GamepadPlus gamepad_driver, GamepadPlus gamepad_codriver) {
         if (instance == null) {
-            instance = new StateMachine(outtake, intake, drive, tel);
+            instance = new StateMachine(outtake, intake, drive, tel, gamepad_driver, gamepad_codriver);
         }
         return instance;
     }
 
     @Override
     public void InitializeStateTransitionActions() {
+        stateTransitionActions.put(new Transition(_RobotState.HOME, _RobotState.INTAKE), this::onIntake);
+        stateTransitionActions.put(new Transition(_RobotState.TRANSFER, _RobotState.INTAKE), this::onIntake);
+        stateTransitionActions.put(new Transition(_RobotState.DEPOSIT, _RobotState.INTAKE), this::onIntake);
+        stateTransitionActions.put(new Transition(_RobotState.HOME, _RobotState.DEPOSIT), this::onOuttake);
+        stateTransitionActions.put(new Transition(_RobotState.TRANSFER, _RobotState.DEPOSIT), this::onOuttake);
+        stateTransitionActions.put(new Transition(_RobotState.INTAKE, _RobotState.DEPOSIT), this::onOuttake);
+    }
 
+    private void onOuttake() {
+        intakeManager.selectingProcess = false;
+        gamepad_driver.gamepad.setLedColor(1, 0, 0, 3000);
+        gamepad_codriver.gamepad.setLedColor(1, 0, 0, 3000);
+    }
+
+    private void onIntake() {
+        outtakeManager.selectingProcess = false;
+        gamepad_driver.gamepad.setLedColor(0, 1, 0, 3000);
+        gamepad_codriver.gamepad.setLedColor(0, 1, 0, 3000);
     }
 
     @Override
-    public void SetSubsystemState(_RobotState state) {
+    public void SetSubsystemState(_RobotState newState) {
 
+        if (robotState != newState) {
+            _RobotState previousState = robotState;
+            robotState = newState;
+            Transition transition = new Transition(previousState, newState);
+            Runnable action = stateTransitionActions.get(transition);
+            if (action != null) {
+                action.run();
+            }
+        }
+
+
+        switch (newState){
+            case DEPOSIT:
+                CommandScheduler.getInstance().schedule(
+                        new SequentialCommandGroup(
+                                new SetOuttakeStateCommand(OuttakeManager._OuttakeState.DEPOSIT, outtakeManager, gamepad_driver, gamepad_codriver),
+                                new SetIntakeStateCommand(IntakeManager._IntakeState.HOME, intakeManager, gamepad_driver, gamepad_codriver)
+                        )
+                );
+                break;
+            case INTAKE:
+                CommandScheduler.getInstance().schedule(
+                        new SequentialCommandGroup(
+                                new SetIntakeStateCommand(IntakeManager._IntakeState.INTAKE, intakeManager, gamepad_driver, gamepad_codriver),
+                                new SetOuttakeStateCommand(OuttakeManager._OuttakeState.HOME, outtakeManager, gamepad_driver, gamepad_codriver)
+                        )
+                );
+                break;
+            case TRANSFER:
+                CommandScheduler.getInstance().schedule(
+                        new SequentialCommandGroup(
+                                new TransferCommand(intakeManager, outtakeManager)
+                        )
+                );
+                break;
+            case HOME:
+                CommandScheduler.getInstance().schedule(
+                        new SequentialCommandGroup(
+                                new SetIntakeStateCommand(IntakeManager._IntakeState.HOME, intakeManager, gamepad_driver, gamepad_codriver),
+                                new SetOuttakeStateCommand(OuttakeManager._OuttakeState.HOME, outtakeManager, gamepad_driver, gamepad_codriver)
+                        )
+                );
+                break;
+        }
     }
 
     @Override
@@ -71,8 +151,10 @@ public class StateMachine implements State<StateMachine._RobotState> {
         switch (driveState){
             case LOCKED:
                 driveManager.onLocked();
+                break;
             case UNLOCKED:
                 driveManager.onUnlocked();
+                break;
         }
     }
 

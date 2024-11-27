@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 public class TransferCommand extends SequentialCommandGroup {
 
     public TransferCommand(IntakeManager intake, OuttakeManager outtake){
-        if (!intake.isSelectingIntakePosition && !outtake.selectingProcess) {
+        if (!intake.selectingProcess && !outtake.selectingProcess) {
             addCommands(
                     new ParallelCommandGroup(
                             new SetIntakeSlidePositionCommand(intake, IntakeManager._SlideState.TRANSFER_WAIT),

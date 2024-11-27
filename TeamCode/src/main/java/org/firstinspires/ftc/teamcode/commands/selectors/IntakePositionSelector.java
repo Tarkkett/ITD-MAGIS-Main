@@ -6,7 +6,6 @@ import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 
-import org.firstinspires.ftc.teamcode.commands.low_level.intake.AdjustYawServoCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.MoveIntakeSomeBit;
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeGripStateCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeTiltServoPosCommand;
@@ -31,13 +30,13 @@ public class IntakePositionSelector extends CommandBase {
 
     @Override
     public void initialize() {
-        manager.isSelectingIntakePosition = true;
+        manager.selectingProcess = true;
     }
 
     @Override
     public void execute() {
 
-        manager.isSelectingIntakePosition = true;
+        manager.selectingProcess = true;
 
         if (gamepad_driver.isDown(gamepad_driver.dpad_Up)) {
             CommandScheduler.getInstance().schedule(
