@@ -16,7 +16,7 @@ public class HardwareTestManager{
     HardwareManager hardware;
 
     C_PID intakeController = new C_PID(0,0,0);
-    C_PID outtakeController = new C_PID(0,0,0);
+    C_PID outtakeController = new C_PID(0.03,0.5,0.1);
 
     public static double OUTTAKE_Kp;
     public static double OUTTAKE_Ki;

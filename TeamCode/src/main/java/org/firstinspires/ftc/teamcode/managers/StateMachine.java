@@ -8,6 +8,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.commands.SetIntakeStateCommand;
 import org.firstinspires.ftc.teamcode.commands.SetOuttakeStateCommand;
 import org.firstinspires.ftc.teamcode.commands.TransferCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeTiltServoCommand;
 import org.firstinspires.ftc.teamcode.util.GamepadPlus;
 import org.firstinspires.ftc.teamcode.util.State;
 
@@ -45,6 +46,7 @@ public class StateMachine implements State<StateMachine._RobotState> {
         this.tel = tel;
         this.gamepad_codriver = gamepad_codriver;
         this.gamepad_driver = gamepad_driver;
+        this.driveManager = drive;
     }
 
     public static StateMachine getInstance(OuttakeManager outtake, IntakeManager intake, DriveManager drive, Telemetry tel, GamepadPlus gamepad_driver, GamepadPlus gamepad_codriver) {
@@ -72,6 +74,7 @@ public class StateMachine implements State<StateMachine._RobotState> {
 
     private void onIntake() {
         outtakeManager.selectingProcess = false;
+        CommandScheduler.getInstance().schedule(new SetOuttakeTiltServoCommand(outtakeManager, OuttakeManager._OuttakeTiltServoState.HIGH));
         gamepad_driver.gamepad.setLedColor(0, 1, 0, 3000);
         gamepad_codriver.gamepad.setLedColor(0, 1, 0, 3000);
     }
@@ -137,6 +140,7 @@ public class StateMachine implements State<StateMachine._RobotState> {
         tel.addData("Outtake feels like:", outtakeState);
         tel.addData("Drivetrain feels like:", driveState);
         tel.addData("Robot feels like:", robotState);
+        tel.update();
 
     }
 

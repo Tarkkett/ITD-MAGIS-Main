@@ -68,7 +68,7 @@ public class DriveManager implements Manager<DriveManager._DriveState> {
             hardwareManager.backRight.setPower(backRightPower * powerMultiplier);
         }
         else {
-            if (gamepadDriver.gamepad.left_stick_x > 0.1 || gamepadDriver.gamepad.right_stick_x > 0.1){
+            if (gamepadDriver.gamepad.left_stick_x > 0.1 || gamepadDriver.gamepad.left_stick_x < -0.1 || gamepadDriver.gamepad.left_stick_y > 0.1 || gamepadDriver.gamepad.left_stick_y < -0.1){
                 gamepadDriver.rumble(100);
             }
         }
@@ -90,11 +90,13 @@ public class DriveManager implements Manager<DriveManager._DriveState> {
     }
 
     public void onLocked() {
+        managerState = _DriveState.LOCKED;
         hardwareManager.lockDrivetrain();
         gamepadDriver.gamepad.setLedColor(1, 0, 0, 100000);
     }
 
     public void onUnlocked(){
+        managerState = _DriveState.UNLOCKED;
         gamepadDriver.gamepad.setLedColor(0, 1, 0, 100000);
     }
 

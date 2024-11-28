@@ -61,6 +61,11 @@ public class MainTeleOp extends OpModeTemplate {
     }
 
     @Override
+    public void start(){
+        driveManager.onUnlocked();
+    }
+
+    @Override
     public void loop() {
 
         CommandScheduler.getInstance().run();

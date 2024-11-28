@@ -36,8 +36,6 @@ public class IntakePositionSelector extends CommandBase {
     @Override
     public void execute() {
 
-        manager.selectingProcess = true;
-
         if (gamepad_driver.isDown(gamepad_driver.dpad_Up)) {
             CommandScheduler.getInstance().schedule(
                     new MoveIntakeSomeBit(manager, DISTANCE)
