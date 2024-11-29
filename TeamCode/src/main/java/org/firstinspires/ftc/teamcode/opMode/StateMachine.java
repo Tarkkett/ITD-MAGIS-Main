@@ -85,12 +85,9 @@ public class StateMachine implements State<StateMachine._RobotState> {
     @Override
     public void SetSubsystemState(_RobotState newState) {
 
-        if (robotState != newState) {
-            robotState = newState;
-
-
             switch (newState) {
                 case DEPOSIT:
+                    robotState = _RobotState.DEPOSIT;
                     intakeManager.managerState = IntakeManager._IntakeState.IDLE;
                     intakeManager.selectingProcess = false;
                     CommandScheduler.getInstance().schedule(
@@ -101,18 +98,19 @@ public class StateMachine implements State<StateMachine._RobotState> {
                     );
                     break;
                 case INTAKE:
+                    robotState = _RobotState.INTAKE;
                     intakeManager.managerState = IntakeManager._IntakeState.INTAKE;
                     outtakeManager.selectingProcess = false;
                     CommandScheduler.getInstance().schedule(
                             new SequentialCommandGroup(
-                                    new SetIntakeStateCommand(IntakeManager._IntakeState.INTAKE, intakeManager, gamepad_driver, gamepad_codriver),
-                                    new SetOuttakeStateCommand(OuttakeManager._OuttakeState.HOME, outtakeManager, gamepad_driver, gamepad_codriver)
-
+                                    new SetOuttakeStateCommand(OuttakeManager._OuttakeState.HOME, outtakeManager, gamepad_driver, gamepad_codriver),
+                                    new SetIntakeStateCommand(IntakeManager._IntakeState.INTAKE, intakeManager, gamepad_driver, gamepad_codriver)
 
                             )
                     );
                     break;
                 case TRANSFER:
+                    robotState = _RobotState.TRANSFER;
                     intakeManager.managerState = IntakeManager._IntakeState.TRANSFER;
                     intakeManager.selectingProcess = false;
                     outtakeManager.selectingProcess = false;
@@ -123,6 +121,7 @@ public class StateMachine implements State<StateMachine._RobotState> {
                     );
                     break;
                 case HOME:
+                    robotState = _RobotState.HOME;
                     CommandScheduler.getInstance().schedule(
                             new SequentialCommandGroup(
                                     new SetIntakeStateCommand(IntakeManager._IntakeState.HOME, intakeManager, gamepad_driver, gamepad_codriver),
@@ -131,8 +130,6 @@ public class StateMachine implements State<StateMachine._RobotState> {
                     );
                     break;
             }
-
-        }
     }
 
     @Override
@@ -146,7 +143,7 @@ public class StateMachine implements State<StateMachine._RobotState> {
         tel.addData("Intake feels like:", intakeState);
         tel.addData("Outtake feels like:", outtakeState);
         tel.addData("Drivetrain feels like:", driveState);
-        tel.addData("Robot feels like:", robotState);
+        tel.addData("Robot feels like:", GetSubsystemState());
         tel.update();
 
     }

@@ -11,8 +11,8 @@ import org.firstinspires.ftc.teamcode.drivers.C_PID;
 @Config
 public class IntakeManager implements Manager<IntakeManager._IntakeState> {
 
-    private static final int MIN_SLIDE_RETRACT = 500;
-    private static final int MAX_SLIDE_EXTEND = 950;
+    private static final int MIN_SLIDE_RETRACT = 200;
+    private static final int MAX_SLIDE_EXTEND = 850;
 
     private final HardwareManager hardwareManager;
     public boolean selectingProcess = false;
@@ -24,7 +24,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
 
     public _IntakeState managerState = _IntakeState.HOME;
 
-    C_PID controller = new C_PID(0.02, 0.0004, 0.002);
+    C_PID controller = new C_PID(0.03, 0.0, 0.0006);
 
     public IntakeManager(HardwareManager hardwareManager, Telemetry telemetry, GamepadEx gamepadDriver) {
         this.gamepad_driver = gamepadDriver;
@@ -36,6 +36,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
 
     @Override
     public void loop() {
+
         FtcDashboard dashboard = FtcDashboard.getInstance();
         telemetry = dashboard.getTelemetry();
         currentPos = hardwareManager.intake.getCurrentPosition();
@@ -129,9 +130,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     }
 
     public void controlYawAngle(double yawServoAngle) {
-        if (selectingProcess){
-            hardwareManager.yawServo.setPosition(yawServoAngle);
-        }
+        hardwareManager.yawServo.setPosition(yawServoAngle);
     }
 
     public enum _SlideState {

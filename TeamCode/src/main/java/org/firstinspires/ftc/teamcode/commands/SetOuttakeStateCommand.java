@@ -19,7 +19,7 @@ public class SetOuttakeStateCommand extends SequentialCommandGroup {
             case HOME:
                     addCommands(
                             new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HOME),
-                            new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.LOW),
+                            new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.MID),
                             new SetSpecimentServoPositionCommand(manager, OuttakeManager._SpecimentServoState.OPEN)
                     );
 

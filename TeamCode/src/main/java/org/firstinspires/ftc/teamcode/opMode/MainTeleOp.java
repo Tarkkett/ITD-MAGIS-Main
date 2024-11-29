@@ -37,14 +37,8 @@ public class MainTeleOp extends OpModeTemplate {
                 .whenPressed(
                         new InstantCommand(() -> stateMachine.SetSubsystemState(StateMachine._RobotState.DEPOSIT)));
 
-        //* Toggle bucket position
-        gamepad_codriver.getGamepadButton(gamepad_driver.square)
-                .toggleWhenActive(
-                        new SetOuttakeTiltServoCommand(outtakeManager, OuttakeManager._OuttakeTiltServoState.HIGH),
-                        new SetOuttakeTiltServoCommand(outtakeManager, OuttakeManager._OuttakeTiltServoState.LOW));
-
         //* Toggle speciment claw
-        gamepad_codriver.getGamepadButton(gamepad_driver.cross)
+        gamepad_driver.getGamepadButton(gamepad_driver.cross)
                 .toggleWhenActive(
                         new SetSpecimentServoPositionCommand(outtakeManager, OuttakeManager._SpecimentServoState.OPEN),
                         new SetSpecimentServoPositionCommand(outtakeManager, OuttakeManager._SpecimentServoState.CLOSED));

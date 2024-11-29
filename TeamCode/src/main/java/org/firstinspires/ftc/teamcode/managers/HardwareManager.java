@@ -97,6 +97,7 @@ public class HardwareManager{
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         intake.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        intake.setDirection(DcMotorSimple.Direction.REVERSE);
 
         liftRight.setDirection(DcMotorSimple.Direction.REVERSE);
         liftLeft.setDirection(DcMotorSimple.Direction.FORWARD);

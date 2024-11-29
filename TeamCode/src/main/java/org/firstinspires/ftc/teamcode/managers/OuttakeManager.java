@@ -115,6 +115,9 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
                 case LOW:
                     hardwareManager.outtakeTiltServo.setPosition(_OuttakeTiltServoState.LOW.getPosition());
                     break;
+                case MID:
+                    hardwareManager.outtakeTiltServo.setPosition(_OuttakeTiltServoState.MID.getPosition());
+                    break;
                 case HIGH:
                     hardwareManager.outtakeTiltServo.setPosition(_OuttakeTiltServoState.HIGH.getPosition());
                     break;
@@ -182,7 +185,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     public enum _LiftState{
         LOW_CHAMBER (100),
         LOW_RUNG    (200),
-        HIGH_CHAMBER(1400),
+        HIGH_CHAMBER(1480),
         HIGH_RUNG   (1000),
         TRANSFER    (30),
         HOME        (50),
@@ -224,7 +227,8 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
 
     public enum _OuttakeTiltServoState {
         HIGH    (0f),
-        LOW     (0.77f);
+        LOW     (0.77f),
+        MID(0.5f);
 
         private final float position;
 

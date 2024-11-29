@@ -28,28 +28,33 @@ public class DepositPositionSelector extends CommandBase {
     @Override
     public void execute(){
 
-        if (manager.selectingProcess) {
-            if (gamepad_driver.gamepad.b) {
-                CommandScheduler.getInstance().schedule(new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HIGH_CHAMBER));
-                isSelected = true;
-                manager.selectingProcess = false;
-            } else if (gamepad_driver.gamepad.x) {
-                CommandScheduler.getInstance().schedule(new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HOME));
-                isSelected = true;
-                manager.selectingProcess = false;
-            } else if (gamepad_driver.gamepad.y) {
-                CommandScheduler.getInstance().schedule(new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HIGH_BUCKET));
-                isSelected = true;
-                manager.selectingProcess = false;
-            } else if (gamepad_driver.gamepad.left_stick_button) {
-                //!OVERRIDE
-                isSelected = true;
-                manager.selectingProcess = false;
-            } else if (gamepad_driver.gamepad.dpad_up) {
-                CommandScheduler.getInstance().schedule(new MoveLiftSomeBit(manager, 50));
-            } else if (gamepad_driver.gamepad.dpad_down) {
-                CommandScheduler.getInstance().schedule(new MoveLiftSomeBit(manager, -50));
-            }
+        if (manager.selectingProcess){
+        if (gamepad_driver.gamepad.circle){
+            CommandScheduler.getInstance().schedule(new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HIGH_CHAMBER));
+            isSelected = true;
+            manager.selectingProcess = false;
+        }
+        else if (gamepad_driver.gamepad.square){
+            CommandScheduler.getInstance().schedule(new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HOME));
+            isSelected = true;
+            manager.selectingProcess = false;
+        }
+        else if (gamepad_driver.gamepad.triangle){
+            CommandScheduler.getInstance().schedule(new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HIGH_BUCKET));
+            isSelected = true;
+            manager.selectingProcess = false;
+        }
+        else if (gamepad_driver.gamepad.left_stick_button){
+            //!OVERRIDE
+            isSelected = true;
+            manager.selectingProcess = false;
+        }
+        else if (gamepad_driver.gamepad.dpad_up){
+            CommandScheduler.getInstance().schedule(new MoveLiftSomeBit(manager, 50));
+        }
+        else if (gamepad_driver.gamepad.dpad_down){
+            CommandScheduler.getInstance().schedule(new MoveLiftSomeBit(manager, -50));
+        }
         }
     }
 
