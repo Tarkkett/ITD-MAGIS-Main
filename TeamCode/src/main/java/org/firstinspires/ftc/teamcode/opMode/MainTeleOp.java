@@ -4,14 +4,10 @@ import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.commands.SetIntakeStateCommand;
-import org.firstinspires.ftc.teamcode.commands.SetOuttakeStateCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeTiltServoCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetSpecimentServoPositionCommand;
-import org.firstinspires.ftc.teamcode.commands.TransferCommand;
 import org.firstinspires.ftc.teamcode.managers.DriveManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
-import org.firstinspires.ftc.teamcode.managers.StateMachine;
 
 @TeleOp(name = "Main TeleOp", group = "OpMode")
 public class MainTeleOp extends OpModeTemplate {

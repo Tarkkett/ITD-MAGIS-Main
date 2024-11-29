@@ -20,6 +20,8 @@ public class IntakePositionSelector extends CommandBase {
     GamepadPlus gamepad_driver;
     GamepadPlus gamepad_codriver;
 
+    private boolean isSelected = false;
+
     public static double shiftAngleCustom = 0;
 
     public IntakePositionSelector(IntakeManager manager, GamepadPlus gamepad_driver, GamepadPlus gamepad_codriver) {
@@ -36,33 +38,34 @@ public class IntakePositionSelector extends CommandBase {
     @Override
     public void execute() {
 
-        if (gamepad_driver.isDown(gamepad_driver.dpad_Up)) {
-            CommandScheduler.getInstance().schedule(
-                    new MoveIntakeSomeBit(manager, DISTANCE)
-            );
-        } else if (gamepad_driver.isDown(gamepad_driver.dpad_Down)) {
-            CommandScheduler.getInstance().schedule(
-                    new MoveIntakeSomeBit(manager, -DISTANCE)
-            );
-        } else if (gamepad_driver.isDown(gamepad_driver.square)) {
-            CommandScheduler.getInstance().schedule(
-                    new SequentialCommandGroup(
-                            new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.AIMING),
-                            new WaitCommand(100),
-                            new SetIntakeGripStateCommand(manager, IntakeManager._GripState.RELEASE)
-                    )
-            );
-        } else if (gamepad_driver.isDown(gamepad_driver.circle)) {
-            CommandScheduler.getInstance().schedule(
-                    new SequentialCommandGroup(
-                            new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.LOWERED),
-                            new WaitCommand(500),
-                            new SetIntakeGripStateCommand(manager, IntakeManager._GripState.GRIP)
-                    )
-            );
+        if (manager.selectingProcess) {
+            if (gamepad_driver.isDown(gamepad_driver.dpad_Up)) {
+                CommandScheduler.getInstance().schedule(
+                        new MoveIntakeSomeBit(manager, DISTANCE)
+                );
+            } else if (gamepad_driver.isDown(gamepad_driver.dpad_Down)) {
+                CommandScheduler.getInstance().schedule(
+                        new MoveIntakeSomeBit(manager, -DISTANCE)
+                );
+            } else if (gamepad_driver.isDown(gamepad_driver.square)) {
+                CommandScheduler.getInstance().schedule(
+                        new SequentialCommandGroup(
+                                new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.AIMING),
+                                new WaitCommand(100),
+                                new SetIntakeGripStateCommand(manager, IntakeManager._GripState.RELEASE)
+                        )
+                );
+            } else if (gamepad_driver.isDown(gamepad_driver.circle)) {
+                CommandScheduler.getInstance().schedule(
+                        new SequentialCommandGroup(
+                                new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.LOWERED),
+                                new WaitCommand(500),
+                                new SetIntakeGripStateCommand(manager, IntakeManager._GripState.GRIP)
+                        )
+                );
+            }
+            ControlYawManually(gamepad_codriver.getRightX(), gamepad_codriver.getRightY());
         }
-        ControlYawManually(gamepad_codriver. getRightX(), gamepad_codriver.getRightY());
-
 
     }
 

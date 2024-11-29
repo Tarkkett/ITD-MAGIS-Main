@@ -22,7 +22,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     public int targetPosition;
     public int currentPos = 0;
 
-    private _IntakeState managerState = _IntakeState.HOME;
+    public _IntakeState managerState = _IntakeState.HOME;
 
     C_PID controller = new C_PID(0.02, 0.0004, 0.002);
 
@@ -50,8 +50,11 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
 
     @Override
     public _IntakeState GetManagerState() {
-        if (selectingProcess){
+        if (selectingProcess && currentPos > 150){
             return _IntakeState.INTAKE;
+        }
+        if (currentPos < 150){
+            return  _IntakeState.HOME;
         }
         else{
             return _IntakeState.IDLE;
@@ -165,7 +168,8 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
         TRANSFER(0.32f),
         LOWERED (0.93f),
         AIMING(0.87f),
-        PACKED(0.29f);
+        PACKED(0.29f),
+        CLEARED(0.5f);
 
         private final float position;
 
@@ -200,6 +204,6 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     public enum _IntakeState{
         INTAKE,
         IDLE,
-        HOME
+        TRANSFER, HOME
     }
 }

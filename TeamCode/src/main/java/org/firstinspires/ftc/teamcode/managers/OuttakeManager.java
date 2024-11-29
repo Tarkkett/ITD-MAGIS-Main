@@ -28,22 +28,22 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
 
     private OuttakeManager._OuttakeState managerState;
 
-    C_PID controller = new C_PID(0.015,0,0.0003);
+    C_PID controller;
     public int targetPosition;
     public int encoderPos;
 
-    private final Map<Transition, Runnable> stateTransitionActions = new HashMap<>();
-    private boolean isTransfer = false;
-
     private boolean isAutoLoop = true;
 
-    _LiftMode mode = _LiftMode.AUTO;
+    _LiftMode mode;
 
     public OuttakeManager(HardwareManager hardwareManager, Telemetry telemetry, IntakeManager intakeManager){
 
         this.hardwareManager = hardwareManager;
         this.telemetry = telemetry;
         this.intakeManager = intakeManager;
+
+        controller = new C_PID(0.015,0,0.0003);
+        mode = _LiftMode.AUTO;
 
     }
 
@@ -62,22 +62,17 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
             hardwareManager.liftLeft.setPower(power);
             hardwareManager.liftRight.setPower(power);
         }
-
-        CheckForPosition(encoderPos);
     }
 
     @Override
     public _OuttakeState GetManagerState() {
-        if (selectingProcess){
+        if (selectingProcess && encoderPos > 150){
             return _OuttakeState.DEPOSIT;
-        }
-        else return _OuttakeState.IDLE;
-    }
-
-    private void CheckForPosition(double encoderPos) {
-        int threshold = 20;
-        isTransfer = encoderPos > _LiftState.TRANSFER.getPosition() - threshold && encoderPos < _LiftState.TRANSFER.getPosition() + threshold;
-
+        } else if (encoderPos < 150){
+            return _OuttakeState.HOME;
+        } else if (managerState == _OuttakeState.TRANSFER && encoderPos < 240){
+            return _OuttakeState.TRANSFER;
+        } else return _OuttakeState.IDLE;
     }
 
     private int Average(float p1, float p2) {
@@ -116,7 +111,6 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     }
 
     public void update(_OuttakeTiltServoState targetState) {
-//        if (!intakeManager.isSelectingIntakePosition){
             switch (targetState){
                 case LOW:
                     hardwareManager.outtakeTiltServo.setPosition(_OuttakeTiltServoState.LOW.getPosition());
@@ -125,7 +119,6 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
                     hardwareManager.outtakeTiltServo.setPosition(_OuttakeTiltServoState.HIGH.getPosition());
                     break;
             }
-//        }
     }
 
     public void update(_SpecimentServoState targetState) {
@@ -150,29 +143,11 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         }
     }
 
-    public boolean isTransfer() {
-        return isTransfer;
-    }
-
     public void lowerLiftPosition(int i) {
         int newPos = encoderPos + i;
         if (newPos > MIN_THRESHOLD && newPos < MAX_THRESHOLD){
             targetPosition = newPos;
         }
-    }
-
-    public Action stop() {
-        return new Action(){
-        private boolean initialize = false;
-            @Override
-            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                if (!initialize){
-                    isAutoLoop = false;
-                    initialize = true;
-                }
-                return false;
-            }
-        };
     }
 
     public void updateMode(boolean isAuto) {
@@ -183,52 +158,25 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         }
     }
 
-    public class LoopLift implements Action {
-            @Override
-            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                if (isAutoLoop) {
-                    loop();
-                }
-                else{ return false;}
-
-                return true;
-
-            }
-    }
-    public Action loopLift(){
-        return new LoopLift();
+    public boolean isTransfer() {
+        if (GetManagerState() == _OuttakeState.TRANSFER){
+            return true;
+        }
+        return false;
     }
 
-    public Action OpenCloseSpeciment(boolean isOpen) {
-        return new Action(){
-            private boolean initialize = false;
-            @Override
-            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                if (!initialize){
-                    if (isOpen){
-                        hardwareManager.specimentServo.setPosition(0);
-                    }
-                    else hardwareManager.specimentServo.setPosition(0.5);
-                    initialize = true;
-                }
-                return false;
-            }
-        };
-    }
-
-    @SuppressWarnings("unused")
-    public enum _OuttakeState{
-        HOME,
-        DEPOSIT,
-        SPECIMENT_GRAB,
-        IDLE, TRANSFER
-    }
-
-    public boolean isAtPosition(int position, int targetPosition, int margin){
+    public boolean isNotAtPosition(int position, int targetPosition, int margin){
         if (position < targetPosition + margin && position > targetPosition - margin){
             return false;
         }
         else return true;
+    }
+
+    public enum _OuttakeState{
+        HOME,
+        DEPOSIT,
+        IDLE,
+        TRANSFER
     }
 
     public enum _LiftState{
@@ -304,7 +252,21 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         }
     }
 
-    public Action driveLift(int position){
+    public Action LoopLift(){
+        return new Action(){
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket){
+                if (isAutoLoop) {
+                    loop();
+                }
+                else{ return false;}
+
+                return true;
+            }
+        };
+    }
+
+    public Action DriveLift(int position){
         return new Action(){
 
             private boolean initialized = false;
@@ -314,10 +276,40 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
                     targetPosition = position;
                     initialized = true;
                 }
-                return isAtPosition(encoderPos, targetPosition, 10);
+                return isNotAtPosition(encoderPos, targetPosition, 10);
 
             }
         };
+    }
 
+    public Action OpenCloseSpeciment(boolean isOpen) {
+        return new Action(){
+            private boolean initialize = false;
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                if (!initialize){
+                    if (isOpen){
+                        hardwareManager.specimentServo.setPosition(0);
+                    }
+                    else hardwareManager.specimentServo.setPosition(0.5);
+                    initialize = true;
+                }
+                return false;
+            }
+        };
+    }
+
+    public Action StopLift() {
+        return new Action(){
+            private boolean initialize = false;
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                if (!initialize){
+                    isAutoLoop = false;
+                    initialize = true;
+                }
+                return false;
+            }
+        };
     }
 }

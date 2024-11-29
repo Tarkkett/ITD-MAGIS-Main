@@ -27,7 +27,13 @@ public class SetIntakeStateCommand extends SequentialCommandGroup {
                 );
                 break;
 
-
+            case HOME:
+                addCommands(
+                        new SetIntakeSlidePositionCommand(manager, IntakeManager._SlideState.RETRACTED),
+                        new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.CLEARED),
+                        new SetIntakeGripStateCommand(manager, IntakeManager._GripState.RELEASE)
+                );
+                break;
         }
     }
 }

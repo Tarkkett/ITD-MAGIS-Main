@@ -3,22 +3,15 @@ package org.firstinspires.ftc.teamcode.opMode;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.arcrobotics.ftclib.command.CommandScheduler;
-import com.arcrobotics.ftclib.command.SequentialCommandGroup;
-import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.PinpointDrive;
 import org.firstinspires.ftc.teamcode.commands.low_level.SetServosToDefaultsCommand;
-import org.firstinspires.ftc.teamcode.commands.low_level.intake.AdjustYawServoCommand;
-import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeTiltServoPosCommand;
-import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeTiltServoCommand;
-import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetSpecimentServoPositionCommand;
 import org.firstinspires.ftc.teamcode.managers.AscentManager;
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.managers.DriveManager;
 import org.firstinspires.ftc.teamcode.managers.HardwareManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
-import org.firstinspires.ftc.teamcode.managers.StateMachine;
 import org.firstinspires.ftc.teamcode.util.GamepadPlus;
 
 public abstract class OpModeTemplate extends OpMode {

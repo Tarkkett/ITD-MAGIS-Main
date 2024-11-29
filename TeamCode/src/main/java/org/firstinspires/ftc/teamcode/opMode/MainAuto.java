@@ -42,18 +42,18 @@ public class MainAuto extends OpModeTemplate {
         Actions.runBlocking(
             new ParallelAction(
 
-                outtakeManager.loopLift(),
+                outtakeManager.LoopLift(),
 
                 new SequentialAction(
 
                     //Drive to Deposit Speciment from start pos
                     new ParallelAction(
-                        outtakeManager.driveLift(1500),
+                        outtakeManager.DriveLift(1500),
                         drive.actionBuilder(beginPose).strafeToConstantHeading(new Vector2d(-29.6,0)).build()
 
                     ),
                     //Score Points
-                    outtakeManager.driveLift(920),
+                    outtakeManager.DriveLift(920),
                     new SleepAction(0.5),
                     outtakeManager.OpenCloseSpeciment(true),
                     new SleepAction(0.2),
@@ -61,7 +61,7 @@ public class MainAuto extends OpModeTemplate {
                         //Home Lift
                         new SequentialAction(
                             new SleepAction(0.2),
-                            outtakeManager.driveLift(5)
+                            outtakeManager.DriveLift(5)
                         ),
                         //Drive to pick up 2nd speciment
                         new SequentialAction(
@@ -74,7 +74,7 @@ public class MainAuto extends OpModeTemplate {
                             outtakeManager.OpenCloseSpeciment(false),
                             new SleepAction(0.7),
                             //Raise Lift
-                            outtakeManager.driveLift(1500),
+                            outtakeManager.DriveLift(1500),
                             new SleepAction(0.5),
                             //Drive to Chamber 2nd time
                             drive.actionBuilder(new Pose2d(-2.2, 40, Math.toRadians(180)))
@@ -84,11 +84,11 @@ public class MainAuto extends OpModeTemplate {
                     ),
                     //Score 2nd speciment
                     new SleepAction(1),
-                    outtakeManager.driveLift(920),
+                    outtakeManager.DriveLift(920),
                     new SleepAction(0.5),
                     outtakeManager.OpenCloseSpeciment(true),
                     //Go park
-                        outtakeManager.driveLift(10),
+                        outtakeManager.DriveLift(10),
                         drive.actionBuilder(new Pose2d(-29.7, -4, 0))
                                 .strafeToLinearHeading(new Vector2d(-28, -4), Math.toRadians(90))
                                 .strafeToConstantHeading(new Vector2d(-28, 28))
@@ -110,7 +110,7 @@ public class MainAuto extends OpModeTemplate {
 //                        drive.actionBuilder(new Pose2d(-2.2, 40, Math.toRadians(180))).strafeToLinearHeading(new Vector2d(-29.7, -4), Math.toRadians(0)).build(),
 
                     //!Super important!
-                    outtakeManager.stop()
+                    outtakeManager.StopLift()
 
                 )
             )
