@@ -4,8 +4,6 @@ import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeClawStateCommand;
-import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeTiltServoCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetSpecimentServoPositionCommand;
 import org.firstinspires.ftc.teamcode.managers.DriveManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
@@ -49,10 +47,6 @@ public class MainTeleOp extends OpModeTemplate {
         gamepad_driver.getGamepadButton(gamepad_driver.options)
                 .whenPressed(
                         new InstantCommand(() -> drive.pinpoint.resetPosAndIMU()));
-
-        gamepad_codriver.getGamepadButton(gamepad_driver.triangle)
-                .toggleWhenPressed(new SetOuttakeTiltServoCommand(outtakeManager, OuttakeManager._OuttakeTiltServoState.HIGH),
-                        new SetOuttakeClawStateCommand(outtakeManager, OuttakeManager._OuttakeClawServoState.RELEASE));
     }
 
     @Override
@@ -83,8 +77,9 @@ public class MainTeleOp extends OpModeTemplate {
 
     @Override
     public void stop() {
-
         driveManager.stopMovementControlThread();
+        outtakeManager.selectingProcess = false;
+        intakeManager.selectingProcess = false;
 
         super.stop();
     }

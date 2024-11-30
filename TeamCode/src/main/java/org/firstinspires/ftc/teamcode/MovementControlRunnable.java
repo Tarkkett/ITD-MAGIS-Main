@@ -49,10 +49,11 @@ public class MovementControlRunnable implements Runnable {
     }
 
     private double calculatePowerMultiplier() {
-        if (gamepad.isDown(GamepadKeys.Button.RIGHT_BUMPER)) {
-            return 0.4;
-        } else if (gamepad.isDown(GamepadKeys.Button.LEFT_BUMPER)) {
+        if (gamepad.isDown(GamepadKeys.Button.LEFT_BUMPER)) {
             return 0.2;
+        }
+        else if (gamepad.isDown(GamepadKeys.Button.RIGHT_BUMPER)) {
+            return 0.4;
         }
         return 1.0;
     }

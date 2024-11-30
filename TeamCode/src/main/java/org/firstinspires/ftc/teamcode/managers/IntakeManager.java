@@ -157,7 +157,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
         }
     }
     public enum _GripState {
-        RELEASE(0.3f),
+        RELEASE(0.1f),
         GRIP(0.8f);
 
         private final float position;
@@ -174,7 +174,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
         TRANSFER(0.32f),
         LOWERED (0.95f),
         AIMING(0.87f),
-        PACKED(0.29f),
+        PACKED(0.25f),
         CLEARED(0.5f);
 
         private final float position;
@@ -189,7 +189,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
 
     }
     public enum _YawServoState{
-        TRANSFER(0.29f),
+        TRANSFER(0.33f),
         PICKUP_DEFAULT(0.93f),
         //Increment for manual
         MANUAL(0.1f),

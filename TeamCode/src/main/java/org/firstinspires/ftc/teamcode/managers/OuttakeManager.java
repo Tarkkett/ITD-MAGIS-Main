@@ -190,7 +190,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         TRANSFER    (30),
         HOME        (50),
         STUCK       (0),
-        HIGH_BUCKET (2300),
+        HIGH_BUCKET (2450),
         LOW_BUCKET  (1200);
 
         private final float position;
