@@ -15,7 +15,7 @@ public class MovementControlRunnable implements Runnable {
 
     private final DriveManager driveManager;
     private final Telemetry telemetry;
-    private final GamepadEx gamepad;
+    private GamepadEx gamepad;
     private volatile boolean running = true;
     private PinpointDrive drive;
     private double headingAngle;
@@ -49,9 +49,9 @@ public class MovementControlRunnable implements Runnable {
     }
 
     private double calculatePowerMultiplier() {
-        if (gamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > TRIGGER_MARGIN) {
+        if (gamepad.isDown(GamepadKeys.Button.RIGHT_BUMPER)) {
             return 0.4;
-        } else if (gamepad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > TRIGGER_MARGIN) {
+        } else if (gamepad.isDown(GamepadKeys.Button.LEFT_BUMPER)) {
             return 0.2;
         }
         return 1.0;

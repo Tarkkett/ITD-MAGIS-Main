@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.PinpointDrive;
 import org.firstinspires.ftc.teamcode.commands.low_level.SetServosToDefaultsCommand;
@@ -14,10 +15,14 @@ import org.firstinspires.ftc.teamcode.managers.HardwareManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 import org.firstinspires.ftc.teamcode.util.GamepadPlus;
 
+import java.util.concurrent.TimeUnit;
+
 public abstract class OpModeTemplate extends OpMode {
 
     protected boolean teamSelected = false;
     protected boolean sideSelected = false;
+
+    public ElapsedTime elapsedTime = new ElapsedTime();
 
     protected GamepadPlus gamepad_driver;
     protected GamepadPlus gamepad_codriver;
@@ -39,7 +44,11 @@ public abstract class OpModeTemplate extends OpMode {
 
     protected void initSystems(boolean isAuto){
 
+
+
         this.isAuto = isAuto;
+
+
 
         drive = new PinpointDrive(hardwareMap, staringPos);
 
@@ -51,7 +60,7 @@ public abstract class OpModeTemplate extends OpMode {
 
         intakeManager = new IntakeManager(hardwareManager, telemetry, gamepad_driver);
         outtakeManager = new OuttakeManager(hardwareManager, telemetry, intakeManager);
-        ascentManager = new AscentManager(hardwareManager, telemetry, gamepad_codriver, outtakeManager, intakeManager);
+//        ascentManager = new AscentManager(hardwareManager, telemetry, gamepad_codriver, outtakeManager, intakeManager);
 
         if (isAuto){
             SetupAuto();

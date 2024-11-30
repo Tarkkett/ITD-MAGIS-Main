@@ -39,23 +39,23 @@ public class IntakePositionSelector extends CommandBase {
     public void execute() {
 
         if (manager.selectingProcess) {
-            if (gamepad_driver.isDown(gamepad_driver.dpad_Up)) {
+            if (gamepad_codriver.isDown(gamepad_driver.dpad_Up)) {
                 CommandScheduler.getInstance().schedule(
                         new MoveIntakeSomeBit(manager, DISTANCE)
                 );
-            } else if (gamepad_driver.isDown(gamepad_driver.dpad_Down)) {
+            } else if (gamepad_codriver.isDown(gamepad_driver.dpad_Down)) {
                 CommandScheduler.getInstance().schedule(
                         new MoveIntakeSomeBit(manager, -DISTANCE)
                 );
-            } else if (gamepad_driver.isDown(gamepad_driver.square)) {
+            } else if (gamepad_codriver.isDown(gamepad_driver.square)) {
                 CommandScheduler.getInstance().schedule(
                                 new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.AIMING)
                 );
-            } else if (gamepad_driver.isDown(gamepad_driver.triangle)) {
+            } else if (gamepad_codriver.isDown(gamepad_driver.triangle)) {
                 CommandScheduler.getInstance().schedule(
                         new SetIntakeGripStateCommand(manager, IntakeManager._GripState.RELEASE)
                 );
-            } else if (gamepad_driver.isDown(gamepad_driver.circle)) {
+            } else if (gamepad_codriver.isDown(gamepad_driver.circle)) {
                 CommandScheduler.getInstance().schedule(
                         new SequentialCommandGroup(
                                 new SetIntakeGripStateCommand(manager, IntakeManager._GripState.RELEASE),

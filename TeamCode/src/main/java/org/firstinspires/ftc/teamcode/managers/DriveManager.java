@@ -15,7 +15,7 @@ public class DriveManager implements Manager<DriveManager._DriveState> {
 
     private final HardwareManager hardwareManager;
     private final Telemetry telemetry;
-    private final GamepadPlus gamepadDriver;
+    private GamepadPlus gamepadDriver;
 
     private _DriveState managerState = _DriveState.LOCKED;
 

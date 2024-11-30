@@ -70,6 +70,9 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
             case TRANSFER:
                 targetPosition = (int) _SlideState.TRANSFER.getPosition();
                 break;
+            case TRANSFER_WAIT:
+                targetPosition = (int) _SlideState.TRANSFER_WAIT.getPosition();
+                break;
             case RETRACTED:
                 targetPosition = (int) _SlideState.RETRACTED.getPosition();
                 break;
@@ -130,14 +133,18 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     }
 
     public void controlYawAngle(double yawServoAngle) {
-        hardwareManager.yawServo.setPosition(yawServoAngle);
+        if (selectingProcess) {
+            telemetry.addData("Yaw servo", yawServoAngle);
+            telemetry.update();
+            hardwareManager.yawServo.setPosition(yawServoAngle);
+        }
     }
 
     public enum _SlideState {
         EXTENDED    (550),
-        TRANSFER    (0),
+        TRANSFER    (150),
         RETRACTED   (10),
-        TRANSFER_WAIT(50);
+        TRANSFER_WAIT(340);
 
         private final float position;
 
@@ -165,7 +172,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     }
     public enum _TiltServoState{
         TRANSFER(0.32f),
-        LOWERED (0.93f),
+        LOWERED (0.95f),
         AIMING(0.87f),
         PACKED(0.29f),
         CLEARED(0.5f);

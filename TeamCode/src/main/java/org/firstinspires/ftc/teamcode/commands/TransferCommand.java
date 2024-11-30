@@ -25,22 +25,23 @@ public class TransferCommand extends SequentialCommandGroup {
                             new SetIntakeSlidePositionCommand(intake, IntakeManager._SlideState.TRANSFER_WAIT),
                             new SetIntakeTiltServoPosCommand(intake, IntakeManager._TiltServoState.TRANSFER),
                             new SetIntakeGripStateCommand(intake, IntakeManager._GripState.GRIP),
-                            new AdjustYawServoCommand(intake, IntakeManager._YawServoState.TRANSFER, 0)
-                    ),
-                    new WaitCommand(300),
-                    new ParallelCommandGroup(
+                            new AdjustYawServoCommand(intake, IntakeManager._YawServoState.TRANSFER, 0),
                             new SetOuttakeClawStateCommand(outtake, OuttakeManager._OuttakeClawServoState.RELEASE),
-                            new SetLiftPositionCommand(outtake, OuttakeManager._LiftState.TRANSFER),
                             new SetOuttakeTiltServoCommand(outtake, OuttakeManager._OuttakeTiltServoState.LOW)
                     ),
+                    new WaitCommand(800),
+                    new SetLiftPositionCommand(outtake, OuttakeManager._LiftState.TRANSFER),
+
                     new WaitUntilCommand(outtake::isTransfer),
+                    new WaitCommand(800),
                     new SequentialCommandGroup(
                             new SetIntakeSlidePositionCommand(intake, IntakeManager._SlideState.TRANSFER),
-                            new WaitCommand(2000),
+                            new WaitCommand(1000),
                             new SetOuttakeClawStateCommand(outtake, OuttakeManager._OuttakeClawServoState.GRIP),
+                            new WaitCommand(500),
+                            new SetIntakeGripStateCommand(intake, IntakeManager._GripState.RELEASE),
                             new WaitCommand(250),
                             new SetIntakeSlidePositionCommand(intake, IntakeManager._SlideState.EXTENDED),
-                            new SetIntakeGripStateCommand(intake, IntakeManager._GripState.RELEASE),
                             new WaitCommand(250),
                             new SetOuttakeTiltServoCommand(outtake, OuttakeManager._OuttakeTiltServoState.HIGH)
 //

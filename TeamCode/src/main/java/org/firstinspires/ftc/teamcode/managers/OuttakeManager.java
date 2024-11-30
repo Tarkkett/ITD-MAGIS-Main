@@ -26,7 +26,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     IntakeManager intakeManager;
     Telemetry telemetry;
 
-    private OuttakeManager._OuttakeState managerState;
+    public OuttakeManager._OuttakeState managerState;
 
     C_PID controller;
     public int targetPosition;
@@ -66,9 +66,9 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
 
     @Override
     public _OuttakeState GetManagerState() {
-        if (selectingProcess && encoderPos > 150){
+        if (managerState == _OuttakeState.DEPOSIT && selectingProcess && encoderPos > 150){
             return _OuttakeState.DEPOSIT;
-        } else if (encoderPos < 150){
+        } else if (managerState == _OuttakeState.HOME && encoderPos < 150){
             return _OuttakeState.HOME;
         } else if (managerState == _OuttakeState.TRANSFER && encoderPos < 240){
             return _OuttakeState.TRANSFER;

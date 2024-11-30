@@ -23,7 +23,6 @@ public class StateMachine implements State<StateMachine._RobotState> {
     private static StateMachine instance;
 
     public _RobotState robotState = _RobotState.HOME;
-    public _RobotState previousState;
 
     private OuttakeManager outtakeManager;
     private IntakeManager intakeManager;
@@ -112,6 +111,7 @@ public class StateMachine implements State<StateMachine._RobotState> {
                 case TRANSFER:
                     robotState = _RobotState.TRANSFER;
                     intakeManager.managerState = IntakeManager._IntakeState.TRANSFER;
+                    outtakeManager.managerState = OuttakeManager._OuttakeState.TRANSFER;
                     intakeManager.selectingProcess = false;
                     outtakeManager.selectingProcess = false;
                     CommandScheduler.getInstance().schedule(

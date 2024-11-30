@@ -33,9 +33,8 @@ public class SetOuttakeStateCommand extends SequentialCommandGroup {
                 break;
             case DEPOSIT:
                 addCommands(
-                        new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.LOW),
                         new SetSpecimentServoPositionCommand(manager, OuttakeManager._SpecimentServoState.CLOSED),
-                        new DepositPositionSelector(gamepad_driver, manager)
+                        new DepositPositionSelector(gamepad_driver, gamepad_codriver, manager)
 
                 );
                 break;
