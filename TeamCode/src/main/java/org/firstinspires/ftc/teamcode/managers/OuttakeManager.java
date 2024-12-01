@@ -290,16 +290,13 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         };
     }
 
-    public Action OpenCloseSpeciment(boolean isOpen) {
+    public Action SpecimentAction(_SpecimentServoState state) {
         return new Action(){
             private boolean initialize = false;
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
                 if (!initialize){
-                    if (isOpen){
-                        hardwareManager.specimentServo.setPosition(0);
-                    }
-                    else hardwareManager.specimentServo.setPosition(0.5);
+                    update(state);
                     initialize = true;
                 }
                 return false;

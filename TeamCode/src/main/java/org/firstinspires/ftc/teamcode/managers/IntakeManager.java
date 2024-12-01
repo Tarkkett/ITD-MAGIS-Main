@@ -110,6 +110,10 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
             case PACKED:
                 hardwareManager.intakeTiltServo.setPosition(_TiltServoState.PACKED.getPosition());
                 break;
+            case CLEARED:
+                hardwareManager.intakeTiltServo.setPosition(_TiltServoState.CLEARED.getPosition());
+                break;
+
         }
     }
 
