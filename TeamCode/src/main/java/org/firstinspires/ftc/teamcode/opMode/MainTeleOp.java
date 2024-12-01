@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opMode;
 
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetSpecimentServoPositionCommand;
@@ -37,16 +38,16 @@ public class MainTeleOp extends OpModeTemplate {
                 .whenPressed(
                         new InstantCommand(() -> stateMachine.SetSubsystemState(StateMachine._RobotState.DEPOSIT)));
 
-        //* Toggle speciment claw
-        gamepad_codriver.getGamepadButton(gamepad_codriver.cross)
-                .toggleWhenActive(
-                        new SetSpecimentServoPositionCommand(outtakeManager, OuttakeManager._SpecimentServoState.OPEN),
-                        new SetSpecimentServoPositionCommand(outtakeManager, OuttakeManager._SpecimentServoState.CLOSED));
-
         //* Reset IMU
         gamepad_driver.getGamepadButton(gamepad_driver.options)
                 .whenPressed(
                         new InstantCommand(() -> drive.pinpoint.resetPosAndIMU()));
+
+        //* Toggle speciment claw
+        gamepad_codriver.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
+                .toggleWhenPressed(
+                        new SetSpecimentServoPositionCommand(outtakeManager, OuttakeManager._SpecimentServoState.OPEN),
+                        new SetSpecimentServoPositionCommand(outtakeManager, OuttakeManager._SpecimentServoState.CLOSED));
     }
 
     @Override

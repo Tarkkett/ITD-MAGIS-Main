@@ -105,6 +105,9 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
             case HOME:
                 targetPosition = (int) _LiftState.HOME.getPosition();
                 break;
+            case HIGH_CHAMBER_LOWER:
+                targetPosition = (int) _LiftState.HIGH_CHAMBER_LOWER.getPosition();
+                break;
             case STUCK:
                 break;
         }
@@ -185,13 +188,14 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     public enum _LiftState{
         LOW_CHAMBER (100),
         LOW_RUNG    (200),
-        HIGH_CHAMBER(1480),
+        HIGH_CHAMBER(1520),
         HIGH_RUNG   (1000),
         TRANSFER    (30),
         HOME        (50),
         STUCK       (0),
         HIGH_BUCKET (2450),
-        LOW_BUCKET  (1200);
+        LOW_BUCKET  (1200),
+        HIGH_CHAMBER_LOWER(1000);
 
         private final float position;
 

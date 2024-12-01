@@ -10,13 +10,18 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.teamcode.managers.IntakeManager;
+
 @Autonomous(name = "Main Auto", group = "OpMode", preselectTeleOp = "Main TeleOp")
 public class MainAuto extends OpModeTemplate {
 
     Pose2d beginPose = new Pose2d(0, 0, 0);
 
-    Action trajectoryFromChamberToPushingPos;
+    Action trajToFirstSample;
+    Action trajToTurnFirst;
+    Action trajToTurnFirst_back;
     Action testTrajectory;
+    Action initialTraj;
 
     @Override
     public void init() {
@@ -24,12 +29,17 @@ public class MainAuto extends OpModeTemplate {
     }
     @Override
     public void start(){
-        trajectoryFromChamberToPushingPos = drive.actionBuilder(new Pose2d(-29.5,0,0))
-            .splineToConstantHeading(new Vector2d(-27,0), 0)
-            .splineToLinearHeading(new Pose2d(-27,23, Math.toRadians(90)),0)
-            .splineToConstantHeading(new Vector2d(-37, 35), 0)
-            .splineToConstantHeading(new Vector2d(-48, 42), 0)
-            .build();
+        trajToFirstSample = drive.actionBuilder(new Pose2d(-29.6,0, 0))
+                .strafeToLinearHeading(new Vector2d(-20.6, 26.8), Math.toRadians(141.5))
+                .build();
+        trajToTurnFirst = drive.actionBuilder(new Pose2d(-20.6,26.8, 141.5))
+                .strafeToLinearHeading(new Vector2d(-20.6, 30.8), Math.toRadians(41.5))
+                .build();
+        trajToTurnFirst_back = drive.actionBuilder(new Pose2d(-20.6,30.8, 41.5))
+                .strafeToLinearHeading(new Vector2d(-20.6, 30.9), Math.toRadians(140))
+                .build();
+
+        initialTraj = drive.actionBuilder(beginPose).strafeToConstantHeading(new Vector2d(-29.6,0)).build();
 
         testTrajectory = drive.actionBuilder(new Pose2d(0,0,0))
             .splineToConstantHeading(new Vector2d(-20,0), 0)
@@ -43,20 +53,21 @@ public class MainAuto extends OpModeTemplate {
             new ParallelAction(
 
                 outtakeManager.LoopLift(),
+                intakeManager.LoopLift(),
 
                 new SequentialAction(
 
                     //Drive to Deposit Speciment from start pos
                     new ParallelAction(
-                        outtakeManager.DriveLift(1500),
-                        drive.actionBuilder(beginPose).strafeToConstantHeading(new Vector2d(-29.6,0)).build()
+                        outtakeManager.DriveLift(1520),
+                        initialTraj
 
                     ),
                     //Score Points
-                    outtakeManager.DriveLift(920),
-                    new SleepAction(0.5),
+                    outtakeManager.DriveLift(950),
+                    new SleepAction(0.3),
                     outtakeManager.OpenCloseSpeciment(true),
-                    new SleepAction(0.2),
+                    new SleepAction(0.1),
                     new ParallelAction(
                         //Home Lift
                         new SequentialAction(
@@ -64,58 +75,44 @@ public class MainAuto extends OpModeTemplate {
                             outtakeManager.DriveLift(5)
                         ),
                         //Drive to pick up 2nd speciment
-                        new SequentialAction(
-                            drive.actionBuilder(new Pose2d(-29.6,0, 0))
-                                .strafeToLinearHeading(new Vector2d(-10, 40), Math.toRadians(180))
-                                .strafeToConstantHeading(new Vector2d(-2.2, 40))
-                                .build(),
+                        new SequentialAction( //-20, 26.8
+                                new ParallelAction(
+                                        trajToFirstSample,
+                                        new SequentialAction(
+                                                new SleepAction(1),
+                                                intakeManager.GripAction(IntakeManager._GripState.RELEASE),
+                                                intakeManager.YawAction(IntakeManager._YawServoState.AUTO_1),
+                                                intakeManager.DriveLift(600),
+                                                intakeManager.TiltAction(IntakeManager._TiltServoState.AIMING),
+                                                new SleepAction(0.5),
+                                                intakeManager.TiltAction(IntakeManager._TiltServoState.LOWERED),
+                                                new SleepAction(0.2),
+                                                intakeManager.GripAction(IntakeManager._GripState.GRIP),
+                                                new SleepAction(0.4),
+                                                intakeManager.TiltAction(IntakeManager._TiltServoState.AIMING),
+                                                intakeManager.DriveLift(815),
+                                                trajToTurnFirst,
+                                                intakeManager.GripAction(IntakeManager._GripState.RELEASE),
+                                                new SleepAction(0.5),
+                                                trajToTurnFirst_back,
 
-                            //Grab Speciment
-                            outtakeManager.OpenCloseSpeciment(false),
-                            new SleepAction(0.7),
-                            //Raise Lift
-                            outtakeManager.DriveLift(1500),
-                            new SleepAction(0.5),
-                            //Drive to Chamber 2nd time
-                            drive.actionBuilder(new Pose2d(-2.2, 40, Math.toRadians(180)))
-                                .strafeToLinearHeading(new Vector2d(-29.7, -4), Math.toRadians(0))
-                                .build()
+                                                outtakeManager.StopLift(),
+                                                intakeManager.StopLift()
+
+
+                                        )
+                                )
                         )
                     ),
-                    //Score 2nd speciment
-                    new SleepAction(1),
-                    outtakeManager.DriveLift(920),
-                    new SleepAction(0.5),
-                    outtakeManager.OpenCloseSpeciment(true),
-                    //Go park
-                        outtakeManager.DriveLift(10),
-                        drive.actionBuilder(new Pose2d(-29.7, -4, 0))
-                                .strafeToLinearHeading(new Vector2d(-28, -4), Math.toRadians(90))
-                                .strafeToConstantHeading(new Vector2d(-28, 28))
-                                .strafeToConstantHeading(new Vector2d(-55, 28))
-                                .strafeToConstantHeading(new Vector2d(-55, 43))
-                                .strafeToConstantHeading(new Vector2d(-5, 43))
-                                .turnTo(Math.toRadians(180))
-//                                .strafeToConstantHeading(new Vector2d(-30, 43))
-//                                .strafeToConstantHeading(new Vector2d(-2, 43))
-
-                                        .build(),
-//                    drive.actionBuilder(new Pose2d(-29.6, -4, 0))
-//                            .strafeToLinearHeading(new Vector2d(-5, 45), Math.toRadians(180))
-//                            .build(),
-//                        outtakeManager.OpenCloseSpeciment(false),
-//                    outtakeManager.driveLift(1500),
-//                        new SleepAction(0.5),
-//                        //Drive to Chamber 2nd time
-//                        drive.actionBuilder(new Pose2d(-2.2, 40, Math.toRadians(180))).strafeToLinearHeading(new Vector2d(-29.7, -4), Math.toRadians(0)).build(),
 
                     //!Super important!
-                    outtakeManager.StopLift()
+                    outtakeManager.StopLift(),
+                    intakeManager.StopLift()
+
 
                 )
             )
         );
-
     }
 
     @Override

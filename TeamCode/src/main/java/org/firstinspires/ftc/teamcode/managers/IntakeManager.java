@@ -1,7 +1,11 @@
 package org.firstinspires.ftc.teamcode.managers;
 
+import androidx.annotation.NonNull;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -20,9 +24,11 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     private final GamepadEx gamepad_driver;
 
     public int targetPosition;
-    public int currentPos = 0;
+    public int encoderPos = 0;
 
     public _IntakeState managerState = _IntakeState.HOME;
+
+    private boolean isAutoLoop = true;
 
     C_PID controller = new C_PID(0.03, 0.0, 0.0006);
 
@@ -39,22 +45,22 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
 
         FtcDashboard dashboard = FtcDashboard.getInstance();
         telemetry = dashboard.getTelemetry();
-        currentPos = hardwareManager.intake.getCurrentPosition();
-        telemetry.addData("CurrentPos", currentPos);
+        encoderPos = hardwareManager.intake.getCurrentPosition();
+        telemetry.addData("CurrentPos", encoderPos);
         telemetry.addData("TargetPos", targetPosition);
         telemetry.update();
 
-        double power = controller.update(targetPosition, currentPos);
+        double power = controller.update(targetPosition, encoderPos);
         hardwareManager.intake.setPower(power);
 
     }
 
     @Override
     public _IntakeState GetManagerState() {
-        if (selectingProcess && currentPos > 150){
+        if (selectingProcess && encoderPos > 150){
             return _IntakeState.INTAKE;
         }
-        if (currentPos < 150){
+        if (encoderPos < 150){
             return  _IntakeState.HOME;
         }
         else{
@@ -115,10 +121,14 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
             case PICKUP_DEFAULT:
                 hardwareManager.yawServo.setPosition(_YawServoState.PICKUP_DEFAULT.getPosition());
                 break;
+            case AUTO_1:
+                hardwareManager.yawServo.setPosition(_YawServoState.AUTO_1.getPosition());
+                break;
             case MANUAL:
                 double currentPos = hardwareManager.yawServo.getPosition();
                 hardwareManager.yawServo.setPosition(currentPos + i);
                 break;
+
         }
     }
 
@@ -193,7 +203,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
         PICKUP_DEFAULT(0.93f),
         //Increment for manual
         MANUAL(0.1f),
-        PACKED(0.2f);
+        AUTO_1(0.72f);
 
         private final float position;
 
@@ -210,6 +220,99 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     public enum _IntakeState{
         INTAKE,
         IDLE,
-        TRANSFER, HOME
+        TRANSFER,
+        HOME
+    }
+
+
+    public Action LoopLift(){
+        return new Action(){
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket){
+                if (isAutoLoop) {
+                    loop();
+                }
+                else{ return false;}
+
+                return true;
+            }
+        };
+    }
+
+    public boolean isNotAtPosition(int position, int targetPosition, int margin){
+        if (position < targetPosition + margin && position > targetPosition - margin){
+            return false;
+        }
+        else return true;
+    }
+
+    public Action DriveLift(int position){
+        return new Action(){
+
+            private boolean initialized = false;
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                if (!initialized){
+                    targetPosition = position;
+                    initialized = true;
+                }
+                return isNotAtPosition(encoderPos, targetPosition, 10);
+
+            }
+        };
+    }
+
+    public Action StopLift() {
+        return new Action(){
+            private boolean initialize = false;
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                if (!initialize){
+                    isAutoLoop = false;
+                    initialize = true;
+                }
+                return false;
+            }
+        };
+    }
+
+    public Action TiltAction(_TiltServoState state) {
+        return new Action(){
+            private boolean initialize = false;
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                if (!initialize){
+                    update(state);
+                    initialize = true;
+                }
+                return false;
+            }
+        };
+    }
+    public Action YawAction(_YawServoState state) {
+        return new Action(){
+            private boolean initialize = false;
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                if (!initialize){
+                    update(state, 0);
+                    initialize = true;
+                }
+                return false;
+            }
+        };
+    }
+    public Action GripAction(_GripState state) {
+        return new Action(){
+            private boolean initialize = false;
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                if (!initialize){
+                    update(state);
+                    initialize = true;
+                }
+                return false;
+            }
+        };
     }
 }
