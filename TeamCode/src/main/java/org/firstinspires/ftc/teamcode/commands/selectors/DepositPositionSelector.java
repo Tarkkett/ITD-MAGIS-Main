@@ -48,10 +48,12 @@ public class DepositPositionSelector extends CommandBase {
             }
             else if (gamepad_codriver.gamepad.dpad_down){
                 CommandScheduler.getInstance().schedule(new MoveLiftSomeBit(manager, -50));
-            } else if (gamepad_codriver.gamepad.cross) {
+            }
+            else if (gamepad_codriver.gamepad.cross) {
                 CommandScheduler.getInstance().schedule(new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HIGH_CHAMBER_LOWER));
 
-            } else if (gamepad_codriver.gamepad.cross){
+            }
+            else if (gamepad_codriver.gamepad.dpad_right){
                 CommandScheduler.getInstance().schedule(
                         new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.HIGH),
                         new WaitCommand(1000),

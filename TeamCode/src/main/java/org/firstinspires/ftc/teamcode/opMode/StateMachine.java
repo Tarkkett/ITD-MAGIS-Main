@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opMode;
 
 import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -87,12 +88,13 @@ public class StateMachine implements State<StateMachine._RobotState> {
             switch (newState) {
                 case DEPOSIT:
                     robotState = _RobotState.DEPOSIT;
-                    intakeManager.managerState = IntakeManager._IntakeState.IDLE;
+                    outtakeManager.managerState = OuttakeManager._OuttakeState.DEPOSIT;
+                    intakeManager.managerState = IntakeManager._IntakeState.HOME;
                     intakeManager.selectingProcess = false;
                     CommandScheduler.getInstance().schedule(
-                            new SequentialCommandGroup(
-                                    new SetOuttakeStateCommand(OuttakeManager._OuttakeState.DEPOSIT, outtakeManager, gamepad_driver, gamepad_codriver),
-                                    new SetIntakeStateCommand(IntakeManager._IntakeState.HOME, intakeManager, gamepad_driver, gamepad_codriver)
+                            new ParallelCommandGroup(
+                                    new SetIntakeStateCommand(IntakeManager._IntakeState.HOME, intakeManager, gamepad_driver, gamepad_codriver),
+                                    new SetOuttakeStateCommand(OuttakeManager._OuttakeState.DEPOSIT, outtakeManager, gamepad_driver, gamepad_codriver)
                             )
                     );
                     break;
@@ -100,11 +102,11 @@ public class StateMachine implements State<StateMachine._RobotState> {
                     robotState = _RobotState.INTAKE;
                     intakeManager.managerState = IntakeManager._IntakeState.INTAKE;
                     outtakeManager.selectingProcess = false;
+                    outtakeManager.managerState = OuttakeManager._OuttakeState.HOME;
                     CommandScheduler.getInstance().schedule(
-                            new SequentialCommandGroup(
+                            new ParallelCommandGroup(
                                     new SetOuttakeStateCommand(OuttakeManager._OuttakeState.HOME, outtakeManager, gamepad_driver, gamepad_codriver),
                                     new SetIntakeStateCommand(IntakeManager._IntakeState.INTAKE, intakeManager, gamepad_driver, gamepad_codriver)
-
                             )
                     );
                     break;
@@ -115,13 +117,13 @@ public class StateMachine implements State<StateMachine._RobotState> {
                     intakeManager.selectingProcess = false;
                     outtakeManager.selectingProcess = false;
                     CommandScheduler.getInstance().schedule(
-                            new SequentialCommandGroup(
-                                    new TransferCommand(intakeManager, outtakeManager)
-                            )
+                        new TransferCommand(intakeManager, outtakeManager)
                     );
                     break;
                 case HOME:
                     robotState = _RobotState.HOME;
+                    intakeManager.managerState = IntakeManager._IntakeState.HOME;
+                    outtakeManager.managerState = OuttakeManager._OuttakeState.HOME;
                     CommandScheduler.getInstance().schedule(
                             new SequentialCommandGroup(
                                     new SetIntakeStateCommand(IntakeManager._IntakeState.HOME, intakeManager, gamepad_driver, gamepad_codriver),

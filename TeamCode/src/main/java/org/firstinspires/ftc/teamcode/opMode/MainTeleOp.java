@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetSpecimentServoPositionCommand;
 import org.firstinspires.ftc.teamcode.managers.DriveManager;
+import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 import org.firstinspires.ftc.teamcode.util.GamepadPlus;
 
@@ -52,6 +53,7 @@ public class MainTeleOp extends OpModeTemplate {
 
     @Override
     public void start(){
+        CommandScheduler.getInstance().schedule(new InstantCommand(() -> stateMachine.SetSubsystemState(StateMachine._RobotState.HOME)));
         driveManager.onUnlocked();
     }
 
@@ -78,9 +80,12 @@ public class MainTeleOp extends OpModeTemplate {
 
     @Override
     public void stop() {
-        driveManager.stopMovementControlThread();
         outtakeManager.selectingProcess = false;
         intakeManager.selectingProcess = false;
+        outtakeManager.managerState = OuttakeManager._OuttakeState.HOME;
+        intakeManager.managerState = IntakeManager._IntakeState.HOME;
+        stateMachine.robotState = StateMachine._RobotState.HOME;
+        driveManager.stopMovementControlThread();
 
         super.stop();
     }

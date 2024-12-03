@@ -22,8 +22,9 @@ public class TransferCommand extends SequentialCommandGroup {
         if (!intake.selectingProcess && !outtake.selectingProcess) {
             addCommands(
                     new SetIntakeGripStateCommand(intake, IntakeManager._GripState.GRIP),
-                    new WaitCommand(500),
+                    new WaitCommand(300),
                     new SetIntakeTiltServoPosCommand(intake, IntakeManager._TiltServoState.TRANSFER),
+                    new WaitCommand(300),
                     new ParallelCommandGroup(
                             new SetIntakeSlidePositionCommand(intake, IntakeManager._SlideState.TRANSFER_WAIT),
                             new SetIntakeGripStateCommand(intake, IntakeManager._GripState.GRIP),
@@ -43,16 +44,8 @@ public class TransferCommand extends SequentialCommandGroup {
                             new WaitCommand(500),
                             new SetIntakeGripStateCommand(intake, IntakeManager._GripState.RELEASE),
                             new SetIntakeTiltServoPosCommand(intake, IntakeManager._TiltServoState.PACKED),
-//                            new WaitCommand(250),
-//                            new SetIntakeSlidePositionCommand(intake, IntakeManager._SlideState.EXTENDED),
                             new WaitCommand(650),
                             new SetOuttakeTiltServoCommand(outtake, OuttakeManager._OuttakeTiltServoState.HIGH)
-//
-//                            new WaitCommand(500),
-//                            new ParallelCommandGroup(
-//                                    new SetGripStateCommand(intake, IntakeManager._GripState.RELEASE),
-//                                    new SetTiltServoPosCommand(intake, IntakeManager._TiltServoState.AIMING)
-//                            )
                     )
             );
         }

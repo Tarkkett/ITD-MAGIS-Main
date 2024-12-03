@@ -44,11 +44,7 @@ public abstract class OpModeTemplate extends OpMode {
 
     protected void initSystems(boolean isAuto){
 
-
-
         this.isAuto = isAuto;
-
-
 
         drive = new PinpointDrive(hardwareMap, staringPos);
 

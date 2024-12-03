@@ -36,8 +36,6 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
         this.gamepad_driver = gamepadDriver;
         this.telemetry = telemetry;
         this.hardwareManager = hardwareManager;
-
-        targetPosition = (int) _SlideState.RETRACTED.getPosition();
     }
 
     @Override
@@ -57,10 +55,10 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
 
     @Override
     public _IntakeState GetManagerState() {
-        if (selectingProcess && encoderPos > 150){
+        if (selectingProcess && encoderPos > 150 && managerState == _IntakeState.INTAKE){
             return _IntakeState.INTAKE;
         }
-        if (encoderPos < 150){
+        if (managerState == _IntakeState.HOME && encoderPos < 150){
             return  _IntakeState.HOME;
         }
         else{

@@ -24,7 +24,6 @@ public class MainAuto extends OpModeTemplate {
 
     Pose2d beginPose = new Pose2d(0, 0, 0);
 
-    TurnConstraints turnContstrains = new TurnConstraints(0.1, 0.1, 0.1);
     Action trajToFirstSample;
     Action trajToTurnFirst;
     Action trajToTurnScnd;
@@ -107,20 +106,22 @@ public class MainAuto extends OpModeTemplate {
                     //Drive to Deposit Speciment from start pos
                     new ParallelAction(
                         outtakeManager.DriveLift(1520),
+                        intakeManager.GripAction(IntakeManager._GripState.RELEASE),
                         initialTraj
 
                     ),
                     //Score Points
                     outtakeManager.DriveLift(950),
                     intakeManager.DriveLift(90),
-                    new SleepAction(0.3),
+                    new SleepAction(0.2),//0.3
                     outtakeManager.SpecimentAction(OuttakeManager._SpecimentServoState.OPEN),
                     new SleepAction(0.1),
                     new ParallelAction(
                         //Home Lift
                         new SequentialAction(
                             new SleepAction(0.2),
-                            outtakeManager.DriveLift(5)
+                            outtakeManager.DriveLift(5),
+                            intakeManager.TiltAction(IntakeManager._TiltServoState.CLEARED)
                         ),
                         //Drive to pick up 2nd speciment
                         new SequentialAction( //-20, 26.8
@@ -132,10 +133,10 @@ public class MainAuto extends OpModeTemplate {
                                                 intakeManager.GripAction(IntakeManager._GripState.RELEASE),
                                                 intakeManager.YawAction(IntakeManager._YawServoState.AUTO_1),
                                                 intakeManager.DriveLift(570),
-                                                intakeManager.TiltAction(IntakeManager._TiltServoState.AIMING),
-                                                new SleepAction(0.5),
+//                                                intakeManager.TiltAction(IntakeManager._TiltServoState.AIMING),
+//                                                new SleepAction(0.5),
                                                 intakeManager.TiltAction(IntakeManager._TiltServoState.LOWERED),
-                                                new SleepAction(0.2),
+                                                new SleepAction(0.4),
                                                 intakeManager.GripAction(IntakeManager._GripState.GRIP),
                                                 new SleepAction(0.4),
                                                 intakeManager.TiltAction(IntakeManager._TiltServoState.AIMING),
