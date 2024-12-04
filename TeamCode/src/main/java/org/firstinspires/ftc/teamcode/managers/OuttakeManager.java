@@ -295,7 +295,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
                     targetPosition = position;
                     initialized = true;
                 }
-                return isNotAtPosition(encoderPos, targetPosition, 10);
+                return false;
 
             }
         };

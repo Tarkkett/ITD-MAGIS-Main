@@ -103,100 +103,85 @@ public class MainAuto extends OpModeTemplate {
 
                 new SequentialAction(
 
-                    //Drive to Deposit Speciment from start pos
                     new ParallelAction(
-                        outtakeManager.DriveLift(1520),
-                        intakeManager.GripAction(IntakeManager._GripState.RELEASE),
-                        initialTraj
+                            outtakeManager.DriveLift(1520),
+                            intakeManager.GripAction(IntakeManager._GripState.RELEASE),
+                            initialTraj
 
                     ),
                     //Score Points
                     outtakeManager.DriveLift(950),
                     intakeManager.DriveLift(90),
-                    new SleepAction(0.2),//0.3
+                    new SleepAction(0.2),
                     outtakeManager.SpecimentAction(OuttakeManager._SpecimentServoState.OPEN),
                     new SleepAction(0.1),
-                    new ParallelAction(
-                        //Home Lift
-                        new SequentialAction(
+                    new SequentialAction(
                             new SleepAction(0.2),
                             outtakeManager.DriveLift(5),
                             intakeManager.TiltAction(IntakeManager._TiltServoState.CLEARED)
-                        ),
-                        //Drive to pick up 2nd speciment
-                        new SequentialAction( //-20, 26.8
-                                new ParallelAction(
-                                        trajToFirstSample,
-                                        new SequentialAction(
-                                                new SleepAction(1),
-                                                outtakeManager.SpecimentAction(OuttakeManager._SpecimentServoState.OPEN),
-                                                intakeManager.GripAction(IntakeManager._GripState.RELEASE),
-                                                intakeManager.YawAction(IntakeManager._YawServoState.AUTO_1),
-                                                intakeManager.DriveLift(570),
-//                                                intakeManager.TiltAction(IntakeManager._TiltServoState.AIMING),
-//                                                new SleepAction(0.5),
-                                                intakeManager.TiltAction(IntakeManager._TiltServoState.LOWERED),
-                                                new SleepAction(0.4),
-                                                intakeManager.GripAction(IntakeManager._GripState.GRIP),
-                                                new SleepAction(0.4),
-                                                intakeManager.TiltAction(IntakeManager._TiltServoState.AIMING),
-                                                trajToTurnFirst,
-                                                intakeManager.GripAction(IntakeManager._GripState.RELEASE),
-                                                new SleepAction(0.3),
-                                                intakeManager.DriveLift(400),
-                                                trajToTurnFirst_back,
-                                                new SleepAction(0.15),
-                                                intakeManager.TiltAction(IntakeManager._TiltServoState.LOWERED),
-                                                new SleepAction(0.2),
-                                                intakeManager.GripAction(IntakeManager._GripState.GRIP),
-                                                new SleepAction(0.2),
-                                                intakeManager.TiltAction(IntakeManager._TiltServoState.AIMING),
-                                                trajToTurnScnd,
-                                                intakeManager.GripAction(IntakeManager._GripState.RELEASE),
-                                                new SleepAction(0.5),
-                                                intakeManager.DriveLift(320),
-                                                trajToTurnScnd_back,
-                                                new SleepAction(0.15),
-                                                intakeManager.TiltAction(IntakeManager._TiltServoState.LOWERED),
-                                                new SleepAction(0.2),
-                                                intakeManager.GripAction(IntakeManager._GripState.GRIP),
-                                                new SleepAction(0.2),
-                                                intakeManager.TiltAction(IntakeManager._TiltServoState.CLEARED),
-                                                intakeManager.DriveLift(0),
-                                                trajToTurnThrd,
-                                                intakeManager.TiltAction(IntakeManager._TiltServoState.AIMING),
-                                                new SleepAction(0.2),
-                                                intakeManager.GripAction(IntakeManager._GripState.RELEASE),
-                                                new SleepAction(0.3),
-                                                trajToPickupFirstSpreciment,
-                                                outtakeManager.SpecimentAction(OuttakeManager._SpecimentServoState.CLOSED),
-                                                new SleepAction(0.3),
-                                                new ParallelAction(
-                                                        outtakeManager.DriveLift(1520),
-                                                        trajToHang1st
-                                                ),
-                                                outtakeManager.DriveLift(950),
-                                                outtakeManager.SpecimentAction(OuttakeManager._SpecimentServoState.OPEN),
-                                                new SleepAction(0.1),
-                                                new ParallelAction(
-                                                        outtakeManager.DriveLift(5),
-                                                        trajToPickup1st
-                                                ),
-                                                outtakeManager.SpecimentAction(OuttakeManager._SpecimentServoState.CLOSED),
-                                                new SleepAction(0.3),
-                                                outtakeManager.DriveLift(1520),
-                                                trajToHang2nd,
-                                                outtakeManager.DriveLift(950),
-                                                outtakeManager.SpecimentAction(OuttakeManager._SpecimentServoState.OPEN),
-                                                new SleepAction(0.1),
-                                                outtakeManager.DriveLift(5),
-                                                trajToPickup2nd
-
-
-                                        )
-                                )
-                        )
                     ),
+                    trajToFirstSample,
+//                    new SleepAction(1),
+//                    outtakeManager.SpecimentAction(OuttakeManager._SpecimentServoState.OPEN),
+//                    intakeManager.GripAction(IntakeManager._GripState.RELEASE),
+//                    intakeManager.YawAction(IntakeManager._YawServoState.AUTO_1),
+//                    intakeManager.DriveLift(570),
+//                    intakeManager.TiltAction(IntakeManager._TiltServoState.LOWERED),
+//                    new SleepAction(0.4),
+//                    intakeManager.GripAction(IntakeManager._GripState.GRIP),
+//                    new SleepAction(0.4),
+//                    intakeManager.TiltAction(IntakeManager._TiltServoState.AIMING),
+//                    trajToTurnFirst,
+//                    intakeManager.GripAction(IntakeManager._GripState.RELEASE),
+//                    new SleepAction(0.3),
+//                    intakeManager.DriveLift(400),
+//                    trajToTurnFirst_back,
+//                    new SleepAction(0.15),
+//                    intakeManager.TiltAction(IntakeManager._TiltServoState.LOWERED),
+//                    new SleepAction(0.2),
+//                    intakeManager.GripAction(IntakeManager._GripState.GRIP),
+//                    new SleepAction(0.2),
+//                    intakeManager.TiltAction(IntakeManager._TiltServoState.AIMING),
+//                    trajToTurnScnd,
+//                    intakeManager.GripAction(IntakeManager._GripState.RELEASE),
+//                    new SleepAction(0.5),
+//                    intakeManager.DriveLift(320),
+//                    trajToTurnScnd_back,
+//                    new SleepAction(0.15),
+//                    intakeManager.TiltAction(IntakeManager._TiltServoState.LOWERED),
+//                    new SleepAction(0.2),
+//                    intakeManager.GripAction(IntakeManager._GripState.GRIP),
+//                    new SleepAction(0.2),
+//                    intakeManager.TiltAction(IntakeManager._TiltServoState.CLEARED),
+//                    intakeManager.DriveLift(0),
+//                    trajToTurnThrd,
+//                    intakeManager.TiltAction(IntakeManager._TiltServoState.AIMING),
+//                    new SleepAction(0.2),
+//                    intakeManager.GripAction(IntakeManager._GripState.RELEASE),
+//                    new SleepAction(0.3),
+//                    trajToPickupFirstSpreciment,
+//                    outtakeManager.SpecimentAction(OuttakeManager._SpecimentServoState.CLOSED),
+//                    new SleepAction(0.3),
+//                    new ParallelAction(
+//                            outtakeManager.DriveLift(1520),
+//                            trajToHang1st
+//                    ),
+//                    outtakeManager.DriveLift(950),
+//                    outtakeManager.SpecimentAction(OuttakeManager._SpecimentServoState.OPEN),
+//                    new SleepAction(0.1),
+//                    new ParallelAction(
+//                            outtakeManager.DriveLift(5),
+//                            trajToPickup1st
+//                    ),
+//                    outtakeManager.SpecimentAction(OuttakeManager._SpecimentServoState.CLOSED),
+//                    new SleepAction(0.3),
+//                    outtakeManager.DriveLift(1520),
+//                    trajToHang2nd,
+//                    outtakeManager.DriveLift(950),
+//                    outtakeManager.SpecimentAction(OuttakeManager._SpecimentServoState.OPEN),
+//                    new SleepAction(0.1),
+//                    outtakeManager.DriveLift(5),
+//                    trajToPickup2nd,
 
                     //!Super important!
                     outtakeManager.StopLift(),
