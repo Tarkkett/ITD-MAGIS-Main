@@ -10,6 +10,8 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drivers.C_PID;
+import org.firstinspires.ftc.teamcode.util.GamepadPlus;
+import org.firstinspires.ftc.teamcode.util.PID_PARAMS;
 
 @SuppressWarnings("rawtypes")
 @Config
@@ -21,7 +23,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     private final HardwareManager hardwareManager;
     public boolean selectingProcess = false;
     private Telemetry telemetry;
-    private final GamepadEx gamepad_driver;
+    private GamepadPlus gamepad_driver;
 
     public int targetPosition;
     public int encoderPos = 0;
@@ -30,9 +32,10 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
 
     private boolean isAutoLoop = true;
 
-    C_PID controller = new C_PID(0.03, 0.0, 0.0006);
+    public PID_PARAMS params = new PID_PARAMS(0.02, 0.0, 0.0006, 5);
+    C_PID controller = new C_PID(params);
 
-    public IntakeManager(HardwareManager hardwareManager, Telemetry telemetry, GamepadEx gamepadDriver) {
+    public IntakeManager(HardwareManager hardwareManager, Telemetry telemetry, GamepadPlus gamepadDriver) {
         this.gamepad_driver = gamepadDriver;
         this.telemetry = telemetry;
         this.hardwareManager = hardwareManager;
@@ -41,12 +44,15 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     @Override
     public void loop() {
 
+        controller.tune(params);
+
         FtcDashboard dashboard = FtcDashboard.getInstance();
         telemetry = dashboard.getTelemetry();
         encoderPos = hardwareManager.intake.getCurrentPosition();
         telemetry.addData("CurrentPos", encoderPos);
         telemetry.addData("TargetPos", targetPosition);
         telemetry.update();
+
 
         double power = controller.update(targetPosition, encoderPos);
         hardwareManager.intake.setPower(power);
@@ -111,6 +117,9 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
             case CLEARED:
                 hardwareManager.intakeTiltServo.setPosition(_TiltServoState.CLEARED.getPosition());
                 break;
+            case AIMING_UPPER:
+                hardwareManager.intakeTiltServo.setPosition(_TiltServoState.AIMING_UPPER.getPosition());
+                break;
 
         }
     }
@@ -154,7 +163,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
 
     public enum _SlideState {
         EXTENDED    (550),
-        TRANSFER    (150),
+        TRANSFER    (200),
         RETRACTED   (10),
         TRANSFER_WAIT(340);
 
@@ -187,7 +196,8 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
         LOWERED (0.95f),
         AIMING(0.87f),
         PACKED(0.25f),
-        CLEARED(0.5f);
+        CLEARED(0.5f),
+        AIMING_UPPER(0.8f);
 
         private final float position;
 
@@ -223,6 +233,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
         INTAKE,
         IDLE,
         TRANSFER,
+        CALIBRATION,
         HOME
     }
 

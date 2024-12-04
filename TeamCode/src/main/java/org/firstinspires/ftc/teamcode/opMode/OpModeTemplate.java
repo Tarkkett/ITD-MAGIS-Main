@@ -61,10 +61,10 @@ public abstract class OpModeTemplate extends OpMode {
         if (isAuto){
             SetupAuto();
         } else {
-            driveManager = new DriveManager(hardwareManager, telemetry, gamepad_driver, drive);
+            driveManager = new DriveManager(hardwareManager, telemetry, gamepad_driver, drive, outtakeManager);
         }
 
-        stateMachine = StateMachine.getInstance(outtakeManager, intakeManager, driveManager, telemetry, gamepad_driver, gamepad_codriver);
+        stateMachine = StateMachine.getInstance(outtakeManager, intakeManager, driveManager, telemetry, gamepad_driver, gamepad_codriver, hardwareManager);
 
         SetSystemDefaults();
 

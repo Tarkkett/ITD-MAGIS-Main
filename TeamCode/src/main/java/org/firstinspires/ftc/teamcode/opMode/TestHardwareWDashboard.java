@@ -16,10 +16,16 @@ public class TestHardwareWDashboard extends OpModeTemplate {
         initSystems(false);
         hardwareTestManager = new HardwareTestManager(hardwareManager, outtakeManager, intakeManager, driveManager);
 
+        stateMachine.SetSubsystemState(StateMachine._RobotState.CALIBRATION);
+
     }
 
     @Override
     public void loop() {
+
+        telemetry.addLine("Please, do not touch the controller while in calibration mode!");
+        telemetry.update();
+
         hardwareTestManager.loop();
         intakeManager.loop();
         outtakeManager.loop();

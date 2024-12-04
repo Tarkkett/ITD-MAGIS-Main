@@ -1,9 +1,9 @@
 package org.firstinspires.ftc.teamcode.managers;
 
 import com.arcrobotics.ftclib.command.CommandScheduler;
-import com.arcrobotics.ftclib.gamepad.GamepadEx;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.util.GamepadPlus;
 import org.firstinspires.ftc.teamcode.util.State;
 import org.firstinspires.ftc.teamcode.commands.low_level.PrepLiftForAscentCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.UncoupleLiftPIDCommand;
@@ -19,9 +19,9 @@ public class AscentManager implements State<DriveManager._DriveState> {
 
     IntakeManager intakeManager;
     Telemetry telemetry;
-    GamepadEx gamepad_codriver;
+    GamepadPlus gamepad_codriver;
 
-    public AscentManager(HardwareManager hardwareManager, Telemetry telemetry, GamepadEx gamepadCoDriver, OuttakeManager outtakeManager, IntakeManager intakeManager) {
+    public AscentManager(HardwareManager hardwareManager, Telemetry telemetry, GamepadPlus gamepadCoDriver, OuttakeManager outtakeManager, IntakeManager intakeManager) {
         this.hardwareManager = hardwareManager;
         this.telemetry = telemetry;
         this.gamepad_codriver = gamepadCoDriver;

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opMode;
 
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
+import com.arcrobotics.ftclib.command.ParallelRaceGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -10,6 +11,7 @@ import org.firstinspires.ftc.teamcode.commands.SetOuttakeStateCommand;
 import org.firstinspires.ftc.teamcode.commands.TransferCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeTiltServoCommand;
 import org.firstinspires.ftc.teamcode.managers.DriveManager;
+import org.firstinspires.ftc.teamcode.managers.HardwareManager;
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 import org.firstinspires.ftc.teamcode.managers.Transition;
@@ -36,24 +38,27 @@ public class StateMachine implements State<StateMachine._RobotState> {
     GamepadPlus gamepad_driver;
     GamepadPlus gamepad_codriver;
 
+    HardwareManager hw;
+
     private final Map<Transition, Runnable> stateTransitionActions = new HashMap<>();
 
     Telemetry tel;
 
 
 
-    public StateMachine(OuttakeManager outtake, IntakeManager intake, DriveManager drive, Telemetry tel, GamepadPlus gamepad_driver, GamepadPlus gamepad_codriver){
+    public StateMachine(OuttakeManager outtake, IntakeManager intake, DriveManager drive, Telemetry tel, GamepadPlus gamepad_driver, GamepadPlus gamepad_codriver, HardwareManager hw){
         this.outtakeManager = outtake;
         this.intakeManager = intake;
         this.tel = tel;
         this.gamepad_codriver = gamepad_codriver;
         this.gamepad_driver = gamepad_driver;
         this.driveManager = drive;
+        this.hw = hw;
     }
 
-    public static StateMachine getInstance(OuttakeManager outtake, IntakeManager intake, DriveManager drive, Telemetry tel, GamepadPlus gamepad_driver, GamepadPlus gamepad_codriver) {
+    public static StateMachine getInstance(OuttakeManager outtake, IntakeManager intake, DriveManager drive, Telemetry tel, GamepadPlus gamepad_driver, GamepadPlus gamepad_codriver, HardwareManager hw) {
         if (instance == null) {
-            instance = new StateMachine(outtake, intake, drive, tel, gamepad_driver, gamepad_codriver);
+            instance = new StateMachine(outtake, intake, drive, tel, gamepad_driver, gamepad_codriver, hw);
         }
         return instance;
     }
@@ -125,11 +130,15 @@ public class StateMachine implements State<StateMachine._RobotState> {
                     intakeManager.managerState = IntakeManager._IntakeState.HOME;
                     outtakeManager.managerState = OuttakeManager._OuttakeState.HOME;
                     CommandScheduler.getInstance().schedule(
-                            new SequentialCommandGroup(
+                            new ParallelCommandGroup(
                                     new SetIntakeStateCommand(IntakeManager._IntakeState.HOME, intakeManager, gamepad_driver, gamepad_codriver),
                                     new SetOuttakeStateCommand(OuttakeManager._OuttakeState.HOME, outtakeManager, gamepad_driver, gamepad_codriver)
                             )
                     );
+                    break;
+                case CALIBRATION:
+                    intakeManager.managerState = IntakeManager._IntakeState.CALIBRATION;
+                    outtakeManager.managerState = OuttakeManager._OuttakeState.CALIBRATION;
                     break;
             }
     }
@@ -146,6 +155,9 @@ public class StateMachine implements State<StateMachine._RobotState> {
         tel.addData("Outtake feels like:", outtakeState);
         tel.addData("Drivetrain feels like:", driveState);
         tel.addData("Robot feels like:", GetSubsystemState());
+        tel.addData("Speciment servo pos", hw.specimentServo.getPosition());
+        tel.addData("Speciment servo closed pos", OuttakeManager._SpecimentServoState.CLOSED.getPosition());
+        tel.addData("CanHome", outtakeManager.canHome());
         tel.update();
 
     }
@@ -172,6 +184,7 @@ public class StateMachine implements State<StateMachine._RobotState> {
         INTAKE,
         DEPOSIT,
         TRANSFER,
+        CALIBRATION,
         HOME
     }
 }

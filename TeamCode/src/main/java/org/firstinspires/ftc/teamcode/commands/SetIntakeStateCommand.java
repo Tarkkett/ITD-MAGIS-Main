@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.commands;
 
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+import com.arcrobotics.ftclib.command.WaitCommand;
 
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeGripStateCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeSlidePositionCommand;
@@ -30,6 +31,7 @@ public class SetIntakeStateCommand extends SequentialCommandGroup {
             case HOME:
                 addCommands(
                         new SetIntakeSlidePositionCommand(manager, IntakeManager._SlideState.RETRACTED),
+                        new WaitCommand(400),
                         new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.CLEARED),
                         new SetIntakeGripStateCommand(manager, IntakeManager._GripState.RELEASE)
                 );

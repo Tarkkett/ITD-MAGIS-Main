@@ -49,6 +49,13 @@ public class MainTeleOp extends OpModeTemplate {
                 .toggleWhenPressed(
                         new SetSpecimentServoPositionCommand(outtakeManager, OuttakeManager._SpecimentServoState.OPEN),
                         new SetSpecimentServoPositionCommand(outtakeManager, OuttakeManager._SpecimentServoState.CLOSED));
+
+        gamepad_driver.getGamepadButton(GamepadKeys.Button.LEFT_STICK_BUTTON).whenPressed(
+          new InstantCommand(() -> gamepad_codriver.rumble(200))
+        );
+        gamepad_codriver.getGamepadButton(GamepadKeys.Button.LEFT_STICK_BUTTON).whenPressed(
+                new InstantCommand(() -> gamepad_driver.rumble(200))
+        );
     }
 
     @Override
@@ -60,22 +67,12 @@ public class MainTeleOp extends OpModeTemplate {
     @Override
     public void loop() {
 
-        if (elapsedTime.milliseconds() >= 1000){
-            GamepadPlus tempGamepad;
-            tempGamepad = gamepad_driver;
-            gamepad_driver = gamepad_codriver;
-            gamepad_codriver = tempGamepad;
-            elapsedTime.reset();
-
-            gamepad_driver.gamepad.setLedColor(0.5, 0.5, 0, 100000);
-            gamepad_codriver.gamepad.setLedColor(0, 0.5, 0.5, 100000);
-        }
-
         CommandScheduler.getInstance().run();
         intakeManager.loop();
         outtakeManager.loop();
 //        ascentManager.loop();
         stateMachine.loop();
+
     }
 
     @Override

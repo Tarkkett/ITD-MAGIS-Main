@@ -8,6 +8,7 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.util.PID_PARAMS;
 import org.firstinspires.ftc.teamcode.util.State;
 import org.firstinspires.ftc.teamcode.drivers.C_PID;
 
@@ -28,7 +29,9 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
 
     public OuttakeManager._OuttakeState managerState;
 
-    C_PID controller;
+    public PID_PARAMS params = new PID_PARAMS(0.015,0,0.0003, 5);
+    C_PID controller = new C_PID(params);
+
     public int targetPosition;
     public int encoderPos;
 
@@ -42,13 +45,14 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         this.telemetry = telemetry;
         this.intakeManager = intakeManager;
 
-        controller = new C_PID(0.015,0,0.0003);
         mode = _LiftMode.AUTO;
-
     }
 
     @Override
     public void loop() {
+
+        controller.tune(params);
+
         encoderPos = Average(hardwareManager.liftLeft.getCurrentPosition(), hardwareManager.liftRight.getCurrentPosition());
         double power = controller.update(targetPosition, encoderPos);
 
@@ -178,11 +182,18 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         else return true;
     }
 
+    public boolean canHome() {
+        if (hardwareManager.specimentServo.getPosition() > (double)_SpecimentServoState.CLOSED.position - 0.1 && hardwareManager.specimentServo.getPosition() < (double)_SpecimentServoState.CLOSED.position + 0.1d){
+            return false;
+        }
+        else return true;
+    }
+
     public enum _OuttakeState{
         HOME,
         DEPOSIT,
         IDLE,
-        TRANSFER
+        CALIBRATION, TRANSFER
     }
 
     public enum _LiftState{
@@ -195,7 +206,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         STUCK       (0),
         HIGH_BUCKET (2450),
         LOW_BUCKET  (1200),
-        HIGH_CHAMBER_LOWER(1000);
+        HIGH_CHAMBER_LOWER(940);
 
         private final float position;
 
@@ -210,7 +221,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
 
     public enum _SpecimentServoState{
         OPEN    (0f),
-        CLOSED  (0.5f);
+        CLOSED  (0.55f);
 
         private final float position;
 
@@ -231,7 +242,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
 
     public enum _OuttakeTiltServoState {
         HIGH    (0f),
-        LOW     (0.77f),
+        LOW     (0.74f),
         MID(0.5f);
 
         private final float position;
@@ -246,8 +257,8 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     }
 
     public enum _OuttakeClawServoState {
-        GRIP    (0.75f),
-        RELEASE     (0.15f);
+        GRIP    (1f),
+        RELEASE     (0.5f);
 
         private final float position;
 

@@ -34,7 +34,6 @@ public class TransferCommand extends SequentialCommandGroup {
                     ),
                     new WaitCommand(400),
                     new SetLiftPositionCommand(outtake, OuttakeManager._LiftState.TRANSFER),
-
                     new WaitUntilCommand(outtake::isTransfer),
                     new WaitCommand(400),
                     new SequentialCommandGroup(
@@ -44,14 +43,10 @@ public class TransferCommand extends SequentialCommandGroup {
                             new WaitCommand(500),
                             new SetIntakeGripStateCommand(intake, IntakeManager._GripState.RELEASE),
                             new SetIntakeTiltServoPosCommand(intake, IntakeManager._TiltServoState.PACKED),
-                            new WaitCommand(650),
-                            new SetOuttakeTiltServoCommand(outtake, OuttakeManager._OuttakeTiltServoState.HIGH)
+                            new WaitCommand(300),
+                            new SetOuttakeTiltServoCommand(outtake, OuttakeManager._OuttakeTiltServoState.MID)
+//                            new SetLiftPositionCommand(outtake, OuttakeManager._LiftState.HIGH_BUCKET)
                     )
-            );
-        }
-        else {
-            addCommands(
-                    //new InstantCommand(() -> gamepad_driver.gamepad.rumble(1))
             );
         }
     }

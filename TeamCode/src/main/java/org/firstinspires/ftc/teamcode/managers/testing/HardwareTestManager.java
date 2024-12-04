@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.managers.DriveManager;
 import org.firstinspires.ftc.teamcode.managers.HardwareManager;
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
+import org.firstinspires.ftc.teamcode.util.PID_PARAMS;
 
 @Config
 public class HardwareTestManager{
@@ -45,8 +46,8 @@ public class HardwareTestManager{
 
     public void loop(){
 
-        intakeController.tune(INTAKE_Kp, INTAKE_Ki, INTAKE_Kd);
-        outtakeController.tune(OUTTAKE_Kp, OUTTAKE_Ki, OUTTAKE_Kd);
+        intake.params = new PID_PARAMS(INTAKE_Kp, INTAKE_Ki, INTAKE_Kd, 5);
+        outtake.params = new PID_PARAMS(OUTTAKE_Kp, OUTTAKE_Ki, OUTTAKE_Kd, 5);
 
         //? Intake
 

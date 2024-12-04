@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.commands.selectors;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
@@ -35,13 +36,27 @@ public class DepositPositionSelector extends CommandBase {
 
         if (manager.selectingProcess){
             if (gamepad_codriver.gamepad.circle){
-                CommandScheduler.getInstance().schedule(new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HIGH_CHAMBER));
+                CommandScheduler.getInstance().schedule(
+                        new ParallelCommandGroup(
+                                new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HIGH_CHAMBER),
+                                new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.MID)
+                        )
+                );
             }
             else if (gamepad_codriver.gamepad.square){
-                CommandScheduler.getInstance().schedule(new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HOME));
+                if (manager.canHome()){
+                    CommandScheduler.getInstance().schedule(new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HOME));
+                }
+                else {gamepad_codriver.rumble(400);}
             }
             else if (gamepad_codriver.gamepad.triangle){
-                CommandScheduler.getInstance().schedule(new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HIGH_BUCKET));
+                CommandScheduler.getInstance().schedule(
+                        new SequentialCommandGroup(
+                                new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HIGH_BUCKET),
+                                new WaitCommand(1000),
+                                new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.HIGH)
+                        )
+                );
             }
             else if (gamepad_codriver.gamepad.dpad_up){
                 CommandScheduler.getInstance().schedule(new MoveLiftSomeBit(manager, 50));
@@ -55,9 +70,9 @@ public class DepositPositionSelector extends CommandBase {
             }
             else if (gamepad_codriver.gamepad.dpad_right){
                 CommandScheduler.getInstance().schedule(
-                        new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.HIGH),
-                        new WaitCommand(1000),
-                        new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.RELEASE)
+                        new SequentialCommandGroup(
+                                new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.RELEASE)
+                        )
                 );
             }
         }

@@ -49,11 +49,26 @@ public class IntakePositionSelector extends CommandBase {
                 );
             } else if (gamepad_codriver.isDown(gamepad_driver.square)) {
                 CommandScheduler.getInstance().schedule(
-                                new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.AIMING)
+                        new SequentialCommandGroup(
+                                new SetIntakeGripStateCommand(manager, IntakeManager._GripState.GRIP),
+                                new WaitCommand(400),
+                                new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.AIMING_UPPER)
+                        )
+
                 );
+
+            } else if (gamepad_codriver.isDown(gamepad_driver.circle)) {
+                CommandScheduler.getInstance().schedule(
+                        new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.AIMING)
+                );
+
             } else if (gamepad_codriver.isDown(gamepad_driver.triangle)) {
                 CommandScheduler.getInstance().schedule(
-                        new SetIntakeGripStateCommand(manager, IntakeManager._GripState.RELEASE)
+                        new SequentialCommandGroup(
+                                new SetIntakeGripStateCommand(manager, IntakeManager._GripState.RELEASE),
+                                new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.AIMING)
+                        )
+
                 );
             } else if (gamepad_codriver.rightTrigger() > 0.2) {
                 CommandScheduler.getInstance().schedule(

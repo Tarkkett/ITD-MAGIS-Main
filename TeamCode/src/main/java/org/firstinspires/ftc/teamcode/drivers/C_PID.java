@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.drivers;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.util.PID_PARAMS;
+
 @Config
 public class C_PID {
 
@@ -20,6 +22,10 @@ public class C_PID {
 
     public C_PID(double Kp, double Ki, double Kd) {
         tune(Kp, Ki, Kd);
+    }
+
+    public C_PID(PID_PARAMS params){
+        tune(params.kP, params.kI, params.kD);
     }
 
     public void tune(double Kp, double Ki, double Kd){
@@ -40,5 +46,11 @@ public class C_PID {
 
         return (error * Kp) + (derivative * Kd) + (integralSum * Ki);
 
+    }
+
+    public void tune(PID_PARAMS params) {
+        this.Kp = params.kP;
+        this.Ki = params.kI;
+        this.Kd = params.kD;
     }
 }

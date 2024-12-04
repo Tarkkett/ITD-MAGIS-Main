@@ -22,17 +22,19 @@ public class DriveManager implements Manager<DriveManager._DriveState> {
     private Thread movementControlThread;
     private MovementControlRunnable movementControlRunnable;
 
-    public DriveManager(HardwareManager hardwareManager, Telemetry telemetry, GamepadPlus gamepadDriver, PinpointDrive drive) {
+    public double powerMultiplier;
+
+    public DriveManager(HardwareManager hardwareManager, Telemetry telemetry, GamepadPlus gamepadDriver, PinpointDrive drive, OuttakeManager outtakeManager) {
         this.hardwareManager = hardwareManager;
         this.telemetry = telemetry;
         this.gamepadDriver = gamepadDriver;
 
-        configureDrive(drive);
+        configureDrive(drive, outtakeManager);
     }
 
-    private void configureDrive(PinpointDrive drive) {
+    private void configureDrive(PinpointDrive drive, OuttakeManager outtakeManager) {
 
-        movementControlRunnable = new MovementControlRunnable(telemetry, this, gamepadDriver, drive);
+        movementControlRunnable = new MovementControlRunnable(telemetry, this, gamepadDriver, drive, outtakeManager);
         movementControlThread = new Thread(movementControlRunnable);
         movementControlThread.start();
     }
@@ -46,6 +48,8 @@ public class DriveManager implements Manager<DriveManager._DriveState> {
     }
 
     public void drive(Pose2d movementVector, double rotationInput, double powerMultiplier) {
+
+        this.powerMultiplier = powerMultiplier;
 
         double cosHeading = Math.cos(-movementVector.getHeading());
         double sinHeading = Math.sin(-movementVector.getHeading());
@@ -68,7 +72,11 @@ public class DriveManager implements Manager<DriveManager._DriveState> {
             hardwareManager.backRight.setPower(backRightPower * powerMultiplier);
         }
         else {
-            if (gamepadDriver.gamepad.left_stick_x > 0.1 || gamepadDriver.gamepad.left_stick_x < -0.1 || gamepadDriver.gamepad.left_stick_y > 0.1 || gamepadDriver.gamepad.left_stick_y < -0.1){
+            if ((gamepadDriver.gamepad.left_stick_x > 0.1) ||
+                    (gamepadDriver.gamepad.left_stick_x < -0.1) ||
+                    (gamepadDriver.gamepad.left_stick_y > 0.1) ||
+                    (gamepadDriver.gamepad.left_stick_y < -0.1))
+            {
                 gamepadDriver.rumble(100);
             }
         }
