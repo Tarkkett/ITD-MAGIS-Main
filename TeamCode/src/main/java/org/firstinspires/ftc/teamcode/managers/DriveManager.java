@@ -77,7 +77,7 @@ public class DriveManager implements Manager<DriveManager._DriveState> {
                     (gamepadDriver.gamepad.left_stick_y > 0.1) ||
                     (gamepadDriver.gamepad.left_stick_y < -0.1))
             {
-                gamepadDriver.rumble(100);
+//                gamepadDriver.rumble(100);
             }
         }
     }

@@ -29,7 +29,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
 
     public OuttakeManager._OuttakeState managerState;
 
-    public PID_PARAMS params = new PID_PARAMS(0.015,0,0.0003, 5);
+    public PID_PARAMS params = new PID_PARAMS(0.012,0,0.00009, 5);
     C_PID controller = new C_PID(params);
 
     public int targetPosition;
@@ -111,6 +111,9 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
                 break;
             case HIGH_CHAMBER_LOWER:
                 targetPosition = (int) _LiftState.HIGH_CHAMBER_LOWER.getPosition();
+                break;
+            case HANG:
+                targetPosition = (int) _LiftState.HANG.getPosition();
                 break;
             case STUCK:
                 break;
@@ -204,9 +207,10 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         TRANSFER    (30),
         HOME        (50),
         STUCK       (0),
-        HIGH_BUCKET (2450),
+        HIGH_BUCKET (2600),
         LOW_BUCKET  (1200),
-        HIGH_CHAMBER_LOWER(940);
+        HIGH_CHAMBER_LOWER(950),
+        HANG(1900);
 
         private final float position;
 

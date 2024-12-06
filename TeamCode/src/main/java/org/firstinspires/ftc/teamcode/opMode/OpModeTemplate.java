@@ -48,7 +48,7 @@ public abstract class OpModeTemplate extends OpMode {
 
         drive = new PinpointDrive(hardwareMap, staringPos);
 
-        hardwareManager = HardwareManager.getInstance(hardwareMap);
+        hardwareManager = new HardwareManager(hardwareMap);
         hardwareManager.InitHw();
 
         gamepad_driver = new GamepadPlus(gamepad1);
@@ -58,13 +58,10 @@ public abstract class OpModeTemplate extends OpMode {
         outtakeManager = new OuttakeManager(hardwareManager, telemetry, intakeManager);
 //        ascentManager = new AscentManager(hardwareManager, telemetry, gamepad_codriver, outtakeManager, intakeManager);
 
-        if (isAuto){
-            SetupAuto();
-        } else {
-            driveManager = new DriveManager(hardwareManager, telemetry, gamepad_driver, drive, outtakeManager);
-        }
+        driveManager = new DriveManager(hardwareManager, telemetry, gamepad_driver, drive, outtakeManager);
 
-        stateMachine = StateMachine.getInstance(outtakeManager, intakeManager, driveManager, telemetry, gamepad_driver, gamepad_codriver, hardwareManager);
+
+        stateMachine = new StateMachine(outtakeManager, intakeManager, driveManager, telemetry, gamepad_driver, gamepad_codriver, hardwareManager);
 
         SetSystemDefaults();
 

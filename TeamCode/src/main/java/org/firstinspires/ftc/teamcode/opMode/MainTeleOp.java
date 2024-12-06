@@ -60,6 +60,7 @@ public class MainTeleOp extends OpModeTemplate {
 
     @Override
     public void start(){
+        CommandScheduler.getInstance().cancelAll();
         CommandScheduler.getInstance().schedule(new InstantCommand(() -> stateMachine.SetSubsystemState(StateMachine._RobotState.HOME)));
         driveManager.onUnlocked();
     }
@@ -77,13 +78,13 @@ public class MainTeleOp extends OpModeTemplate {
 
     @Override
     public void stop() {
-        outtakeManager.selectingProcess = false;
-        intakeManager.selectingProcess = false;
-        outtakeManager.managerState = OuttakeManager._OuttakeState.HOME;
-        intakeManager.managerState = IntakeManager._IntakeState.HOME;
-        stateMachine.robotState = StateMachine._RobotState.HOME;
+        CommandScheduler.getInstance().reset();
+//        outtakeManager.selectingProcess = false;
+//        intakeManager.selectingProcess = false;
+//        outtakeManager.managerState = OuttakeManager._OuttakeState.HOME;
+//        intakeManager.managerState = IntakeManager._IntakeState.HOME;
+//        stateMachine.robotState = StateMachine._RobotState.HOME;
         driveManager.stopMovementControlThread();
 
-        super.stop();
     }
 }

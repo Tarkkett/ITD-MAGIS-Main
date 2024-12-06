@@ -5,6 +5,7 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
 
+import org.firstinspires.ftc.teamcode.commands.low_level.SetRobotState;
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.AdjustYawServoCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeGripStateCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeTiltServoCommand;
@@ -14,15 +15,15 @@ import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeClawS
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeTiltServoPosCommand;
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
+import org.firstinspires.ftc.teamcode.opMode.StateMachine;
 
 
 public class TransferCommand extends SequentialCommandGroup {
-
     public TransferCommand(IntakeManager intake, OuttakeManager outtake){
         if (!intake.selectingProcess && !outtake.selectingProcess) {
             addCommands(
                     new SetIntakeGripStateCommand(intake, IntakeManager._GripState.GRIP),
-                    new WaitCommand(300),
+                    new WaitCommand(250), //300
                     new SetIntakeTiltServoPosCommand(intake, IntakeManager._TiltServoState.TRANSFER),
                     new WaitCommand(300),
                     new ParallelCommandGroup(
@@ -32,20 +33,20 @@ public class TransferCommand extends SequentialCommandGroup {
                             new SetOuttakeClawStateCommand(outtake, OuttakeManager._OuttakeClawServoState.RELEASE),
                             new SetOuttakeTiltServoCommand(outtake, OuttakeManager._OuttakeTiltServoState.LOW)
                     ),
-                    new WaitCommand(400),
+                    new WaitCommand(200), //400
                     new SetLiftPositionCommand(outtake, OuttakeManager._LiftState.TRANSFER),
                     new WaitUntilCommand(outtake::isTransfer),
-                    new WaitCommand(400),
+                    new WaitCommand(200), //400
                     new SequentialCommandGroup(
                             new SetIntakeSlidePositionCommand(intake, IntakeManager._SlideState.TRANSFER),
-                            new WaitCommand(700),
+                            new WaitCommand(300), //700
                             new SetOuttakeClawStateCommand(outtake, OuttakeManager._OuttakeClawServoState.GRIP),
-                            new WaitCommand(500),
+                            new WaitCommand(200), //500
                             new SetIntakeGripStateCommand(intake, IntakeManager._GripState.RELEASE),
                             new SetIntakeTiltServoPosCommand(intake, IntakeManager._TiltServoState.PACKED),
                             new WaitCommand(300),
                             new SetOuttakeTiltServoCommand(outtake, OuttakeManager._OuttakeTiltServoState.MID)
-//                            new SetLiftPositionCommand(outtake, OuttakeManager._LiftState.HIGH_BUCKET)
+//                            new SetRobotState(stateMachine, StateMachine._RobotState.DEPOSIT, true)
                     )
             );
         }

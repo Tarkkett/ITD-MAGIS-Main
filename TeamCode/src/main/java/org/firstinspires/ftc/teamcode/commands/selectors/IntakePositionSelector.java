@@ -5,6 +5,7 @@ import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.MoveIntakeSomeBit;
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeGripStateCommand;
@@ -47,7 +48,7 @@ public class IntakePositionSelector extends CommandBase {
                 CommandScheduler.getInstance().schedule(
                         new MoveIntakeSomeBit(manager, -DISTANCE)
                 );
-            } else if (gamepad_codriver.isDown(gamepad_driver.square)) {
+            } else if (gamepad_codriver.leftTrigger() > 0.2) {
                 CommandScheduler.getInstance().schedule(
                         new SequentialCommandGroup(
                                 new SetIntakeGripStateCommand(manager, IntakeManager._GripState.GRIP),
@@ -55,11 +56,6 @@ public class IntakePositionSelector extends CommandBase {
                                 new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.AIMING_UPPER)
                         )
 
-                );
-
-            } else if (gamepad_codriver.isDown(gamepad_driver.circle)) {
-                CommandScheduler.getInstance().schedule(
-                        new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.AIMING)
                 );
 
             } else if (gamepad_codriver.isDown(gamepad_driver.triangle)) {

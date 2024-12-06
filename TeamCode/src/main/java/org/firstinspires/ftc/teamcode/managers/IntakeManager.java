@@ -135,6 +135,12 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
             case AUTO_1:
                 hardwareManager.yawServo.setPosition(_YawServoState.AUTO_1.getPosition());
                 break;
+            case AUTO_2:
+                hardwareManager.yawServo.setPosition(_YawServoState.AUTO_2.getPosition());
+                break;
+            case AUTO_3:
+                hardwareManager.yawServo.setPosition(_YawServoState.AUTO_3.getPosition());
+                break;
             case MANUAL:
                 double currentPos = hardwareManager.yawServo.getPosition();
                 hardwareManager.yawServo.setPosition(currentPos + i);
@@ -215,7 +221,9 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
         PICKUP_DEFAULT(0.93f),
         //Increment for manual
         MANUAL(0.1f),
-        AUTO_1(0.72f);
+        AUTO_1(0.62f),
+        AUTO_2(0.685f),
+        AUTO_3(0.74f);
 
         private final float position;
 
@@ -269,7 +277,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
                     targetPosition = position;
                     initialized = true;
                 }
-                return isNotAtPosition(encoderPos, targetPosition, 10);
+                return false;
 
             }
         };

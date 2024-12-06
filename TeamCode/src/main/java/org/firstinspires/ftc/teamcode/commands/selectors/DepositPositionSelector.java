@@ -5,7 +5,6 @@ import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
-import com.arcrobotics.ftclib.gamepad.GamepadEx;
 
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.MoveLiftSomeBit;
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetLiftPositionCommand;
@@ -20,15 +19,30 @@ public class DepositPositionSelector extends CommandBase {
     GamepadPlus gamepad_codriver;
     OuttakeManager manager;
 
+    boolean autoSeq;
+
     public DepositPositionSelector(GamepadPlus gamepad_driver, GamepadPlus gamepad_codriver, OuttakeManager manager){
         this.gamepad_driver = gamepad_driver;
         this.gamepad_codriver = gamepad_codriver;
         this.manager = manager;
+//        this.autoSeq = autoSeq;
+
     }
 
     @Override
     public void initialize(){
         manager.selectingProcess = true;
+
+        if (autoSeq){
+            CommandScheduler.getInstance().schedule(
+                    new SequentialCommandGroup(
+                            new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HIGH_BUCKET),
+                            new WaitCommand(1000),
+                            new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.HIGH)
+                    )
+            );
+        }
+
     }
 
     @Override
@@ -73,6 +87,10 @@ public class DepositPositionSelector extends CommandBase {
                         new SequentialCommandGroup(
                                 new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.RELEASE)
                         )
+                );
+            } else if (gamepad_codriver.gamepad.share) {
+                CommandScheduler.getInstance().schedule(
+                        new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HANG)
                 );
             }
         }

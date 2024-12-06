@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.util.State;
 import org.firstinspires.ftc.teamcode.commands.low_level.PrepLiftForAscentCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.UncoupleLiftPIDCommand;
 
-public class AscentManager implements State<DriveManager._DriveState> {
+public class AscentManager implements Manager {
 
 
     //! This class needs refactoring
@@ -27,21 +27,6 @@ public class AscentManager implements State<DriveManager._DriveState> {
         this.gamepad_codriver = gamepadCoDriver;
         this.outtakeManager = outtakeManager;
         this.intakeManager = intakeManager;
-    }
-
-    @Override
-    public void InitializeStateTransitionActions() {
-
-    }
-
-    @Override
-    public void SetSubsystemState(DriveManager._DriveState state) {
-
-    }
-
-    @Override
-    public DriveManager._DriveState GetSubsystemState() {
-        return null;
     }
 
     @Override
@@ -81,5 +66,10 @@ public class AscentManager implements State<DriveManager._DriveState> {
             }
         }
 
+    }
+
+    @Override
+    public Enum GetManagerState() {
+        return null;
     }
 }
