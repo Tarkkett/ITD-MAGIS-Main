@@ -22,8 +22,6 @@ public class DriveManager implements Manager<DriveManager._DriveState> {
     private Thread movementControlThread;
     private MovementControlRunnable movementControlRunnable;
 
-    public double powerMultiplier;
-
     public DriveManager(HardwareManager hardwareManager, Telemetry telemetry, GamepadPlus gamepadDriver, PinpointDrive drive, OuttakeManager outtakeManager) {
         this.hardwareManager = hardwareManager;
         this.telemetry = telemetry;
@@ -48,8 +46,6 @@ public class DriveManager implements Manager<DriveManager._DriveState> {
     }
 
     public void drive(Pose2d movementVector, double rotationInput, double powerMultiplier) {
-
-        this.powerMultiplier = powerMultiplier;
 
         double cosHeading = Math.cos(-movementVector.getHeading());
         double sinHeading = Math.sin(-movementVector.getHeading());
@@ -77,9 +73,20 @@ public class DriveManager implements Manager<DriveManager._DriveState> {
                     (gamepadDriver.gamepad.left_stick_y > 0.1) ||
                     (gamepadDriver.gamepad.left_stick_y < -0.1))
             {
-//                gamepadDriver.rumble(100);
+                gamepadDriver.rumble(100);
             }
         }
+    }
+
+    public void onLocked() {
+        managerState = _DriveState.LOCKED;
+        hardwareManager.lockDrivetrain();
+        gamepadDriver.gamepad.setLedColor(1, 0, 0, 100000);
+    }
+
+    public void onUnlocked(){
+        managerState = _DriveState.UNLOCKED;
+        gamepadDriver.gamepad.setLedColor(0, 1, 0, 100000);
     }
 
     public void stopMovementControlThread() {
@@ -95,17 +102,6 @@ public class DriveManager implements Manager<DriveManager._DriveState> {
                 Thread.currentThread().interrupt();
             }
         }
-    }
-
-    public void onLocked() {
-        managerState = _DriveState.LOCKED;
-        hardwareManager.lockDrivetrain();
-        gamepadDriver.gamepad.setLedColor(1, 0, 0, 100000);
-    }
-
-    public void onUnlocked(){
-        managerState = _DriveState.UNLOCKED;
-        gamepadDriver.gamepad.setLedColor(0, 1, 0, 100000);
     }
 
     public enum _DriveState {

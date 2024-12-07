@@ -2,24 +2,17 @@ package org.firstinspires.ftc.teamcode.opMode;
 
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
-import com.arcrobotics.ftclib.command.ParallelRaceGroup;
-import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.commands.SetIntakeStateCommand;
 import org.firstinspires.ftc.teamcode.commands.SetOuttakeStateCommand;
 import org.firstinspires.ftc.teamcode.commands.TransferCommand;
-import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeTiltServoCommand;
 import org.firstinspires.ftc.teamcode.managers.DriveManager;
 import org.firstinspires.ftc.teamcode.managers.HardwareManager;
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
-import org.firstinspires.ftc.teamcode.managers.Transition;
 import org.firstinspires.ftc.teamcode.util.GamepadPlus;
 import org.firstinspires.ftc.teamcode.util.State;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class StateMachine implements State<StateMachine._RobotState> {
 
@@ -40,11 +33,7 @@ public class StateMachine implements State<StateMachine._RobotState> {
 
     HardwareManager hw;
 
-    private final Map<Transition, Runnable> stateTransitionActions = new HashMap<>();
-
     Telemetry tel;
-
-
 
     public StateMachine(OuttakeManager outtake, IntakeManager intake, DriveManager drive, Telemetry tel, GamepadPlus gamepad_driver, GamepadPlus gamepad_codriver, HardwareManager hw){
         this.outtakeManager = outtake;
@@ -62,30 +51,6 @@ public class StateMachine implements State<StateMachine._RobotState> {
         }
         return instance;
     }
-
-    @Override
-    public void InitializeStateTransitionActions() {
-//        stateTransitionActions.put(new Transition(_RobotState.HOME, _RobotState.INTAKE), this::onIntake);
-//        stateTransitionActions.put(new Transition(_RobotState.TRANSFER, _RobotState.INTAKE), this::onIntake);
-//        stateTransitionActions.put(new Transition(_RobotState.DEPOSIT, _RobotState.INTAKE), this::onIntake);
-//        stateTransitionActions.put(new Transition(_RobotState.HOME, _RobotState.DEPOSIT), this::onOuttake);
-//        stateTransitionActions.put(new Transition(_RobotState.TRANSFER, _RobotState.DEPOSIT), this::onOuttake);
-//        stateTransitionActions.put(new Transition(_RobotState.INTAKE, _RobotState.DEPOSIT), this::onOuttake);
-    }
-
-//    private void onOuttake() {
-//
-//        gamepad_driver.gamepad.rumble(200);
-//        gamepad_driver.gamepad.setLedColor(1, 0, 0, 3000);
-//        gamepad_codriver.gamepad.setLedColor(1, 0, 0, 3000);
-//    }
-//
-//    private void onIntake() {
-//
-//        CommandScheduler.getInstance().schedule(new SetOuttakeTiltServoCommand(outtakeManager, OuttakeManager._OuttakeTiltServoState.HIGH));
-//        gamepad_driver.gamepad.setLedColor(0, 1, 0, 3000);
-//        gamepad_codriver.gamepad.setLedColor(0, 1, 0, 3000);
-//    }
 
     @Override
     public void SetSubsystemState(_RobotState newState) {

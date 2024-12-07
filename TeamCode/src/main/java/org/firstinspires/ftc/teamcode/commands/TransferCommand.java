@@ -23,7 +23,7 @@ public class TransferCommand extends SequentialCommandGroup {
         if (!intake.selectingProcess && !outtake.selectingProcess) {
             addCommands(
                     new SetIntakeGripStateCommand(intake, IntakeManager._GripState.GRIP),
-                    new WaitCommand(250), //300
+                    new WaitCommand(250),
                     new SetIntakeTiltServoPosCommand(intake, IntakeManager._TiltServoState.TRANSFER),
                     new WaitCommand(300),
                     new ParallelCommandGroup(
@@ -33,15 +33,15 @@ public class TransferCommand extends SequentialCommandGroup {
                             new SetOuttakeClawStateCommand(outtake, OuttakeManager._OuttakeClawServoState.RELEASE),
                             new SetOuttakeTiltServoCommand(outtake, OuttakeManager._OuttakeTiltServoState.LOW)
                     ),
-                    new WaitCommand(200), //400
+                    new WaitCommand(200),
                     new SetLiftPositionCommand(outtake, OuttakeManager._LiftState.TRANSFER),
                     new WaitUntilCommand(outtake::isTransfer),
-                    new WaitCommand(200), //400
+                    new WaitCommand(200),
                     new SequentialCommandGroup(
                             new SetIntakeSlidePositionCommand(intake, IntakeManager._SlideState.TRANSFER),
-                            new WaitCommand(300), //700
+                            new WaitCommand(500),
                             new SetOuttakeClawStateCommand(outtake, OuttakeManager._OuttakeClawServoState.GRIP),
-                            new WaitCommand(200), //500
+                            new WaitCommand(200),
                             new SetIntakeGripStateCommand(intake, IntakeManager._GripState.RELEASE),
                             new SetIntakeTiltServoPosCommand(intake, IntakeManager._TiltServoState.PACKED),
                             new WaitCommand(300),

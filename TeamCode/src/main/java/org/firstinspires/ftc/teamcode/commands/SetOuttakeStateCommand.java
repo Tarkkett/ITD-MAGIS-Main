@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode.commands;
 
-import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
-import com.arcrobotics.ftclib.gamepad.GamepadEx;
 
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeTiltServoCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetLiftPositionCommand;

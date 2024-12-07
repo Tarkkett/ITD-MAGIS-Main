@@ -6,7 +6,6 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
-import com.arcrobotics.ftclib.gamepad.GamepadEx;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drivers.C_PID;
@@ -245,7 +244,6 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
         HOME
     }
 
-
     public Action LoopLift(){
         return new Action(){
             @Override
@@ -258,13 +256,6 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
                 return true;
             }
         };
-    }
-
-    public boolean isNotAtPosition(int position, int targetPosition, int margin){
-        if (position < targetPosition + margin && position > targetPosition - margin){
-            return false;
-        }
-        else return true;
     }
 
     public Action DriveLift(int position){

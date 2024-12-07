@@ -4,25 +4,19 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.PinpointDrive;
 import org.firstinspires.ftc.teamcode.commands.low_level.SetServosToDefaultsCommand;
-import org.firstinspires.ftc.teamcode.managers.AscentManager;
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.managers.DriveManager;
 import org.firstinspires.ftc.teamcode.managers.HardwareManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 import org.firstinspires.ftc.teamcode.util.GamepadPlus;
 
-import java.util.concurrent.TimeUnit;
-
 public abstract class OpModeTemplate extends OpMode {
 
     protected boolean teamSelected = false;
     protected boolean sideSelected = false;
-
-    public ElapsedTime elapsedTime = new ElapsedTime();
 
     protected GamepadPlus gamepad_driver;
     protected GamepadPlus gamepad_codriver;
@@ -32,7 +26,6 @@ public abstract class OpModeTemplate extends OpMode {
     protected DriveManager driveManager;
     protected OuttakeManager outtakeManager;
     protected IntakeManager intakeManager;
-    protected AscentManager ascentManager;
 
     PinpointDrive drive;
     private final Pose2d staringPos = new Pose2d(new Vector2d(0,0), 0);
@@ -56,18 +49,17 @@ public abstract class OpModeTemplate extends OpMode {
 
         intakeManager = new IntakeManager(hardwareManager, telemetry, gamepad_driver);
         outtakeManager = new OuttakeManager(hardwareManager, telemetry, intakeManager);
-//        ascentManager = new AscentManager(hardwareManager, telemetry, gamepad_codriver, outtakeManager, intakeManager);
 
         driveManager = new DriveManager(hardwareManager, telemetry, gamepad_driver, drive, outtakeManager);
 
 
         stateMachine = new StateMachine(outtakeManager, intakeManager, driveManager, telemetry, gamepad_driver, gamepad_codriver, hardwareManager);
 
-        SetSystemDefaults();
+        if (isAuto) SetSystemDefaults();
 
     }
 
-    private void SetSystemDefaults() {
+    protected void SetSystemDefaults() {
         CommandScheduler.getInstance().schedule(
                 new SetServosToDefaultsCommand(outtakeManager, intakeManager)
         );
@@ -136,5 +128,12 @@ public abstract class OpModeTemplate extends OpMode {
         RIGHT,
         LEFT,
         UNKNOWN
+    }
+
+    @Override
+    public void stop() {
+        CommandScheduler.getInstance().reset();
+        driveManager.stopMovementControlThread();
+
     }
 }

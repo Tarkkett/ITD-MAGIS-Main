@@ -43,7 +43,6 @@ public class MovementControlRunnable implements Runnable {
             double multiplier = calculatePowerMultiplier();
 
             drive.pinpoint.update(GoBildaPinpointDriver.readData.ONLY_UPDATE_HEADING);
-            drive.pinpoint.update(GoBildaPinpointDriverRR.readData.ONLY_UPDATE_HEADING);
 
             headingAngle = drive.pinpoint.getPosition().getHeading(AngleUnit.RADIANS);
 
