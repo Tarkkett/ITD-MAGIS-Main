@@ -87,6 +87,8 @@ public class IntakePositionSelector extends CommandBase {
         double wrapped_angle = Math.atan2(Math.sin(shiftAngle), Math.cos(shiftAngle));
         double normalized_angle = (wrapped_angle + Math.PI) / (2 * Math.PI);
         manager.controlYawAngle(normalized_angle);
+
+        // manager.controlYawAngle((Math.atan2(Math.sin(Math.atan2(rightX, rightY)+ Math.toRadians(shiftAngleCustom)), Math.cos(Math.atan2(rightX, rightY)+ Math.toRadians(shiftAngleCustom))) + Math.PI) / (2 * Math.PI));
     }
 
 }
