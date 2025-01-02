@@ -168,7 +168,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
 
     public enum _SlideState {
         EXTENDED    (550),
-        TRANSFER    (200),
+        TRANSFER    (400),
         RETRACTED   (10),
         TRANSFER_WAIT(340);
 
@@ -197,7 +197,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
         }
     }
     public enum _TiltServoState{
-        TRANSFER(0.32f),
+        TRANSFER(0.36f),
         LOWERED (0.95f),
         AIMING(0.87f),
         PACKED(0.25f),
@@ -217,7 +217,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     }
     public enum _YawServoState{
         TRANSFER(0.33f),
-        PICKUP_DEFAULT(0.93f),
+        PICKUP_DEFAULT(0.85f),
         //Increment for manual
         MANUAL(0.1f),
         AUTO_1(0.62f),

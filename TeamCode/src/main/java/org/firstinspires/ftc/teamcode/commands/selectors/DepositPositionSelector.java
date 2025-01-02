@@ -38,7 +38,7 @@ public class DepositPositionSelector extends CommandBase {
                     new SequentialCommandGroup(
                             new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HIGH_BUCKET),
                             new WaitCommand(1000),
-                            new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.HIGH)
+                            new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.DEPOSIT)
                     )
             );
         }
@@ -53,7 +53,7 @@ public class DepositPositionSelector extends CommandBase {
                 CommandScheduler.getInstance().schedule(
                         new ParallelCommandGroup(
                                 new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HIGH_CHAMBER),
-                                new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.MID)
+                                new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.TRANSFER)
                         )
                 );
             }
@@ -68,7 +68,7 @@ public class DepositPositionSelector extends CommandBase {
                         new SequentialCommandGroup(
                                 new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HIGH_BUCKET),
                                 new WaitCommand(1000),
-                                new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.HIGH)
+                                new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.DEPOSIT)
                         )
                 );
             }

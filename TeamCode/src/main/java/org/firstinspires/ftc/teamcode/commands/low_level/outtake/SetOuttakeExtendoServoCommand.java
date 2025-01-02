@@ -4,8 +4,8 @@ import com.arcrobotics.ftclib.command.InstantCommand;
 
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 
-public class SetSpecimentServoPositionCommand extends InstantCommand {
-    public SetSpecimentServoPositionCommand(OuttakeManager manager, OuttakeManager._SpecimentServoState state) {
+public class SetOuttakeExtendoServoCommand extends InstantCommand {
+    public SetOuttakeExtendoServoCommand(OuttakeManager manager, OuttakeManager._ExtendoServoState state) {
         super(() -> manager.update(state));
     }
 }

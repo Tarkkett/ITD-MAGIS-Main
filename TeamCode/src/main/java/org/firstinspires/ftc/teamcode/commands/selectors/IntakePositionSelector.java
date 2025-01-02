@@ -55,7 +55,6 @@ public class IntakePositionSelector extends CommandBase {
                                 new WaitCommand(400),
                                 new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.AIMING_UPPER)
                         )
-
                 );
 
             } else if (gamepad_codriver.isDown(gamepad_driver.triangle)) {

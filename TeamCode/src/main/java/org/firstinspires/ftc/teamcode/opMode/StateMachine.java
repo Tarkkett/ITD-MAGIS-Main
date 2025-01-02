@@ -55,57 +55,55 @@ public class StateMachine implements State<StateMachine._RobotState> {
     @Override
     public void SetSubsystemState(_RobotState newState) {
 
-            switch (newState) {
-                case DEPOSIT:
-                    robotState = _RobotState.DEPOSIT;
-                    outtakeManager.managerState = OuttakeManager._OuttakeState.DEPOSIT;
-                    intakeManager.managerState = IntakeManager._IntakeState.HOME;
-                    intakeManager.selectingProcess = false;
-                    CommandScheduler.getInstance().schedule(
-                            new ParallelCommandGroup(
-                                    new SetIntakeStateCommand(IntakeManager._IntakeState.HOME, intakeManager, gamepad_driver, gamepad_codriver),
-                                    new SetOuttakeStateCommand(OuttakeManager._OuttakeState.DEPOSIT, outtakeManager, gamepad_driver, gamepad_codriver)
-                            )
-                    );
-                    break;
-                case INTAKE:
-                    robotState = _RobotState.INTAKE;
-                    intakeManager.managerState = IntakeManager._IntakeState.INTAKE;
-                    outtakeManager.selectingProcess = false;
-                    outtakeManager.managerState = OuttakeManager._OuttakeState.HOME;
-                    CommandScheduler.getInstance().schedule(
-                            new ParallelCommandGroup(
-                                    new SetOuttakeStateCommand(OuttakeManager._OuttakeState.HOME, outtakeManager, gamepad_driver, gamepad_codriver),
-                                    new SetIntakeStateCommand(IntakeManager._IntakeState.INTAKE, intakeManager, gamepad_driver, gamepad_codriver)
-                            )
-                    );
-                    break;
-                case TRANSFER:
-                    robotState = _RobotState.TRANSFER;
-                    intakeManager.managerState = IntakeManager._IntakeState.TRANSFER;
-                    outtakeManager.managerState = OuttakeManager._OuttakeState.TRANSFER;
-                    intakeManager.selectingProcess = false;
-                    outtakeManager.selectingProcess = false;
-                    CommandScheduler.getInstance().schedule(
-                        new TransferCommand(intakeManager, outtakeManager)
-                    );
-                    break;
-                case HOME:
-                    robotState = _RobotState.HOME;
-                    intakeManager.managerState = IntakeManager._IntakeState.HOME;
-                    outtakeManager.managerState = OuttakeManager._OuttakeState.HOME;
-                    CommandScheduler.getInstance().schedule(
-                            new ParallelCommandGroup(
-                                    new SetIntakeStateCommand(IntakeManager._IntakeState.HOME, intakeManager, gamepad_driver, gamepad_codriver),
-                                    new SetOuttakeStateCommand(OuttakeManager._OuttakeState.HOME, outtakeManager, gamepad_driver, gamepad_codriver)
-                            )
-                    );
-                    break;
-                case CALIBRATION:
-                    intakeManager.managerState = IntakeManager._IntakeState.CALIBRATION;
-                    outtakeManager.managerState = OuttakeManager._OuttakeState.CALIBRATION;
-                    break;
-            }
+        switch (newState) {
+            case DEPOSIT:
+                robotState = _RobotState.DEPOSIT;
+                outtakeManager.managerState = OuttakeManager._OuttakeState.DEPOSIT;
+                intakeManager.managerState = IntakeManager._IntakeState.HOME;
+                intakeManager.selectingProcess = false;
+                CommandScheduler.getInstance().schedule(
+                        new ParallelCommandGroup(
+                                new SetIntakeStateCommand(IntakeManager._IntakeState.HOME, intakeManager, outtakeManager, gamepad_driver, gamepad_codriver),
+                                new SetOuttakeStateCommand(OuttakeManager._OuttakeState.DEPOSIT, outtakeManager, gamepad_driver, gamepad_codriver)
+                        )
+                );
+                break;
+            case INTAKE:
+                robotState = _RobotState.INTAKE;
+                intakeManager.managerState = IntakeManager._IntakeState.INTAKE;
+                outtakeManager.selectingProcess = false;
+                outtakeManager.managerState = OuttakeManager._OuttakeState.PICKUP;
+                CommandScheduler.getInstance().schedule(
+                        new ParallelCommandGroup(
+                                new SetOuttakeStateCommand(OuttakeManager._OuttakeState.PICKUP, outtakeManager, gamepad_driver, gamepad_codriver),
+                                new SetIntakeStateCommand(IntakeManager._IntakeState.INTAKE, intakeManager, outtakeManager, gamepad_driver, gamepad_codriver)
+                        )
+                );
+                break;
+            case TRANSFER:
+                robotState = _RobotState.TRANSFER;
+                intakeManager.managerState = IntakeManager._IntakeState.TRANSFER;
+                outtakeManager.managerState = OuttakeManager._OuttakeState.TRANSFER;
+                intakeManager.selectingProcess = false;
+                outtakeManager.selectingProcess = false;
+                CommandScheduler.getInstance().schedule(
+                    new TransferCommand(intakeManager, outtakeManager)
+                );
+                break;
+            case HOME:
+                robotState = _RobotState.HOME;
+                CommandScheduler.getInstance().schedule(
+                        new ParallelCommandGroup(
+                                new SetIntakeStateCommand(IntakeManager._IntakeState.HOME, intakeManager, outtakeManager, gamepad_driver, gamepad_codriver),
+                                new SetOuttakeStateCommand(OuttakeManager._OuttakeState.HOME, outtakeManager, gamepad_driver, gamepad_codriver)
+                        )
+                );
+                break;
+            case CALIBRATION:
+                intakeManager.managerState = IntakeManager._IntakeState.CALIBRATION;
+                outtakeManager.managerState = OuttakeManager._OuttakeState.CALIBRATION;
+                break;
+        }
     }
 
     @Override
@@ -120,18 +118,15 @@ public class StateMachine implements State<StateMachine._RobotState> {
         tel.addData("Outtake feels like:", outtakeState);
         tel.addData("Drivetrain feels like:", driveState);
         tel.addData("Robot feels like:", GetSubsystemState());
-        tel.addData("Speciment servo pos", hw.specimentServo.getPosition());
-        tel.addData("Speciment servo closed pos", OuttakeManager._SpecimentServoState.CLOSED.getPosition());
+        tel.addData("Speciment servo pos", hw.outtakeExtendoServo.getPosition());
         tel.addData("CanHome", outtakeManager.canHome());
         tel.update();
-
     }
 
     private void StateCheck() {
         intakeState = intakeManager.GetManagerState();
         outtakeState = outtakeManager.GetManagerState();
         driveState = driveManager.GetManagerState();
-
     }
 
     public void SetSubsystemState(DriveManager._DriveState driveState) {

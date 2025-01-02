@@ -9,11 +9,7 @@ import com.acmerobotics.roadrunner.Action;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.util.PID_PARAMS;
-import org.firstinspires.ftc.teamcode.util.State;
 import org.firstinspires.ftc.teamcode.drivers.C_PID;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @SuppressWarnings("rawtypes")
 @Config
@@ -115,32 +111,38 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
             case HANG:
                 targetPosition = (int) _LiftState.HANG.getPosition();
                 break;
+            case CLEARED:
+                targetPosition = (int) _LiftState.CLEARED.getPosition();
+                break;
             case STUCK:
                 break;
         }
     }
 
     public void update(_OuttakeTiltServoState targetState) {
-            switch (targetState){
-                case LOW:
-                    hardwareManager.outtakeTiltServo.setPosition(_OuttakeTiltServoState.LOW.getPosition());
-                    break;
-                case MID:
-                    hardwareManager.outtakeTiltServo.setPosition(_OuttakeTiltServoState.MID.getPosition());
-                    break;
-                case HIGH:
-                    hardwareManager.outtakeTiltServo.setPosition(_OuttakeTiltServoState.HIGH.getPosition());
-                    break;
-            }
+        switch (targetState){
+            case PICKUP:
+                hardwareManager.outtakeTiltServo.setPosition(_OuttakeTiltServoState.PICKUP.getPosition());
+                break;
+            case TRANSFER:
+                hardwareManager.outtakeTiltServo.setPosition(_OuttakeTiltServoState.TRANSFER.getPosition());
+                break;
+            case DEPOSIT:
+                hardwareManager.outtakeTiltServo.setPosition(_OuttakeTiltServoState.DEPOSIT.getPosition());
+                break;
+        }
     }
 
-    public void update(_SpecimentServoState targetState) {
+    public void update(_ExtendoServoState targetState) {
         switch (targetState){
-            case OPEN:
-                hardwareManager.specimentServo.setPosition(_SpecimentServoState.OPEN.getPosition());
+            case PICKUP:
+                hardwareManager.outtakeExtendoServo.setPosition(_ExtendoServoState.PICKUP.getPosition());
                 break;
-            case CLOSED:
-                hardwareManager.specimentServo.setPosition(_SpecimentServoState.CLOSED.getPosition());
+            case DEPOSIT:
+                hardwareManager.outtakeExtendoServo.setPosition(_ExtendoServoState.DEPOSIT.getPosition());
+                break;
+            case TRANSFER:
+                hardwareManager.outtakeExtendoServo.setPosition(_ExtendoServoState.TRANSFER.getPosition());
                 break;
         }
     }
@@ -152,6 +154,20 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
                 break;
             case RELEASE:
                 hardwareManager.outtakeClawServo.setPosition(_OuttakeClawServoState.RELEASE.getPosition());
+                break;
+        }
+    }
+
+    public void update(_OuttakeYawServoState targetState) {
+        switch (targetState){
+            case HORIZONTAL_ServoDown:
+                hardwareManager.outtakeYawServo.setPosition(_OuttakeYawServoState.HORIZONTAL_ServoDown.getPosition());
+                break;
+            case VERTICAL:
+                hardwareManager.outtakeYawServo.setPosition(_OuttakeYawServoState.VERTICAL.getPosition());
+                break;
+            case HORIZONTAL_ServoUp:
+                hardwareManager.outtakeYawServo.setPosition(_OuttakeYawServoState.HORIZONTAL_ServoUp.getPosition());
                 break;
         }
     }
@@ -178,15 +194,9 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         return false;
     }
 
-    public boolean isNotAtPosition(int position, int targetPosition, int margin){
-        if (position < targetPosition + margin && position > targetPosition - margin){
-            return false;
-        }
-        else return true;
-    }
-
+    //!Watch
     public boolean canHome() {
-        if (hardwareManager.specimentServo.getPosition() > (double)_SpecimentServoState.CLOSED.position - 0.1 && hardwareManager.specimentServo.getPosition() < (double)_SpecimentServoState.CLOSED.position + 0.1d){
+        if (hardwareManager.outtakeExtendoServo.getPosition() > (double) _ExtendoServoState.PICKUP.position - 0.1 && hardwareManager.outtakeExtendoServo.getPosition() < (double) _ExtendoServoState.PICKUP.position + 0.1d){
             return false;
         }
         else return true;
@@ -196,7 +206,14 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         HOME,
         DEPOSIT,
         IDLE,
-        CALIBRATION, TRANSFER
+        PICKUP,
+        CALIBRATION,
+        TRANSFER
+    }
+
+    public enum _LiftMode{
+        MANUAL,
+        AUTO
     }
 
     public enum _LiftState{
@@ -204,7 +221,8 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         LOW_RUNG    (200),
         HIGH_CHAMBER(1520),
         HIGH_RUNG   (1000),
-        TRANSFER    (30),
+        TRANSFER    (250),
+        CLEARED(400),
         HOME        (50),
         STUCK       (0),
         HIGH_BUCKET (2600),
@@ -223,13 +241,15 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         }
     }
 
-    public enum _SpecimentServoState{
-        OPEN    (0f),
-        CLOSED  (0.55f);
+    //!Watch
+    public enum _ExtendoServoState {
+        PICKUP    (0f),
+        DEPOSIT  (0.3f),
+        TRANSFER(0.15f);
 
         private final float position;
 
-        _SpecimentServoState(float position) {
+        _ExtendoServoState(float position) {
             this.position = position;
         }
 
@@ -238,16 +258,10 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         }
     }
 
-    public enum _LiftMode{
-        MANUAL,
-        AUTO
-
-    }
-
     public enum _OuttakeTiltServoState {
-        HIGH    (0f),
-        LOW     (0.74f),
-        MID(0.5f);
+        DEPOSIT(1f),
+        PICKUP(0f),
+        TRANSFER(1f);
 
         private final float position;
 
@@ -261,8 +275,8 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     }
 
     public enum _OuttakeClawServoState {
-        GRIP    (1f),
-        RELEASE     (0.5f);
+        GRIP    (0.25f),
+        RELEASE     (0f);
 
         private final float position;
 
@@ -273,6 +287,36 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         public float getPosition() {
             return position;
         }
+    }
+
+    public enum _OuttakeYawServoState {
+        HORIZONTAL_ServoDown    (0f),
+        VERTICAL     (0.5f),
+        HORIZONTAL_ServoUp(1f);
+
+        private final float position;
+
+        _OuttakeYawServoState(float position) {
+            this.position = position;
+        }
+
+        public float getPosition() {
+            return position;
+        }
+    }
+
+    public Action OuttakeExtendoAction(_ExtendoServoState state) {
+        return new Action(){
+            private boolean initialize = false;
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                if (!initialize){
+                    update(state);
+                    initialize = true;
+                }
+                return false;
+            }
+        };
     }
 
     public Action LoopLift(){
@@ -301,20 +345,6 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
                 }
                 return false;
 
-            }
-        };
-    }
-
-    public Action SpecimentAction(_SpecimentServoState state) {
-        return new Action(){
-            private boolean initialize = false;
-            @Override
-            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                if (!initialize){
-                    update(state);
-                    initialize = true;
-                }
-                return false;
             }
         };
     }

@@ -6,7 +6,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.commands.low_level.SetRobotState;
-import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetSpecimentServoPositionCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeClawStateCommand;
 import org.firstinspires.ftc.teamcode.managers.DriveManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 
@@ -46,8 +46,8 @@ public class MainTeleOp extends OpModeTemplate {
         //* Toggle speciment claw
         gamepad_codriver.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
             .toggleWhenPressed(
-                    new SetSpecimentServoPositionCommand(outtakeManager, OuttakeManager._SpecimentServoState.OPEN),
-                    new SetSpecimentServoPositionCommand(outtakeManager, OuttakeManager._SpecimentServoState.CLOSED));
+                    new SetOuttakeClawStateCommand(outtakeManager, OuttakeManager._OuttakeClawServoState.RELEASE),
+                    new SetOuttakeClawStateCommand(outtakeManager, OuttakeManager._OuttakeClawServoState.GRIP));
 
         //* Morse code?
         gamepad_driver.getGamepadButton(GamepadKeys.Button.LEFT_STICK_BUTTON).whenPressed(
@@ -61,7 +61,7 @@ public class MainTeleOp extends OpModeTemplate {
     @Override
     public void start(){
         CommandScheduler.getInstance().cancelAll();
-        CommandScheduler.getInstance().schedule(new InstantCommand(() -> stateMachine.SetSubsystemState(StateMachine._RobotState.HOME)));
+        CommandScheduler.getInstance().schedule(new SetRobotState(stateMachine, StateMachine._RobotState.HOME, false));
         driveManager.onUnlocked();
     }
 

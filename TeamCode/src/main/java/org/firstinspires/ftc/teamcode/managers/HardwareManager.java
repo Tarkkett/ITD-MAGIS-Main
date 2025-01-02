@@ -40,8 +40,10 @@ public class HardwareManager{
     public Servo yawServo;
 
     public Servo outtakeTiltServo;
-    public Servo specimentServo;
+    public Servo outtakeExtendoServo;
     public Servo outtakeClawServo;
+    public Servo outtakeYawServo;
+
 
     public static int IMU_DATA_SAMPLING_RATE = 10;
 
@@ -81,8 +83,9 @@ public class HardwareManager{
         yawServo = this.hmap.get(Servo.class, "yawServo");
 
         outtakeTiltServo = this.hmap.get(Servo.class, "outtakeTiltServo");
-        specimentServo = this.hmap.get(Servo.class, "specimentServo");
+        outtakeExtendoServo = this.hmap.get(Servo.class, "outtakeExtendoServo");
         outtakeClawServo = this.hmap.get(Servo.class, "outtakeClawServo");
+        outtakeYawServo = this.hmap.get(Servo.class, "outtakeYawServo");
 
         //! Odometry setup in Pinpoint class!
 
