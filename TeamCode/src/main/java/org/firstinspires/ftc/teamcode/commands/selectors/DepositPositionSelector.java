@@ -19,7 +19,7 @@ public class DepositPositionSelector extends CommandBase {
     GamepadPlus gamepad_codriver;
     OuttakeManager manager;
 
-    boolean autoSeq;
+    boolean autoSeq = false;
 
     public DepositPositionSelector(GamepadPlus gamepad_driver, GamepadPlus gamepad_codriver, OuttakeManager manager){
         this.gamepad_driver = gamepad_driver;

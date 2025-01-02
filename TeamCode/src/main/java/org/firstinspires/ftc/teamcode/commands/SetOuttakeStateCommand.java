@@ -20,37 +20,40 @@ public class SetOuttakeStateCommand extends SequentialCommandGroup {
 
         switch (targetState){
             case HOME:
-                    addCommands(
-                        new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.PICKUP),
-                        new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.DEPOSIT),
-                        new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.GRIP),
-                        new SetOuttakeYawServoCommand(manager, OuttakeManager._OuttakeYawServoState.VERTICAL),
-                        new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HOME)
-                    );
+                addCommands(
+                    new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.PICKUP),
+                    new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.DEPOSIT),
+                    new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.GRIP),
+                    new SetOuttakeYawServoCommand(manager, OuttakeManager._OuttakeYawServoState.VERTICAL),
+                    new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HOME)
+                );
                 break;
             case TRANSFER:
                 addCommands(
-                        new SetLiftPositionCommand(manager, OuttakeManager._LiftState.TRANSFER),
-                        new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.PICKUP),
-                        new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.TRANSFER)
+                    new SetLiftPositionCommand(manager, OuttakeManager._LiftState.TRANSFER),
+                    new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.PICKUP),
+                    new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.TRANSFER)
                 );
                 break;
             case DEPOSIT:
                 addCommands(
-                        new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.DEPOSIT),
-                        new DepositPositionSelector(gamepad_driver, gamepad_codriver, manager)
+                    new SetLiftPositionCommand(manager, OuttakeManager._LiftState.CLEARED),
+                    new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.DEPOSIT),
+                    new WaitCommand(300),
+                    new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.DEPOSIT),
+                    new DepositPositionSelector(gamepad_driver, gamepad_codriver, manager)
                 );
                 break;
             case PICKUP:
                 addCommands(
-                        new SetLiftPositionCommand(manager, OuttakeManager._LiftState.CLEARED),
-                        new WaitCommand(300),
-                        new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.DEPOSIT),
-                        new WaitCommand(300),
-                        new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.DEPOSIT),
-                        new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.GRIP),
-                        new SetOuttakeYawServoCommand(manager, OuttakeManager._OuttakeYawServoState.VERTICAL),
-                        new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HOME)
+                    new SetLiftPositionCommand(manager, OuttakeManager._LiftState.CLEARED),
+                    new WaitCommand(300),
+                    new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.DEPOSIT),
+                    new WaitCommand(300),
+                    new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.DEPOSIT),
+                    new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.GRIP),
+                    new SetOuttakeYawServoCommand(manager, OuttakeManager._OuttakeYawServoState.VERTICAL),
+                    new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HOME)
                 );
                 break;
         }

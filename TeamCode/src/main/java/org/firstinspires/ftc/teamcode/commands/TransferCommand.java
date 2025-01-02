@@ -17,10 +17,13 @@ import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeYawSe
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 
-
 public class TransferCommand extends SequentialCommandGroup {
     public TransferCommand(IntakeManager intake, OuttakeManager outtake){
         if (!intake.selectingProcess && !outtake.selectingProcess) {
+
+            intake.managerState = IntakeManager._IntakeState.TRANSFER;
+            outtake.managerState = OuttakeManager._OuttakeState.TRANSFER;
+
             addCommands(
                     new SetIntakeGripStateCommand(intake, IntakeManager._GripState.GRIP),
                     new SetOuttakeExtendoServoCommand(outtake, OuttakeManager._ExtendoServoState.TRANSFER),
@@ -36,7 +39,6 @@ public class TransferCommand extends SequentialCommandGroup {
                     ),
                     new WaitCommand(200),
                     new SetLiftPositionCommand(outtake, OuttakeManager._LiftState.TRANSFER),
-                    new WaitUntilCommand(outtake::isTransfer),
                     new WaitCommand(200),
                     new SequentialCommandGroup(
                         new SetIntakeSlidePositionCommand(intake, IntakeManager._SlideState.TRANSFER),

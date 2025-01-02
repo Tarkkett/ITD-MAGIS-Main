@@ -12,8 +12,17 @@ import org.firstinspires.ftc.teamcode.util.PID_PARAMS;
 import org.firstinspires.ftc.teamcode.drivers.C_PID;
 
 @SuppressWarnings("rawtypes")
+
+
+
+
+
 @Config
 public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
+
+    public interface Positionable {
+        float getPosition();
+    }
 
     private static final int MIN_THRESHOLD =70;
     private static final int MAX_THRESHOLD =2200;
@@ -46,22 +55,33 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
 
     @Override
     public void loop() {
-
         controller.tune(params);
-
-        encoderPos = Average(hardwareManager.liftLeft.getCurrentPosition(), hardwareManager.liftRight.getCurrentPosition());
+        encoderPos = calculateEncoderAverage();
         double power = controller.update(targetPosition, encoderPos);
 
+        if (mode == _LiftMode.AUTO) {
+            updateLiftMotors(power);
+        }
+
+        updateTelemetry();
+    }
+
+    private int calculateEncoderAverage() {
+        return (int) ((hardwareManager.liftLeft.getCurrentPosition() +
+                hardwareManager.liftRight.getCurrentPosition()) / 2.0);
+    }
+
+    private void updateLiftMotors(double power) {
+        hardwareManager.liftLeft.setPower(power);
+        hardwareManager.liftRight.setPower(power);
+    }
+
+    private void updateTelemetry() {
         FtcDashboard dashboard = FtcDashboard.getInstance();
-        telemetry = dashboard.getTelemetry();
+        Telemetry telemetry = dashboard.getTelemetry();
         telemetry.addData("CurrentPosLift", encoderPos);
         telemetry.addData("TargetPosLift", targetPosition);
         telemetry.update();
-
-        if (mode == _LiftMode.AUTO) {
-            hardwareManager.liftLeft.setPower(power);
-            hardwareManager.liftRight.setPower(power);
-        }
     }
 
     @Override
@@ -187,13 +207,6 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         }
     }
 
-    public boolean isTransfer() {
-        if (GetManagerState() == _OuttakeState.TRANSFER){
-            return true;
-        }
-        return false;
-    }
-
     //!Watch
     public boolean canHome() {
         if (hardwareManager.outtakeExtendoServo.getPosition() > (double) _ExtendoServoState.PICKUP.position - 0.1 && hardwareManager.outtakeExtendoServo.getPosition() < (double) _ExtendoServoState.PICKUP.position + 0.1d){
@@ -216,7 +229,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         AUTO
     }
 
-    public enum _LiftState{
+    public enum _LiftState implements Positionable{
         LOW_CHAMBER (100),
         LOW_RUNG    (200),
         HIGH_CHAMBER(1520),
@@ -236,13 +249,13 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
             this.position = position;
         }
 
+        @Override
         public float getPosition() {
             return position;
         }
     }
 
-    //!Watch
-    public enum _ExtendoServoState {
+    public enum _ExtendoServoState implements Positionable {
         PICKUP    (0f),
         DEPOSIT  (0.3f),
         TRANSFER(0.15f);
@@ -253,12 +266,13 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
             this.position = position;
         }
 
+        @Override
         public float getPosition() {
             return position;
         }
     }
 
-    public enum _OuttakeTiltServoState {
+    public enum _OuttakeTiltServoState implements Positionable {
         DEPOSIT(1f),
         PICKUP(0f),
         TRANSFER(1f);
@@ -269,12 +283,13 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
             this.position = position;
         }
 
+        @Override
         public float getPosition() {
             return position;
         }
     }
 
-    public enum _OuttakeClawServoState {
+    public enum _OuttakeClawServoState implements Positionable {
         GRIP    (0.25f),
         RELEASE     (0f);
 
@@ -284,12 +299,13 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
             this.position = position;
         }
 
+        @Override
         public float getPosition() {
             return position;
         }
     }
 
-    public enum _OuttakeYawServoState {
+    public enum _OuttakeYawServoState implements Positionable {
         HORIZONTAL_ServoDown    (0f),
         VERTICAL     (0.5f),
         HORIZONTAL_ServoUp(1f);
@@ -300,6 +316,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
             this.position = position;
         }
 
+        @Override
         public float getPosition() {
             return position;
         }
