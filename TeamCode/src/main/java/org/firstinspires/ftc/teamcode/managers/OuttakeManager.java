@@ -134,7 +134,11 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
             case CLEARED:
                 targetPosition = (int) _LiftState.CLEARED.getPosition();
                 break;
+            case ZERO:
+                targetPosition = (int) _LiftState.ZERO.getPosition();
+                break;
             case STUCK:
+                //!Mag4.2
                 break;
         }
     }
@@ -149,6 +153,9 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
                 break;
             case DEPOSIT:
                 hardwareManager.outtakeTiltServo.setPosition(_OuttakeTiltServoState.DEPOSIT.getPosition());
+                break;
+            case DEPOSIT_POST:
+                hardwareManager.outtakeTiltServo.setPosition(_OuttakeTiltServoState.DEPOSIT_POST.getPosition());
                 break;
         }
     }
@@ -232,7 +239,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     public enum _LiftState implements Positionable{
         LOW_CHAMBER (100),
         LOW_RUNG    (200),
-        HIGH_CHAMBER(1520),
+        HIGH_CHAMBER(1670),
         HIGH_RUNG   (1000),
         TRANSFER    (250),
         CLEARED(400),
@@ -240,8 +247,9 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         STUCK       (0),
         HIGH_BUCKET (2600),
         LOW_BUCKET  (1200),
-        HIGH_CHAMBER_LOWER(950),
-        HANG(1900);
+        HIGH_CHAMBER_LOWER(1100),
+        HANG(1900),
+        ZERO(0);
 
         private final float position;
 
@@ -256,8 +264,8 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     }
 
     public enum _ExtendoServoState implements Positionable {
-        PICKUP    (0f),
-        DEPOSIT  (0.3f),
+        PICKUP(0.035f),
+        DEPOSIT(0.3f),
         TRANSFER(0.15f);
 
         private final float position;
@@ -274,7 +282,8 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
 
     public enum _OuttakeTiltServoState implements Positionable {
         DEPOSIT(1f),
-        PICKUP(0f),
+        DEPOSIT_POST(0.9f),
+        PICKUP(0.1f),
         TRANSFER(1f);
 
         private final float position;

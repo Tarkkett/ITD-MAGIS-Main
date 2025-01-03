@@ -39,8 +39,14 @@ public class SetOuttakeStateCommand extends SequentialCommandGroup {
                 addCommands(
                     new SetLiftPositionCommand(manager, OuttakeManager._LiftState.CLEARED),
                     new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.DEPOSIT),
-                    new WaitCommand(300),
-                    new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.DEPOSIT),
+                    new WaitCommand(1000),
+                    new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.PICKUP),
+                    new WaitCommand(1000),
+                    new SetLiftPositionCommand(manager, OuttakeManager._LiftState.ZERO),
+                    new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.PICKUP),
+                    new WaitCommand(1000),
+                    new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.RELEASE),
+                    new SetOuttakeYawServoCommand(manager, OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoDown),
                     new DepositPositionSelector(gamepad_driver, gamepad_codriver, manager)
                 );
                 break;

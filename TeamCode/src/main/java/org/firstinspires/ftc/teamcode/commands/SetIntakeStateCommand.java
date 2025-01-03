@@ -11,12 +11,13 @@ import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeExten
 import org.firstinspires.ftc.teamcode.commands.selectors.IntakePositionSelector;
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
+import org.firstinspires.ftc.teamcode.opMode.StateMachine;
 import org.firstinspires.ftc.teamcode.util.GamepadPlus;
 
 public class SetIntakeStateCommand extends SequentialCommandGroup {
 
 
-    public SetIntakeStateCommand(IntakeManager._IntakeState targetState, IntakeManager manager, GamepadPlus gamepad_driver, GamepadPlus gamepad_codriver) {
+    public SetIntakeStateCommand(IntakeManager._IntakeState targetState, IntakeManager manager, StateMachine states, GamepadPlus gamepad_driver, GamepadPlus gamepad_codriver) {
 
         manager.managerState = targetState;
 
@@ -36,12 +37,22 @@ public class SetIntakeStateCommand extends SequentialCommandGroup {
                 );
                 break;
             case HOME:
-                addCommands(
-                        new SetIntakeSlidePositionCommand(manager, IntakeManager._SlideState.RETRACTED),
-                        new WaitCommand(400),
-                        new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.PACKED),
-                        new SetIntakeGripStateCommand(manager, IntakeManager._GripState.RELEASE)
-                );
+                if (states.robotState == StateMachine._RobotState.DEPOSIT){
+                    addCommands(
+                            new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.PACKED),
+                            new SetIntakeGripStateCommand(manager, IntakeManager._GripState.RELEASE),
+                            new WaitCommand(500),
+                            new SetIntakeSlidePositionCommand(manager, IntakeManager._SlideState.RETRACTED)
+                    );
+                }
+                else{
+                    addCommands(
+                            new SetIntakeSlidePositionCommand(manager, IntakeManager._SlideState.RETRACTED),
+                            new WaitCommand(400),
+                            new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.PACKED),
+                            new SetIntakeGripStateCommand(manager, IntakeManager._GripState.RELEASE)
+                    );
+                }
                 break;
         }
     }
