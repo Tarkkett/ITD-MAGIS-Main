@@ -23,12 +23,12 @@ public class HardwareTestManager{
     public static double INTAKE_Ki = 0;
     public static double INTAKE_Kd = 0.0006;
 
-    //Intake servos
+    //?Intake servos
     public static float intakeTiltServoPos = 0.25f;
     public static float intakeClawServoPos = 0.5f;
     public static float intakeYawServoPos = 0.36f;
 
-    //Outtake servos
+    //?Outtake servos
     public static float outtakeClawServoPos = 0.25f;
     public static float outtakeTiltServoPos = 0f;
     public static float outtakeExtendoServoPos = 0f;
