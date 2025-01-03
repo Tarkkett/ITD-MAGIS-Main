@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.managers;
 
+import android.os.Environment;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -32,6 +33,7 @@ public class TelemetryManager {
 
     public void setTelemetry(Telemetry telemetry) {
         this.telemetry = telemetry;
+        listAvailableDrives(); // Show all drives on initialization
     }
 
     public void addData(String key, String value) {
@@ -65,7 +67,6 @@ public class TelemetryManager {
         }
     }
 
-
     public void stopLogging() {
         if (isLogging) {
             try {
@@ -80,7 +81,6 @@ public class TelemetryManager {
             }
         }
     }
-
 
     private void logData() {
         if (isLogging && logWriter != null) {
@@ -102,7 +102,6 @@ public class TelemetryManager {
         }
     }
 
-
     private void log(String message) {
         if (isLogging && logWriter != null) {
             try {
@@ -119,19 +118,39 @@ public class TelemetryManager {
     }
 
     private File getLogFile() {
-        File usbDrive = new File("/storage/usb");
-        if (usbDrive.exists() && usbDrive.isDirectory()) {
-            File logDir = new File(usbDrive, "FTCLogs");
-            if (!logDir.exists()) {
-                logDir.mkdirs();
+        File logDir = new File(Environment.getExternalStorageDirectory(), "FTCLogs");
+        if (!logDir.exists()) {
+            logDir.mkdirs();
+        }
+        return new File(logDir, "telemetry_log_" + new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + ".txt");
+    }
+
+    private void listAvailableDrives() {
+        if (telemetry != null) {
+            telemetry.addLine("Available Drives:");
+            // Add primary external storage
+            File primaryStorage = Environment.getExternalStorageDirectory();
+            if (primaryStorage != null && primaryStorage.exists()) {
+                telemetry.addData("Primary Storage", primaryStorage.getAbsolutePath());
             }
-            return new File(logDir, "telemetry_log_" + new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + ".txt");
-        } else {
-            if (telemetry != null) {
-                telemetry.addLine("No USB drive detected for logging.");
-                telemetry.update();
+
+            // List all files in common storage directories
+            File storageDir = new File("/storage");
+            if (storageDir.exists() && storageDir.isDirectory()) {
+                File[] subDirs = storageDir.listFiles();
+                if (subDirs != null) {
+                    for (File dir : subDirs) {
+                        telemetry.addData("Drive", dir.getAbsolutePath());
+                    }
+                }
             }
-            return null;
+
+            // Add any other common paths
+            telemetry.addData("Download Dir", Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath());
+            telemetry.addData("DCIM Dir", Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath());
+            telemetry.addData("Music Dir", Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getAbsolutePath());
+
+            telemetry.update();
         }
     }
 }
