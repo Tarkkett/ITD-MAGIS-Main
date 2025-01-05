@@ -18,7 +18,7 @@ public class HardwareTestManager{
 
     public static double OUTTAKE_Kp = 0.012;
     public static double OUTTAKE_Ki = 0;
-    public static double OUTTAKE_Kd = 0.00009;
+    public static double OUTTAKE_Kd = 0.0003;
     public static double INTAKE_Kp = 0.02;
     public static double INTAKE_Ki = 0;
     public static double INTAKE_Kd = 0.0006;

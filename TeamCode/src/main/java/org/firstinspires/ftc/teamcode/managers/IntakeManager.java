@@ -230,8 +230,8 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
         PICKUP_DEFAULT(0.85f),
         //Increment for manual
         MANUAL(0.1f),
-        AUTO_1(0.62f),
-        AUTO_2(0.685f),
+        AUTO_1(0.6f),
+        AUTO_2(0.7f),
         AUTO_3(0.74f);
 
         private final float position;

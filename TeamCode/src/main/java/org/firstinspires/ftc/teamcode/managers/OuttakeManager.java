@@ -34,7 +34,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
 
     public OuttakeManager._OuttakeState managerState;
 
-    public PID_PARAMS params = new PID_PARAMS(0.012,0,0.00009, 5);
+    public PID_PARAMS params = new PID_PARAMS(0.012,0,0.0003, 5);
     C_PID controller = new C_PID(params);
 
     public int targetPosition;
@@ -171,6 +171,9 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
             case TRANSFER:
                 hardwareManager.outtakeExtendoServo.setPosition(_ExtendoServoState.TRANSFER.getPosition());
                 break;
+            case ZERO:
+                hardwareManager.outtakeExtendoServo.setPosition(_ExtendoServoState.ZERO.getPosition());
+                break;
         }
     }
 
@@ -247,7 +250,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         STUCK       (0),
         HIGH_BUCKET (2600),
         LOW_BUCKET  (1200),
-        HIGH_CHAMBER_LOWER(1100),
+        HIGH_CHAMBER_LOWER(1050),
         HANG(1900),
         ZERO(0);
 
@@ -266,7 +269,8 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     public enum _ExtendoServoState implements Positionable {
         PICKUP(0.035f),
         DEPOSIT(0.3f),
-        TRANSFER(0.15f);
+        TRANSFER(0.15f),
+        ZERO(0f);
 
         private final float position;
 
@@ -332,6 +336,48 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     }
 
     public Action OuttakeExtendoAction(_ExtendoServoState state) {
+        return new Action(){
+            private boolean initialize = false;
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                if (!initialize){
+                    update(state);
+                    initialize = true;
+                }
+                return false;
+            }
+        };
+    }
+
+    public Action ClawAction(_OuttakeClawServoState state) {
+        return new Action(){
+            private boolean initialize = false;
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                if (!initialize){
+                    update(state);
+                    initialize = true;
+                }
+                return false;
+            }
+        };
+    }
+
+    public Action TiltAction(_OuttakeTiltServoState state) {
+        return new Action(){
+            private boolean initialize = false;
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                if (!initialize){
+                    update(state);
+                    initialize = true;
+                }
+                return false;
+            }
+        };
+    }
+
+    public Action YawAction(_OuttakeYawServoState state) {
         return new Action(){
             private boolean initialize = false;
             @Override
