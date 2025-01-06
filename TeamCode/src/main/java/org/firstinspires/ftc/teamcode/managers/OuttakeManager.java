@@ -174,6 +174,9 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
             case ZERO:
                 hardwareManager.outtakeExtendoServo.setPosition(_ExtendoServoState.ZERO.getPosition());
                 break;
+            case DEPOSIT_BACK:
+                hardwareManager.outtakeExtendoServo.setPosition(_ExtendoServoState.DEPOSIT_BACK.getPosition());
+                break;
         }
     }
 
@@ -250,7 +253,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         STUCK       (0),
         HIGH_BUCKET (2600),
         LOW_BUCKET  (1200),
-        HIGH_CHAMBER_LOWER(1050),
+        HIGH_CHAMBER_LOWER(965),
         HANG(1900),
         ZERO(0);
 
@@ -270,7 +273,8 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         PICKUP(0.035f),
         DEPOSIT(0.3f),
         TRANSFER(0.15f),
-        ZERO(0f);
+        ZERO(0f),
+        DEPOSIT_BACK(0.175f);
 
         private final float position;
 

@@ -42,6 +42,8 @@ public class MainAuto extends OpModeTemplate {
     Action trajToHang3rd;
     Action trajToHang4th;
 
+    Action trajToPushFirstSample;
+
     private final float DIST_X_CHAMBER = 29.6f;
     private final float DIST_Y_CHAMBER = -3f;
 
@@ -65,6 +67,10 @@ public class MainAuto extends OpModeTemplate {
     public void start(){
 
         initialTraj = drive.actionBuilder(beginPose).strafeToConstantHeading(new Vector2d(DIST_X_CHAMBER,DIST_Y_CHAMBER)).build();
+
+        trajToPushFirstSample = drive.actionBuilder(new Pose2d(DIST_X_CHAMBER,DIST_Y_CHAMBER, 0))
+
+                .build();
 
         trajToFirstSample = drive.actionBuilder(new Pose2d(DIST_X_CHAMBER,DIST_Y_CHAMBER, 0))
                 .strafeToConstantHeading(new Vector2d(COORD_X_SAMPLE_1st, COORD_Y_SAMPLE_1st))
@@ -389,7 +395,6 @@ public class MainAuto extends OpModeTemplate {
                     //!Super important!
                     outtakeManager.StopLift(),
                     intakeManager.StopLift()
-//                    trajFinish
 
 
                 )

@@ -61,7 +61,8 @@ public class DepositPositionSelector extends CommandBase {
                                         new WaitCommand(500),
                                         new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.DEPOSIT),
                                         new WaitCommand(400),
-                                        new SetOuttakeYawServoCommand(manager, OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoUp)
+                                        new SetOuttakeYawServoCommand(manager, OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoUp),
+                                        new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.DEPOSIT_BACK)
                                 )
 
                         )
