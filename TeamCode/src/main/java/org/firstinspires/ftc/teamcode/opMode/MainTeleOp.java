@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.commands.low_level.SetRobotState;
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeClawStateCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.outtake.ToggleOuttakeClawCommand;
 import org.firstinspires.ftc.teamcode.managers.DriveManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 
@@ -43,11 +44,9 @@ public class MainTeleOp extends OpModeTemplate {
             .whenPressed(
                     new InstantCommand(() -> drive.pinpoint.resetPosAndIMU()));
 
-        //* Toggle speciment claw
+        //* Toggle outtake claw
         gamepad_codriver.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
-            .toggleWhenPressed(
-                    new SetOuttakeClawStateCommand(outtakeManager, OuttakeManager._OuttakeClawServoState.RELEASE),
-                    new SetOuttakeClawStateCommand(outtakeManager, OuttakeManager._OuttakeClawServoState.GRIP));
+            .whenPressed(new ToggleOuttakeClawCommand(outtakeManager, gamepad_codriver));
 
         //* Morse code?
         gamepad_driver.getGamepadButton(GamepadKeys.Button.LEFT_STICK_BUTTON).whenPressed(
@@ -67,11 +66,9 @@ public class MainTeleOp extends OpModeTemplate {
 
     @Override
     public void loop() {
-
         CommandScheduler.getInstance().run();
         intakeManager.loop();
         outtakeManager.loop();
         stateMachine.loop();
-
     }
 }

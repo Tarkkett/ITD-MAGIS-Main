@@ -18,29 +18,29 @@ import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 @Autonomous(name = "Main Auto", group = "OpMode", preselectTeleOp = "Main TeleOp")
 public class MainAuto extends OpModeTemplate {
 
-    Pose2d beginPose = new Pose2d(0, 0, 0);
+    private Pose2d beginPose = new Pose2d(0, 0, 0);
+    private TurnConstraints turnConstraints = new TurnConstraints(2.3, -2.3, 2.7);
 
-    TurnConstraints turnConstraints = new TurnConstraints(2.3, -2.3, 2.7);
-
-    Action trajToFirstSample;
-    Action trajFinish;
-    Action trajToTurnFirst;
-    Action trajToTurnScnd;
-    Action trajToSecondSample;
-    Action trajToTurnThrd;
-    Action trajToTurnFirst_back;
-    Action trajToTurnScnd_back;
-    Action trajToThirdSample;
-    Action trajToPickupFirstSpreciment;
-    Action trajToPickup1st;
-    Action trajToPickup3rd;
-    Action trajToPickup4th;
-    Action trajToPickup2nd;
-    Action initialTraj;
-    Action trajToHang1st;
-    Action trajToHang2nd;
-    Action trajToHang3rd;
-    Action trajToHang4th;
+    private Action trajToFirstSample;
+    private Action trajFinish;
+    private Action trajToTurnFirst;
+    private Action trajToTurnScnd;
+    private Action trajToSecondSample;
+    private Action trajToTurnThrd;
+    private Action trajToTurnFirst_back;
+    private Action trajToTurnScnd_back;
+    private Action trajToThirdSample;
+    private Action trajToPickupFirstSpreciment;
+    private Action trajToPickup1st;
+    private Action trajToPickup3rd;
+    private Action trajToPickup4th;
+    private Action trajToPickup2nd;
+    private Action initialTraj;
+    private Action trajToHang1st;
+    private Action trajToHang2nd;
+    private Action trajToHang3rd;
+    private Action trajToHang4th;
+    private Action longTraj;
 
     Action trajToPushFirstSample;
 
@@ -57,6 +57,7 @@ public class MainAuto extends OpModeTemplate {
     private final float COORD_X_SAMPLE_3rd = 24f;
     private final float COORD_Y_SAMPLE_3rd = -52.6f;
     private final double HEADING_Y_SAMPLE_3rd = Math.toRadians(-34);
+
 
 
     @Override
@@ -153,242 +154,246 @@ public class MainAuto extends OpModeTemplate {
                             outtakeManager.DriveLift((int) OuttakeManager._LiftState.HIGH_CHAMBER.getPosition()),
                             intakeManager.GripAction(IntakeManager._GripState.RELEASE),
                             initialTraj
-
                     ),
                     outtakeManager.DriveLift((int) OuttakeManager._LiftState.HIGH_CHAMBER_LOWER.getPosition()),
                     new SleepAction(0.5),
                     outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.RELEASE),
                     outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.PICKUP),
-                    outtakeManager.DriveLift((int) OuttakeManager._LiftState.CLEARED.getPosition()),
-                    new ParallelAction(
-                            trajToFirstSample,
-                            new SequentialAction(
-                                    new SleepAction(0.4),
-                                    intakeManager.DriveLift(0),
-                                    intakeManager.YawAction(IntakeManager._YawServoState.AUTO_1),
-                                    intakeManager.TiltAction(IntakeManager._TiltServoState.AIMING),
-                                    new SleepAction(0.2),
-                                    outtakeManager.DriveLift((int) OuttakeManager._LiftState.TRANSFER.getPosition())
-                            )
-                    ),
+                    //-----------------------------
+                    outtakeManager.DriveLift((int) OuttakeManager._LiftState.ZERO.getPosition()),
+                    longTraj,
 
-                    intakeManager.TiltAction(IntakeManager._TiltServoState.LOWERED),
-                    new SleepAction(0.1),
-                    intakeManager.GripAction(IntakeManager._GripState.GRIP),
-                    new SleepAction(0.2),
-                    intakeManager.TiltAction(IntakeManager._TiltServoState.TRANSFER),
-                    new SleepAction(0.3),
-                    new ParallelAction(
-                            intakeManager.DriveLift((int) IntakeManager._SlideState.EXTENDED.getPosition()),
-                            intakeManager.YawAction(IntakeManager._YawServoState.TRANSFER),
-                            outtakeManager.TiltAction(OuttakeManager._OuttakeTiltServoState.TRANSFER),
-                            outtakeManager.YawAction(OuttakeManager._OuttakeYawServoState.VERTICAL)
-                    ),
-                    new SleepAction(0.2),
 
-                    new ParallelAction(
-                            trajToTurnFirst,
-                            new SequentialAction(
-                                    outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.TRANSFER),
-                                    intakeManager.DriveLift((int) IntakeManager._SlideState.TRANSFER.getPosition()),
-                                    new SleepAction(0.5),
-                                    outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.GRIP),
-                                    new SleepAction(0.2),
-                                    intakeManager.GripAction(IntakeManager._GripState.RELEASE),
-                                    new SleepAction(0.3),
-                                    intakeManager.TiltAction(IntakeManager._TiltServoState.PACKED),
-                                    outtakeManager.DriveLift((int) OuttakeManager._LiftState.CLEARED.getPosition()),
-                                    outtakeManager.YawAction(OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoDown),
-                                    outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.DEPOSIT),
-                                    outtakeManager.TiltAction(OuttakeManager._OuttakeTiltServoState.PICKUP),
-                                    new SleepAction(0.6),
-                                    outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.PICKUP),
-                                    intakeManager.TiltAction(IntakeManager._TiltServoState.AIMING),
-                                    intakeManager.YawAction(IntakeManager._YawServoState.AUTO_1),
-                                    intakeManager.DriveLift(0),
-                                    new SleepAction(0.2),
-                                    outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.RELEASE)
-                            )
-                    ),
-                    new ParallelAction(
-                            trajToSecondSample,
-                            new SequentialAction(
-                                    outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.TRANSFER),
-                                    new SleepAction(0.3),
-                                    outtakeManager.TiltAction(OuttakeManager._OuttakeTiltServoState.TRANSFER)
-                            )
-
-                    ),
-                    outtakeManager.DriveLift((int) OuttakeManager._LiftState.TRANSFER.getPosition()),
-                    intakeManager.TiltAction(IntakeManager._TiltServoState.LOWERED),
-                    new SleepAction(0.2),
-                    intakeManager.GripAction(IntakeManager._GripState.GRIP),
-
-                    //===================================================
-
-                    new SleepAction(0.2),
-                    intakeManager.TiltAction(IntakeManager._TiltServoState.TRANSFER),
-                    new SleepAction(0.3),
-                    new ParallelAction(
-                            intakeManager.DriveLift((int) IntakeManager._SlideState.EXTENDED.getPosition()),
-                            intakeManager.YawAction(IntakeManager._YawServoState.TRANSFER),
-                            outtakeManager.TiltAction(OuttakeManager._OuttakeTiltServoState.TRANSFER),
-                            outtakeManager.YawAction(OuttakeManager._OuttakeYawServoState.VERTICAL)
-                    ),
-                    new SleepAction(0.2),
-
-                    new ParallelAction(
-                            trajToTurnScnd,
-                            new SequentialAction(
-                                    outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.TRANSFER),
-                                    intakeManager.DriveLift((int) IntakeManager._SlideState.TRANSFER.getPosition()),
-                                    new SleepAction(0.5),
-                                    outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.GRIP),
-                                    new SleepAction(0.2),
-                                    intakeManager.GripAction(IntakeManager._GripState.RELEASE),
-                                    new SleepAction(0.3),
-                                    intakeManager.TiltAction(IntakeManager._TiltServoState.PACKED),
-                                    outtakeManager.DriveLift((int) OuttakeManager._LiftState.CLEARED.getPosition()),
-                                    outtakeManager.YawAction(OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoDown),
-                                    outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.DEPOSIT),
-                                    outtakeManager.TiltAction(OuttakeManager._OuttakeTiltServoState.PICKUP),
-                                    new SleepAction(0.6),
-                                    outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.PICKUP),
-                                    intakeManager.TiltAction(IntakeManager._TiltServoState.AIMING),
-                                    intakeManager.YawAction(IntakeManager._YawServoState.AUTO_2),
-                                    intakeManager.DriveLift(0),
-                                    new SleepAction(0.2),
-                                    outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.RELEASE)
-                            )
-                    ),
-                    new ParallelAction(
-                            trajToThirdSample,
-                            new SequentialAction(
-                                    outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.TRANSFER),
-                                    new SleepAction(0.3),
-                                    outtakeManager.TiltAction(OuttakeManager._OuttakeTiltServoState.TRANSFER)
-                            )
-
-                    ),
-
-                    outtakeManager.DriveLift((int) OuttakeManager._LiftState.TRANSFER.getPosition()),
-                    intakeManager.TiltAction(IntakeManager._TiltServoState.LOWERED),
-                    new SleepAction(0.2),
-                    intakeManager.GripAction(IntakeManager._GripState.GRIP),
-
-                    //========================================== 3 back with transfer
-
-                    new SleepAction(0.2),
-                    intakeManager.TiltAction(IntakeManager._TiltServoState.TRANSFER),
-                    new SleepAction(0.3),
-                    new ParallelAction(
-                            intakeManager.DriveLift((int) IntakeManager._SlideState.EXTENDED.getPosition()),
-                            intakeManager.YawAction(IntakeManager._YawServoState.TRANSFER),
-                            outtakeManager.TiltAction(OuttakeManager._OuttakeTiltServoState.TRANSFER),
-                            outtakeManager.YawAction(OuttakeManager._OuttakeYawServoState.VERTICAL)
-                    ),
-                    new SleepAction(0.2),
-
-                    new ParallelAction(
-                            trajToTurnThrd,
-                            new SequentialAction(
-                                    outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.TRANSFER),
-                                    intakeManager.DriveLift((int) IntakeManager._SlideState.TRANSFER.getPosition()),
-                                    new SleepAction(0.5),
-                                    outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.GRIP),
-                                    new SleepAction(0.2),
-                                    intakeManager.GripAction(IntakeManager._GripState.RELEASE),
-                                    new SleepAction(0.3),
-                                    intakeManager.TiltAction(IntakeManager._TiltServoState.PACKED),
-                                    outtakeManager.DriveLift((int) OuttakeManager._LiftState.CLEARED.getPosition()),
-                                    outtakeManager.YawAction(OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoDown),
-                                    outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.DEPOSIT),
-                                    outtakeManager.TiltAction(OuttakeManager._OuttakeTiltServoState.PICKUP),
-                                    new SleepAction(0.6),
-                                    outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.PICKUP),
-                                    intakeManager.DriveLift(0),
-                                    new SleepAction(0.2),
-                                    outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.RELEASE),
-                                    outtakeManager.DriveLift(0)
-                            )
-                    ),
-                    outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.ZERO),
-                    trajToPickupFirstSpreciment,
-
-                    new SleepAction(0.25),
-                    outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.GRIP),
-                    new SleepAction(0.15),
-                    outtakeManager.DriveLift((int) OuttakeManager._LiftState.HIGH_CHAMBER.getPosition()),
-                    new ParallelAction(
-                            trajToHang1st,
-                            new SequentialAction(
-                                    outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.DEPOSIT),
-                                    new SleepAction(0.3),
-                                    outtakeManager.TiltAction(OuttakeManager._OuttakeTiltServoState.DEPOSIT),
-                                    new SleepAction(0.5),
-                                    outtakeManager.YawAction(OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoUp)
-                            )
-                    ),
-                    outtakeManager.DriveLift((int) OuttakeManager._LiftState.HIGH_CHAMBER_LOWER.getPosition()),
-                    new SleepAction(0.5),
-                    outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.RELEASE),
-                    new SleepAction(0.2),
-                    //PICKUP
-                    new ParallelAction(
-                            trajToPickup1st,
-                            new SequentialAction(
-                                    outtakeManager.TiltAction(OuttakeManager._OuttakeTiltServoState.PICKUP),
-                                    new SleepAction(0.5),
-                                    outtakeManager.DriveLift(0),
-                                    outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.ZERO)
-                            )
-                    ),
-                    outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.GRIP),
-                    new SleepAction(0.15),
-                    outtakeManager.DriveLift((int) OuttakeManager._LiftState.HIGH_CHAMBER.getPosition()),
-                    //DEPOSIT
-                    new ParallelAction(
-                            trajToHang2nd,
-                            new SequentialAction(
-                                    outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.DEPOSIT),
-                                    new SleepAction(0.3),
-                                    outtakeManager.TiltAction(OuttakeManager._OuttakeTiltServoState.DEPOSIT),
-                                    new SleepAction(0.5),
-                                    outtakeManager.YawAction(OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoDown)
-                            )
-                    ),
-                    outtakeManager.DriveLift((int) OuttakeManager._LiftState.HIGH_CHAMBER_LOWER.getPosition()),
-                    new SleepAction(0.5),
-                    outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.RELEASE),
-                    new SleepAction(0.2),
-                    //==
-                        new ParallelAction(
-                                trajToPickup2nd,
-                                new SequentialAction(
-                                        outtakeManager.TiltAction(OuttakeManager._OuttakeTiltServoState.PICKUP),
-                                        new SleepAction(0.5),
-                                        outtakeManager.DriveLift(0),
-                                        outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.ZERO)
-                                )
-                        ),
-                        outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.GRIP),
-                        new SleepAction(0.15),
-                        outtakeManager.DriveLift((int) OuttakeManager._LiftState.HIGH_CHAMBER.getPosition()),
-                    //==
-                        new ParallelAction(
-                                trajToHang3rd,
-                                new SequentialAction(
-                                        outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.DEPOSIT),
-                                        new SleepAction(0.45),
-                                        outtakeManager.TiltAction(OuttakeManager._OuttakeTiltServoState.DEPOSIT),
-                                        new SleepAction(0.5),
-                                        outtakeManager.YawAction(OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoDown)
-                                )
-                        ),
-                        outtakeManager.DriveLift((int) OuttakeManager._LiftState.HIGH_CHAMBER_LOWER.getPosition()),
-                        new SleepAction(0.5),
-                        outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.RELEASE),
-                        new SleepAction(0.2),
+//                    outtakeManager.DriveLift((int) OuttakeManager._LiftState.CLEARED.getPosition()),
+//                    new ParallelAction(
+//                            trajToFirstSample,
+//                            new SequentialAction(
+//                                    new SleepAction(0.4),
+//                                    intakeManager.DriveLift(0),
+//                                    intakeManager.YawAction(IntakeManager._YawServoState.AUTO_1),
+//                                    intakeManager.TiltAction(IntakeManager._TiltServoState.AIMING),
+//                                    new SleepAction(0.2),
+//                                    outtakeManager.DriveLift((int) OuttakeManager._LiftState.TRANSFER.getPosition())
+//                            )
+//                    ),
+//
+//                    intakeManager.TiltAction(IntakeManager._TiltServoState.LOWERED),
+//                    new SleepAction(0.1),
+//                    intakeManager.GripAction(IntakeManager._GripState.GRIP),
+//                    new SleepAction(0.2),
+//                    intakeManager.TiltAction(IntakeManager._TiltServoState.TRANSFER),
+//                    new SleepAction(0.3),
+//                    new ParallelAction(
+//                            intakeManager.DriveLift((int) IntakeManager._SlideState.EXTENDED.getPosition()),
+//                            intakeManager.YawAction(IntakeManager._YawServoState.TRANSFER),
+//                            outtakeManager.TiltAction(OuttakeManager._OuttakeTiltServoState.TRANSFER),
+//                            outtakeManager.YawAction(OuttakeManager._OuttakeYawServoState.VERTICAL)
+//                    ),
+//                    new SleepAction(0.2),
+//
+//                    new ParallelAction(
+//                            trajToTurnFirst,
+//                            new SequentialAction(
+//                                    outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.TRANSFER),
+//                                    intakeManager.DriveLift((int) IntakeManager._SlideState.TRANSFER.getPosition()),
+//                                    new SleepAction(0.5),
+//                                    outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.GRIP),
+//                                    new SleepAction(0.2),
+//                                    intakeManager.GripAction(IntakeManager._GripState.RELEASE),
+//                                    new SleepAction(0.3),
+//                                    intakeManager.TiltAction(IntakeManager._TiltServoState.PACKED),
+//                                    outtakeManager.DriveLift((int) OuttakeManager._LiftState.CLEARED.getPosition()),
+//                                    outtakeManager.YawAction(OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoDown),
+//                                    outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.DEPOSIT),
+//                                    outtakeManager.TiltAction(OuttakeManager._OuttakeTiltServoState.PICKUP),
+//                                    new SleepAction(0.6),
+//                                    outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.PICKUP),
+//                                    intakeManager.TiltAction(IntakeManager._TiltServoState.AIMING),
+//                                    intakeManager.YawAction(IntakeManager._YawServoState.AUTO_1),
+//                                    intakeManager.DriveLift(0),
+//                                    new SleepAction(0.2),
+//                                    outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.RELEASE)
+//                            )
+//                    ),
+//                    new ParallelAction(
+//                            trajToSecondSample,
+//                            new SequentialAction(
+//                                    outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.TRANSFER),
+//                                    new SleepAction(0.3),
+//                                    outtakeManager.TiltAction(OuttakeManager._OuttakeTiltServoState.TRANSFER)
+//                            )
+//
+//                    ),
+//                    outtakeManager.DriveLift((int) OuttakeManager._LiftState.TRANSFER.getPosition()),
+//                    intakeManager.TiltAction(IntakeManager._TiltServoState.LOWERED),
+//                    new SleepAction(0.2),
+//                    intakeManager.GripAction(IntakeManager._GripState.GRIP),
+//
+//                    //===================================================
+//
+//                    new SleepAction(0.2),
+//                    intakeManager.TiltAction(IntakeManager._TiltServoState.TRANSFER),
+//                    new SleepAction(0.3),
+//                    new ParallelAction(
+//                            intakeManager.DriveLift((int) IntakeManager._SlideState.EXTENDED.getPosition()),
+//                            intakeManager.YawAction(IntakeManager._YawServoState.TRANSFER),
+//                            outtakeManager.TiltAction(OuttakeManager._OuttakeTiltServoState.TRANSFER),
+//                            outtakeManager.YawAction(OuttakeManager._OuttakeYawServoState.VERTICAL)
+//                    ),
+//                    new SleepAction(0.2),
+//
+//                    new ParallelAction(
+//                            trajToTurnScnd,
+//                            new SequentialAction(
+//                                    outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.TRANSFER),
+//                                    intakeManager.DriveLift((int) IntakeManager._SlideState.TRANSFER.getPosition()),
+//                                    new SleepAction(0.5),
+//                                    outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.GRIP),
+//                                    new SleepAction(0.2),
+//                                    intakeManager.GripAction(IntakeManager._GripState.RELEASE),
+//                                    new SleepAction(0.3),
+//                                    intakeManager.TiltAction(IntakeManager._TiltServoState.PACKED),
+//                                    outtakeManager.DriveLift((int) OuttakeManager._LiftState.CLEARED.getPosition()),
+//                                    outtakeManager.YawAction(OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoDown),
+//                                    outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.DEPOSIT),
+//                                    outtakeManager.TiltAction(OuttakeManager._OuttakeTiltServoState.PICKUP),
+//                                    new SleepAction(0.6),
+//                                    outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.PICKUP),
+//                                    intakeManager.TiltAction(IntakeManager._TiltServoState.AIMING),
+//                                    intakeManager.YawAction(IntakeManager._YawServoState.AUTO_2),
+//                                    intakeManager.DriveLift(0),
+//                                    new SleepAction(0.2),
+//                                    outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.RELEASE)
+//                            )
+//                    ),
+//                    new ParallelAction(
+//                            trajToThirdSample,
+//                            new SequentialAction(
+//                                    outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.TRANSFER),
+//                                    new SleepAction(0.3),
+//                                    outtakeManager.TiltAction(OuttakeManager._OuttakeTiltServoState.TRANSFER)
+//                            )
+//
+//                    ),
+//
+//                    outtakeManager.DriveLift((int) OuttakeManager._LiftState.TRANSFER.getPosition()),
+//                    intakeManager.TiltAction(IntakeManager._TiltServoState.LOWERED),
+//                    new SleepAction(0.2),
+//                    intakeManager.GripAction(IntakeManager._GripState.GRIP),
+//
+//                    //========================================== 3 back with transfer
+//
+//                    new SleepAction(0.2),
+//                    intakeManager.TiltAction(IntakeManager._TiltServoState.TRANSFER),
+//                    new SleepAction(0.3),
+//                    new ParallelAction(
+//                            intakeManager.DriveLift((int) IntakeManager._SlideState.EXTENDED.getPosition()),
+//                            intakeManager.YawAction(IntakeManager._YawServoState.TRANSFER),
+//                            outtakeManager.TiltAction(OuttakeManager._OuttakeTiltServoState.TRANSFER),
+//                            outtakeManager.YawAction(OuttakeManager._OuttakeYawServoState.VERTICAL)
+//                    ),
+//                    new SleepAction(0.2),
+//
+//                    new ParallelAction(
+//                            trajToTurnThrd,
+//                            new SequentialAction(
+//                                    outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.TRANSFER),
+//                                    intakeManager.DriveLift((int) IntakeManager._SlideState.TRANSFER.getPosition()),
+//                                    new SleepAction(0.5),
+//                                    outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.GRIP),
+//                                    new SleepAction(0.2),
+//                                    intakeManager.GripAction(IntakeManager._GripState.RELEASE),
+//                                    new SleepAction(0.3),
+//                                    intakeManager.TiltAction(IntakeManager._TiltServoState.PACKED),
+//                                    outtakeManager.DriveLift((int) OuttakeManager._LiftState.CLEARED.getPosition()),
+//                                    outtakeManager.YawAction(OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoDown),
+//                                    outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.DEPOSIT),
+//                                    outtakeManager.TiltAction(OuttakeManager._OuttakeTiltServoState.PICKUP),
+//                                    new SleepAction(0.6),
+//                                    outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.PICKUP),
+//                                    intakeManager.DriveLift(0),
+//                                    new SleepAction(0.2),
+//                                    outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.RELEASE),
+//                                    outtakeManager.DriveLift(0)
+//                            )
+//                    ),
+//                    outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.ZERO),
+//                    trajToPickupFirstSpreciment,
+//
+//                    new SleepAction(0.25),
+//                    outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.GRIP),
+//                    new SleepAction(0.15),
+//                    outtakeManager.DriveLift((int) OuttakeManager._LiftState.HIGH_CHAMBER.getPosition()),
+//                    new ParallelAction(
+//                            trajToHang1st,
+//                            new SequentialAction(
+//                                    outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.DEPOSIT),
+//                                    new SleepAction(0.3),
+//                                    outtakeManager.TiltAction(OuttakeManager._OuttakeTiltServoState.DEPOSIT),
+//                                    new SleepAction(0.5),
+//                                    outtakeManager.YawAction(OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoUp)
+//                            )
+//                    ),
+//                    outtakeManager.DriveLift((int) OuttakeManager._LiftState.HIGH_CHAMBER_LOWER.getPosition()),
+//                    new SleepAction(0.5),
+//                    outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.RELEASE),
+//                    new SleepAction(0.2),
+//                    //PICKUP
+//                    new ParallelAction(
+//                            trajToPickup1st,
+//                            new SequentialAction(
+//                                    outtakeManager.TiltAction(OuttakeManager._OuttakeTiltServoState.PICKUP),
+//                                    new SleepAction(0.5),
+//                                    outtakeManager.DriveLift(0),
+//                                    outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.ZERO)
+//                            )
+//                    ),
+//                    outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.GRIP),
+//                    new SleepAction(0.15),
+//                    outtakeManager.DriveLift((int) OuttakeManager._LiftState.HIGH_CHAMBER.getPosition()),
+//                    //DEPOSIT
+//                    new ParallelAction(
+//                            trajToHang2nd,
+//                            new SequentialAction(
+//                                    outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.DEPOSIT),
+//                                    new SleepAction(0.3),
+//                                    outtakeManager.TiltAction(OuttakeManager._OuttakeTiltServoState.DEPOSIT),
+//                                    new SleepAction(0.5),
+//                                    outtakeManager.YawAction(OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoDown)
+//                            )
+//                    ),
+//                    outtakeManager.DriveLift((int) OuttakeManager._LiftState.HIGH_CHAMBER_LOWER.getPosition()),
+//                    new SleepAction(0.5),
+//                    outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.RELEASE),
+//                    new SleepAction(0.2),
+//                    //==
+//                        new ParallelAction(
+//                                trajToPickup2nd,
+//                                new SequentialAction(
+//                                        outtakeManager.TiltAction(OuttakeManager._OuttakeTiltServoState.PICKUP),
+//                                        new SleepAction(0.5),
+//                                        outtakeManager.DriveLift(0),
+//                                        outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.ZERO)
+//                                )
+//                        ),
+//                        outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.GRIP),
+//                        new SleepAction(0.15),
+//                        outtakeManager.DriveLift((int) OuttakeManager._LiftState.HIGH_CHAMBER.getPosition()),
+//                    //==
+//                        new ParallelAction(
+//                                trajToHang3rd,
+//                                new SequentialAction(
+//                                        outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.DEPOSIT),
+//                                        new SleepAction(0.45),
+//                                        outtakeManager.TiltAction(OuttakeManager._OuttakeTiltServoState.DEPOSIT),
+//                                        new SleepAction(0.5),
+//                                        outtakeManager.YawAction(OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoDown)
+//                                )
+//                        ),
+//                        outtakeManager.DriveLift((int) OuttakeManager._LiftState.HIGH_CHAMBER_LOWER.getPosition()),
+//                        new SleepAction(0.5),
+//                        outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.RELEASE),
+//                        new SleepAction(0.2),
 
 
 

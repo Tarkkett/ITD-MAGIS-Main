@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.managers.testing;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.arcrobotics.ftclib.command.CommandScheduler;
 
+import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetLiftPositionCommand;
 import org.firstinspires.ftc.teamcode.drivers.C_PID;
 import org.firstinspires.ftc.teamcode.managers.DriveManager;
 import org.firstinspires.ftc.teamcode.managers.HardwareManager;
@@ -65,6 +67,8 @@ public class HardwareTestManager{
         hardware.outtakeExtendoServo.setPosition(outtakeExtendoServoPos);
         hardware.outtakeYawServo.setPosition(outtakeYawServoPos);
 
-        outtake.targetPosition = outtakeTargetPos;
+        CommandScheduler.getInstance().schedule(new SetLiftPositionCommand(outtake, null, 200));
+
+        CommandScheduler.getInstance().run();
     }
 }

@@ -27,6 +27,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     public boolean selectingProcess = false;
     private Telemetry telemetry;
     private GamepadPlus gamepad_driver;
+    private GamepadPlus gamepad_codriver;
 
     public int targetPosition;
     public int encoderPos = 0;
@@ -38,10 +39,11 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     public PID_PARAMS params = new PID_PARAMS(0.02, 0.0, 0.0006, 5);
     C_PID controller = new C_PID(params);
 
-    public IntakeManager(HardwareManager hardwareManager, Telemetry telemetry, GamepadPlus gamepadDriver) {
+    public IntakeManager(HardwareManager hardwareManager, Telemetry telemetry, GamepadPlus gamepadDriver, GamepadPlus gamepadCodriver) {
         this.gamepad_driver = gamepadDriver;
         this.telemetry = telemetry;
         this.hardwareManager = hardwareManager;
+        this.gamepad_codriver = gamepadCodriver;
     }
 
     private void updateTelemetry() {
@@ -161,7 +163,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
             targetPosition = newPos;
         }
         else{
-            gamepad_driver.gamepad.rumbleBlips(3);
+            gamepad_codriver.gamepad.rumbleBlips(3);
         }
     }
 
@@ -207,7 +209,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     }
     public enum _TiltServoState implements Positionable{
         TRANSFER(0.36f),
-        LOWERED (0.95f),
+        LOWERED (0.965f),
         AIMING(0.87f),
         PACKED(0.25f),
         CLEARED(0.5f),

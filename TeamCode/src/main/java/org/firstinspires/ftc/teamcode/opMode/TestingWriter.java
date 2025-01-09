@@ -7,13 +7,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.managers.TelemetryManager;
+import org.firstinspires.ftc.teamcode.managers.TelemetryManagerAP;
 
 @TeleOp(name = "USB Test")
 public class TestingWriter extends OpMode {
 
 
-    TelemetryManager telemetryManager = TelemetryManager.getInstance();
+    TelemetryManagerAP telemetryManager = TelemetryManagerAP.getInstance();
 
     private final Uri DirURI = Uri.parse("content://com.android.externalstorage.documents/tree/761696AF9B%3A");
 

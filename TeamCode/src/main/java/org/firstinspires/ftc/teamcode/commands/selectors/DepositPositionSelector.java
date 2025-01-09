@@ -28,7 +28,6 @@ public class DepositPositionSelector extends CommandBase {
         this.gamepad_codriver = gamepad_codriver;
         this.manager = manager;
 //        this.autoSeq = autoSeq;
-
     }
 
     @Override
@@ -74,15 +73,23 @@ public class DepositPositionSelector extends CommandBase {
                 }
                 else {gamepad_codriver.rumble(400);}
             }
-//            else if (gamepad_codriver.gamepad.triangle){
-//                CommandScheduler.getInstance().schedule(
-//                        new SequentialCommandGroup(
-//                                new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HIGH_BUCKET),
-//                                new WaitCommand(1000),
-//                                new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.DEPOSIT)
-//                        )
-//                );
-//            }
+
+            //*Initially for high basket -> now for hang
+            else if (gamepad_codriver.gamepad.triangle){
+                CommandScheduler.getInstance().schedule(
+                        new SequentialCommandGroup(
+                                new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HANG_READY),
+                                new WaitCommand(1000),
+                                new SequentialCommandGroup(
+                                        new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.GRIP),
+                                        new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.DEPOSIT),
+                                        new WaitCommand(550),
+                                        new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.DEPOSIT)
+                                )
+
+                        )
+                );
+            }
             else if (gamepad_codriver.gamepad.dpad_up){
                 CommandScheduler.getInstance().schedule(new MoveLiftSomeBit(manager, 50));
             }
@@ -92,8 +99,9 @@ public class DepositPositionSelector extends CommandBase {
             else if (gamepad_codriver.gamepad.cross) {
                 CommandScheduler.getInstance().schedule(
                         new SequentialCommandGroup(
+                                new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.DEPOSIT_FORWARDPUSH),
                                 new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HIGH_CHAMBER_LOWER),
-                                new WaitCommand(500),
+                                new WaitCommand(650),
                                 new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.RELEASE)
                         )
                 );
@@ -106,11 +114,14 @@ public class DepositPositionSelector extends CommandBase {
                         )
                 );
             }
-//            else if (gamepad_codriver.gamepad.share) {
-//                CommandScheduler.getInstance().schedule(
-//                        new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HANG)
-//                );
-//            }
+            else if (gamepad_codriver.gamepad.share) {
+                if (manager.canHang()){
+                    CommandScheduler.getInstance().schedule(
+                            new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HANG_DOWN)
+                    );
+                }
+                else gamepad_codriver.rumble(200);
+            }
         }
     }
 

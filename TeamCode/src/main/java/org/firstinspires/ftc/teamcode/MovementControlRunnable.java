@@ -53,7 +53,7 @@ public class MovementControlRunnable implements Runnable {
     private double calculatePowerMultiplier() {
         //! If switching back to trigger, remember to use TRIGGER_MARGIN variable.
 
-        if (outtakeManager.encoderPos > 2200){
+        if (outtakeManager.GetLiftCurrentPos() > 2200){
             if (gamepad.isDown(GamepadKeys.Button.LEFT_BUMPER)) {
                 return 0.2;
             }

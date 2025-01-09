@@ -1,12 +1,6 @@
 package org.firstinspires.ftc.teamcode.managers;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Environment;
-
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -19,20 +13,20 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TelemetryManager {
+public class TelemetryManagerAP {
 
-    private static TelemetryManager instance;
+    private static TelemetryManagerAP instance;
 
     private Telemetry telemetry;
     private final Map<String, String> telemetryData = new HashMap<>();
     private BufferedWriter logWriter;
     private boolean isLogging = false;
 
-    private TelemetryManager() {}
+    private TelemetryManagerAP() {}
 
-    public static TelemetryManager getInstance() {
+    public static TelemetryManagerAP getInstance() {
         if (instance == null) {
-            instance = new TelemetryManager();
+            instance = new TelemetryManagerAP();
         }
         return instance;
     }

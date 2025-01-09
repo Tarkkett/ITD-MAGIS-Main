@@ -13,10 +13,6 @@ import org.firstinspires.ftc.teamcode.drivers.C_PID;
 
 @SuppressWarnings("rawtypes")
 
-
-
-
-
 @Config
 public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
 
@@ -34,15 +30,16 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
 
     public OuttakeManager._OuttakeState managerState;
 
+    //!Default PID parameters
     public PID_PARAMS params = new PID_PARAMS(0.012,0,0.0003, 5);
     C_PID controller = new C_PID(params);
 
-    public int targetPosition;
-    public int encoderPos;
+    protected int targetPosition;
+    protected int encoderPos;
 
     private boolean isAutoLoop = true;
 
-    _LiftMode mode;
+    protected  _LiftMode mode;
 
     public OuttakeManager(HardwareManager hardwareManager, Telemetry telemetry, IntakeManager intakeManager){
 
@@ -95,51 +92,69 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         } else return _OuttakeState.IDLE;
     }
 
-    private int Average(float p1, float p2) {
-        return (int) ((p1 + p2) / 2);
+    /**
+     * @return isGRIP
+     */
+    public boolean GetClawState() {
+        if (hardwareManager.outtakeClawServo.getPosition() > _OuttakeClawServoState.GRIP.getPosition() - 0.05 &&
+                hardwareManager.outtakeClawServo.getPosition() < _OuttakeClawServoState.GRIP.getPosition() + 0.05){
+            return true;
+        }
+        else return false;
     }
 
-    public void update(_LiftState targetState) {
-        switch (targetState){
-            case HIGH_RUNG:
-                targetPosition = (int) _LiftState.HIGH_RUNG.getPosition();
-                break;
-            case LOW_RUNG:
-                targetPosition = (int) _LiftState.LOW_RUNG.getPosition();
-                break;
-            case LOW_BUCKET:
-                targetPosition = (int) _LiftState.LOW_BUCKET.getPosition();
-                break;
-            case HIGH_BUCKET:
-                targetPosition = (int) _LiftState.HIGH_BUCKET.getPosition();
-                break;
-            case HIGH_CHAMBER:
-                targetPosition = (int) _LiftState.HIGH_CHAMBER.getPosition();
-                break;
-            case LOW_CHAMBER:
-                targetPosition = (int) _LiftState.LOW_CHAMBER.getPosition();
-                break;
-            case TRANSFER:
-                targetPosition = (int) _LiftState.TRANSFER.getPosition();
-                break;
-            case HOME:
-                targetPosition = (int) _LiftState.HOME.getPosition();
-                break;
-            case HIGH_CHAMBER_LOWER:
-                targetPosition = (int) _LiftState.HIGH_CHAMBER_LOWER.getPosition();
-                break;
-            case HANG:
-                targetPosition = (int) _LiftState.HANG.getPosition();
-                break;
-            case CLEARED:
-                targetPosition = (int) _LiftState.CLEARED.getPosition();
-                break;
-            case ZERO:
-                targetPosition = (int) _LiftState.ZERO.getPosition();
-                break;
-            case STUCK:
-                //!Mag4.2
-                break;
+    public void update(_LiftState targetState, int... position) {
+        if (targetState != null) {
+            switch (targetState) {
+                case HIGH_RUNG:
+                    targetPosition = (int) _LiftState.HIGH_RUNG.getPosition();
+                    break;
+                case LOW_RUNG:
+                    targetPosition = (int) _LiftState.LOW_RUNG.getPosition();
+                    break;
+                case LOW_BUCKET:
+                    targetPosition = (int) _LiftState.LOW_BUCKET.getPosition();
+                    break;
+                case HIGH_BUCKET:
+                    targetPosition = (int) _LiftState.HIGH_BUCKET.getPosition();
+                    break;
+                case HIGH_CHAMBER:
+                    targetPosition = (int) _LiftState.HIGH_CHAMBER.getPosition();
+                    break;
+                case LOW_CHAMBER:
+                    targetPosition = (int) _LiftState.LOW_CHAMBER.getPosition();
+                    break;
+                case TRANSFER:
+                    targetPosition = (int) _LiftState.TRANSFER.getPosition();
+                    break;
+                case HOME:
+                    targetPosition = (int) _LiftState.HOME.getPosition();
+                    break;
+                case HIGH_CHAMBER_LOWER:
+                    targetPosition = (int) _LiftState.HIGH_CHAMBER_LOWER.getPosition();
+                    break;
+                case HANG_READY:
+                    targetPosition = (int) _LiftState.HANG_READY.getPosition();
+                    break;
+                case HANG_DOWN:
+                    targetPosition = (int) _LiftState.HANG_DOWN.getPosition();
+                    break;
+                case CLEARED:
+                    targetPosition = (int) _LiftState.CLEARED.getPosition();
+                    break;
+                case CLEARED_ALL:
+                    targetPosition = (int) _LiftState.CLEARED_ALL.getPosition();
+                    break;
+                case ZERO:
+                    targetPosition = (int) _LiftState.ZERO.getPosition();
+                    break;
+                case STUCK:
+                    //!Mag4.2
+                    break;
+            }
+        }
+        else {
+            this.targetPosition = position[0];
         }
     }
 
@@ -177,6 +192,9 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
             case DEPOSIT_BACK:
                 hardwareManager.outtakeExtendoServo.setPosition(_ExtendoServoState.DEPOSIT_BACK.getPosition());
                 break;
+            case DEPOSIT_FORWARDPUSH:
+                hardwareManager.outtakeExtendoServo.setPosition(_ExtendoServoState.DEPOSIT_FORWARDPUSH.getPosition());
+                break;
         }
     }
 
@@ -205,6 +223,13 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         }
     }
 
+    public int GetLiftTargetPos(){
+        return targetPosition;
+    }
+    public int GetLiftCurrentPos(){
+        return encoderPos;
+    }
+
     public void lowerLiftPosition(int i) {
         int newPos = encoderPos + i;
         if (newPos > MIN_THRESHOLD && newPos < MAX_THRESHOLD){
@@ -228,6 +253,10 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         else return true;
     }
 
+    public boolean canHang() {
+        return targetPosition == _LiftState.HANG_READY.position;
+    }
+
     public enum _OuttakeState{
         HOME,
         DEPOSIT,
@@ -249,12 +278,14 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         HIGH_RUNG   (1000),
         TRANSFER    (250),
         CLEARED(400),
+        CLEARED_ALL(800),
         HOME        (50),
         STUCK       (0),
         HIGH_BUCKET (2600),
         LOW_BUCKET  (1200),
-        HIGH_CHAMBER_LOWER(965),
-        HANG(1900),
+        HIGH_CHAMBER_LOWER(870),
+        HANG_READY(2220),
+        HANG_DOWN(1600),
         ZERO(0);
 
         private final float position;
@@ -274,7 +305,8 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         DEPOSIT(0.3f),
         TRANSFER(0.15f),
         ZERO(0f),
-        DEPOSIT_BACK(0.175f);
+        DEPOSIT_BACK(0.175f),
+        DEPOSIT_FORWARDPUSH(0.23f);
 
         private final float position;
 

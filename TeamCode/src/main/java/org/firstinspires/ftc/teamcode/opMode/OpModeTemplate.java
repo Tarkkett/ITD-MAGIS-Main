@@ -12,11 +12,19 @@ import org.firstinspires.ftc.teamcode.managers.DriveManager;
 import org.firstinspires.ftc.teamcode.managers.HardwareManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 import org.firstinspires.ftc.teamcode.util.GamepadPlus;
+import org.firstinspires.ftc.teamcode.kotlin.TelemetryManager;
 
 public abstract class OpModeTemplate extends OpMode {
 
+    //!Kotlin
+
+    protected TelemetryManager telemetryManager;
+
+    //!Java
+
     protected boolean teamSelected = false;
     protected boolean sideSelected = false;
+
 
     protected GamepadPlus gamepad_driver;
     protected GamepadPlus gamepad_codriver;
@@ -28,7 +36,7 @@ public abstract class OpModeTemplate extends OpMode {
     protected IntakeManager intakeManager;
 
     PinpointDrive drive;
-    private final Pose2d staringPos = new Pose2d(new Vector2d(0,0), 0);
+    private final Pose2d startingPos = new Pose2d(new Vector2d(0,0), 0);
 
     protected boolean isAuto = false;
 
@@ -39,7 +47,7 @@ public abstract class OpModeTemplate extends OpMode {
 
         this.isAuto = isAuto;
 
-        drive = new PinpointDrive(hardwareMap, staringPos);
+        drive = new PinpointDrive(hardwareMap, startingPos);
 
         hardwareManager = new HardwareManager(hardwareMap);
         hardwareManager.InitHw();
@@ -47,11 +55,12 @@ public abstract class OpModeTemplate extends OpMode {
         gamepad_driver = new GamepadPlus(gamepad1);
         gamepad_codriver = new GamepadPlus(gamepad2);
 
-        intakeManager = new IntakeManager(hardwareManager, telemetry, gamepad_driver);
+        intakeManager = new IntakeManager(hardwareManager, telemetry, gamepad_driver, gamepad_codriver);
         outtakeManager = new OuttakeManager(hardwareManager, telemetry, intakeManager);
 
         driveManager = new DriveManager(hardwareManager, telemetry, gamepad_driver, drive, outtakeManager);
 
+        telemetryManager = new TelemetryManager(this);
 
         stateMachine = new StateMachine(outtakeManager, intakeManager, driveManager, telemetry, gamepad_driver, gamepad_codriver, hardwareManager);
 
