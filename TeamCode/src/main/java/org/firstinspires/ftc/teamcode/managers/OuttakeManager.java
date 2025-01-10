@@ -195,6 +195,9 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
             case DEPOSIT_FORWARDPUSH:
                 hardwareManager.outtakeExtendoServo.setPosition(_ExtendoServoState.DEPOSIT_FORWARDPUSH.getPosition());
                 break;
+            case AUTO_DEPOSIT:
+                hardwareManager.outtakeExtendoServo.setPosition(_ExtendoServoState.AUTO_DEPOSIT.getPosition());
+                break;
         }
     }
 
@@ -285,7 +288,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         LOW_BUCKET  (1200),
         HIGH_CHAMBER_LOWER(870),
         HANG_READY(2220),
-        HANG_DOWN(1600),
+        HANG_DOWN(1500),
         ZERO(0);
 
         private final float position;
@@ -301,12 +304,13 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     }
 
     public enum _ExtendoServoState implements Positionable {
+        AUTO_DEPOSIT(0.27f),
         PICKUP(0.035f),
         DEPOSIT(0.3f),
         TRANSFER(0.15f),
         ZERO(0f),
-        DEPOSIT_BACK(0.175f),
-        DEPOSIT_FORWARDPUSH(0.23f);
+        DEPOSIT_BACK(0.15f),
+        DEPOSIT_FORWARDPUSH(0.215f);
 
         private final float position;
 

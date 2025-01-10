@@ -67,7 +67,7 @@ public class HardwareTestManager{
         hardware.outtakeExtendoServo.setPosition(outtakeExtendoServoPos);
         hardware.outtakeYawServo.setPosition(outtakeYawServoPos);
 
-        CommandScheduler.getInstance().schedule(new SetLiftPositionCommand(outtake, null, 200));
+        CommandScheduler.getInstance().schedule(new SetLiftPositionCommand(outtake, null, outtakeTargetPos));
 
         CommandScheduler.getInstance().run();
     }
