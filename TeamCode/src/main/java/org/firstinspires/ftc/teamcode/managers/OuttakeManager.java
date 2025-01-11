@@ -277,7 +277,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     public enum _LiftState implements Positionable{
         LOW_CHAMBER (100),
         LOW_RUNG    (200),
-        HIGH_CHAMBER(1670),
+        HIGH_CHAMBER(1750),
         HIGH_RUNG   (1000),
         TRANSFER    (250),
         CLEARED(400),
@@ -286,7 +286,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         STUCK       (0),
         HIGH_BUCKET (2600),
         LOW_BUCKET  (1200),
-        HIGH_CHAMBER_LOWER(870),
+        HIGH_CHAMBER_LOWER(780),
         HANG_READY(2220),
         HANG_DOWN(1500),
         ZERO(0);
@@ -306,7 +306,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     public enum _ExtendoServoState implements Positionable {
         AUTO_DEPOSIT(0.27f),
         PICKUP(0.035f),
-        DEPOSIT(0.3f),
+        DEPOSIT(0.265f),
         TRANSFER(0.15f),
         ZERO(0f),
         DEPOSIT_BACK(0.15f),
