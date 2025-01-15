@@ -24,7 +24,7 @@ android {
         jniLibs.useLegacyPackaging true
     }
     kotlinOptions {
-        jvmTarget = "1.8" // Prob illegal, but the only way
+        jvmTarget = '1.8' // Prob illegal, but the only way
     }
 }
 

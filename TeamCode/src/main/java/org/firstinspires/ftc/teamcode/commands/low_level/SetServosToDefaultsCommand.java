@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.commands.low_level;
 
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
-import com.arcrobotics.ftclib.command.WaitCommand;
 
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.AdjustYawServoCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeTiltServoPosCommand;
