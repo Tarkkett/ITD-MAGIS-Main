@@ -36,7 +36,7 @@ public abstract class OpModeTemplate extends OpMode {
     protected IntakeManager intakeManager;
 
     PinpointDrive drive;
-    private final Pose2d startingPos = new Pose2d(new Vector2d(0,0), 0);
+    private final Pose2d startingPos = new Pose2d(new Vector2d(9,-62), Math.toRadians(-270));
 
     protected boolean isAuto = false;
 
