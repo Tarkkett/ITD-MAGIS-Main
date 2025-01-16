@@ -46,7 +46,7 @@ public class MainTeleOp extends OpModeTemplate {
 
         //* Toggle outtake claw
         gamepad_codriver.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
-            .whenPressed(new ToggleOuttakeClawCommand(outtakeManager, gamepad_codriver));
+            .whenPressed(new ToggleOuttakeClawCommand(outtakeManager, gamepad_codriver, gamepad_driver));
 
         //* Morse code?
         gamepad_driver.getGamepadButton(GamepadKeys.Button.LEFT_STICK_BUTTON).whenPressed(
