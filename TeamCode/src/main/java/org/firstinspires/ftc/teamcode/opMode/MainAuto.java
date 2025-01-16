@@ -53,29 +53,29 @@ public class MainAuto extends OpModeTemplate {
                 .build();
 
         trajToHang1st = drive.actionBuilder(new Pose2d(50, -62, Math.toRadians(-270)))
-                .splineToConstantHeading(new Vector2d(8, -36), Math.toRadians(90))
+                .strafeToConstantHeading(new Vector2d(8, -36))
                 .build();
-        trajToHang2nd = drive.actionBuilder(new Pose2d(43, -60, Math.toRadians(-270)))
-                .splineToConstantHeading(new Vector2d(6, -36), Math.toRadians(90))
+        trajToHang2nd = drive.actionBuilder(new Pose2d(43, -62, Math.toRadians(-270)))
+                .strafeToConstantHeading(new Vector2d(6, -36))
                 .build();
-        trajToHang3rd = drive.actionBuilder(new Pose2d(43, -60, Math.toRadians(-270)))
-                .splineToConstantHeading(new Vector2d(4, -36), Math.toRadians(90))
+        trajToHang3rd = drive.actionBuilder(new Pose2d(43, -62, Math.toRadians(-270)))
+                .strafeToConstantHeading(new Vector2d(4, -36))
                 .build();
-        trajToHang4th = drive.actionBuilder(new Pose2d(43, -60, Math.toRadians(-270)))
-                .splineToConstantHeading(new Vector2d(2, -36), Math.toRadians(90))
+        trajToHang4th = drive.actionBuilder(new Pose2d(43, -62, Math.toRadians(-270)))
+                .strafeToConstantHeading(new Vector2d(2, -36))
                 .build();
 
         trajToPickup1st = drive.actionBuilder(new Pose2d(8, -36, Math.toRadians(-270)))
                 .setReversed(true) //Pickup 1
-                .splineToConstantHeading(new Vector2d(43, -60), Math.toRadians(-90))
+                .splineToConstantHeading(new Vector2d(43, -62), Math.toRadians(-90))
                 .build();
         trajToPickup2nd = drive.actionBuilder(new Pose2d(6, -36,Math.toRadians(-270)))
                 .setReversed(true)
-                .splineToConstantHeading(new Vector2d(43, -60), Math.toRadians(-90))
+                .splineToConstantHeading(new Vector2d(43, -62), Math.toRadians(-90))
                 .build();
         trajToPickup3rd = drive.actionBuilder(new Pose2d(4, -36, Math.toRadians(-270)))
                 .setReversed(true)
-                .splineToConstantHeading(new Vector2d(43, -60), Math.toRadians(-90))
+                .splineToConstantHeading(new Vector2d(43, -62), Math.toRadians(-90))
                 .build();
 
         endTraj = drive.actionBuilder(new Pose2d(DIST_X_CHAMBER, 5.25f, 0))
@@ -87,18 +87,18 @@ public class MainAuto extends OpModeTemplate {
                 .waitSeconds(0.2f)
 
                 .strafeToConstantHeading(new Vector2d(30, -36))
-                .splineToConstantHeading(new Vector2d(46, -8), Math.toRadians(-20))
-                .splineToConstantHeading(new Vector2d(48, -10), Math.toRadians(-90))
-                .strafeToConstantHeading(new Vector2d(48, -55), new TranslationalVelConstraint(80), new ProfileAccelConstraint(-32, 1))
+                .splineToConstantHeading(new Vector2d(46, -10), Math.toRadians(-20))
+                .splineToConstantHeading(new Vector2d(50, -20), Math.toRadians(-90))
+                .strafeToConstantHeading(new Vector2d(50, -55), new TranslationalVelConstraint(80), new ProfileAccelConstraint(-32, 1))
 
-                .splineToConstantHeading(new Vector2d(43, -55), Math.toRadians(50), new TranslationalVelConstraint(15))
+                .splineToConstantHeading(new Vector2d(43, -55), Math.toRadians(50), new TranslationalVelConstraint(20))
                 .splineToConstantHeading(new Vector2d(56, -10), Math.toRadians(0))
                 .splineToConstantHeading(new Vector2d(58, -20), Math.toRadians(-90))
-                .strafeToConstantHeading(new Vector2d(58, -55))
+                .strafeToConstantHeading(new Vector2d(58, -55), null, new ProfileAccelConstraint(-32, 1))
 
-                .splineToConstantHeading(new Vector2d(53, -50), Math.toRadians(50), new TranslationalVelConstraint(15))
+                .splineToConstantHeading(new Vector2d(53, -50), Math.toRadians(50), new TranslationalVelConstraint(20))
                 .splineToConstantHeading(new Vector2d(63, -10), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(65, -20), Math.toRadians(-90), new TranslationalVelConstraint(20))
+                .splineToConstantHeading(new Vector2d(65, -20), Math.toRadians(-90), new TranslationalVelConstraint(25))
                 .strafeToConstantHeading(new Vector2d(65, -50))
 
                 .splineToConstantHeading(new Vector2d(50, -62), Math.toRadians(-90))
@@ -138,14 +138,14 @@ public class MainAuto extends OpModeTemplate {
                 .splineToConstantHeading(new Vector2d(48, -10), Math.toRadians(-90))
                 .strafeToConstantHeading(new Vector2d(48, -55), new TranslationalVelConstraint(80), new ProfileAccelConstraint(-32, 1))
 
-                .splineToConstantHeading(new Vector2d(43, -55), Math.toRadians(50), new TranslationalVelConstraint(15))
+                .splineToConstantHeading(new Vector2d(43, -55), Math.toRadians(50), new TranslationalVelConstraint(20))
                 .splineToConstantHeading(new Vector2d(56, -10), Math.toRadians(0))
                 .splineToConstantHeading(new Vector2d(58, -20), Math.toRadians(-90))
-                .strafeToConstantHeading(new Vector2d(58, -55))
+                .strafeToConstantHeading(new Vector2d(58, -55), null, new ProfileAccelConstraint(-32, 1))
 
-                .splineToConstantHeading(new Vector2d(53, -50), Math.toRadians(50), new TranslationalVelConstraint(15))
+                .splineToConstantHeading(new Vector2d(53, -50), Math.toRadians(50), new TranslationalVelConstraint(20))
                 .splineToConstantHeading(new Vector2d(63, -10), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(65, -20), Math.toRadians(-90), new TranslationalVelConstraint(20))
+                .splineToConstantHeading(new Vector2d(65, -20), Math.toRadians(-90), new TranslationalVelConstraint(25))
                 .strafeToConstantHeading(new Vector2d(65, -50))
 
                 .splineToConstantHeading(new Vector2d(50, -62), Math.toRadians(-90))
