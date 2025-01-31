@@ -51,6 +51,10 @@ public class StateMachine implements State<StateMachine._RobotState> {
         return instance;
     }
 
+    public _RobotState getRobotState(){
+        return robotState;
+    }
+
     @Override
     public void SetSubsystemState(_RobotState newState) {
 
@@ -60,9 +64,9 @@ public class StateMachine implements State<StateMachine._RobotState> {
                 intakeManager.selectingProcess = false;
                 CommandScheduler.getInstance().schedule(
                     new ParallelCommandGroup(
-                        new SetIntakeStateCommand(IntakeManager._IntakeState.HOME, intakeManager, this, gamepad_driver, gamepad_codriver),
-                        new SetOuttakeStateCommand(OuttakeManager._OuttakeState.DEPOSIT, outtakeManager, gamepad_driver, gamepad_codriver)
-                    )
+                            new SetIntakeStateCommand(IntakeManager._IntakeState.HOME, intakeManager, this, gamepad_driver, gamepad_codriver),
+                new SetOuttakeStateCommand(OuttakeManager._OuttakeState.DEPOSIT, outtakeManager, gamepad_driver, gamepad_codriver)
+                )
                 );
                 break;
             case INTAKE:
@@ -70,9 +74,9 @@ public class StateMachine implements State<StateMachine._RobotState> {
                 outtakeManager.selectingProcess = false;
                 CommandScheduler.getInstance().schedule(
                     new ParallelCommandGroup(
-                        new SetOuttakeStateCommand(OuttakeManager._OuttakeState.PICKUP, outtakeManager, gamepad_driver, gamepad_codriver),
-                        new SetIntakeStateCommand(IntakeManager._IntakeState.INTAKE, intakeManager, this, gamepad_driver, gamepad_codriver)
-                    )
+                            new SetOuttakeStateCommand(OuttakeManager._OuttakeState.PICKUP, outtakeManager, gamepad_driver, gamepad_codriver),
+                new SetIntakeStateCommand(IntakeManager._IntakeState.INTAKE, intakeManager, this, gamepad_driver, gamepad_codriver)
+                )
                 );
                 break;
             case TRANSFER:
@@ -86,10 +90,10 @@ public class StateMachine implements State<StateMachine._RobotState> {
             case HOME:
                 robotState = _RobotState.HOME;
                 CommandScheduler.getInstance().schedule(
-                        new ParallelCommandGroup(
-                                new SetIntakeStateCommand(IntakeManager._IntakeState.HOME, intakeManager, this, gamepad_driver, gamepad_codriver),
-                                new SetOuttakeStateCommand(OuttakeManager._OuttakeState.HOME, outtakeManager, gamepad_driver, gamepad_codriver)
-                        )
+                    new ParallelCommandGroup(
+                            new SetIntakeStateCommand(IntakeManager._IntakeState.HOME, intakeManager, this, gamepad_driver, gamepad_codriver),
+                            new SetOuttakeStateCommand(OuttakeManager._OuttakeState.HOME, outtakeManager, gamepad_driver, gamepad_codriver)
+                )
                 );
                 break;
             case CALIBRATION:
@@ -134,10 +138,10 @@ public class StateMachine implements State<StateMachine._RobotState> {
     }
 
     public enum _RobotState{
-        INTAKE,
-        DEPOSIT,
-        TRANSFER,
-        CALIBRATION,
-        HOME
+            INTAKE,
+            DEPOSIT,
+            TRANSFER,
+            CALIBRATION,
+            HOME
     }
 }

@@ -6,10 +6,8 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.commands.low_level.SetRobotState;
-import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeClawStateCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.ToggleOuttakeClawCommand;
 import org.firstinspires.ftc.teamcode.managers.DriveManager;
-import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 
 @TeleOp(name = "Main TeleOp", group = "OpMode")
 public class MainTeleOp extends OpModeTemplate {
@@ -31,13 +29,13 @@ public class MainTeleOp extends OpModeTemplate {
         //* Toggle between intake and transfer
         gamepad_codriver.getGamepadButton(gamepad_codriver.leftBumper)
             .toggleWhenPressed(
-                    new SetRobotState(stateMachine, StateMachine._RobotState.INTAKE, false),
-                    new SetRobotState(stateMachine, StateMachine._RobotState.TRANSFER, false));
+                    new SetRobotState(stateMachine, StateMachine._RobotState.INTAKE),
+                    new SetRobotState(stateMachine, StateMachine._RobotState.TRANSFER));
 
         //* Go to deposit settings
         gamepad_codriver.getGamepadButton(gamepad_codriver.rightBumper)
             .whenPressed(
-                    new SetRobotState(stateMachine, StateMachine._RobotState.DEPOSIT, false));
+                    new SetRobotState(stateMachine, StateMachine._RobotState.DEPOSIT));
 
         //* Reset IMU
         gamepad_driver.getGamepadButton(gamepad_driver.options)
@@ -60,7 +58,7 @@ public class MainTeleOp extends OpModeTemplate {
     @Override
     public void start(){
         CommandScheduler.getInstance().cancelAll();
-        CommandScheduler.getInstance().schedule(new SetRobotState(stateMachine, StateMachine._RobotState.HOME, false));
+        CommandScheduler.getInstance().schedule(new SetRobotState(stateMachine, StateMachine._RobotState.HOME));
         driveManager.onUnlocked();
     }
 

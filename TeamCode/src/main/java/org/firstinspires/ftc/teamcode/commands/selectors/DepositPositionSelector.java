@@ -37,7 +37,7 @@ public class DepositPositionSelector extends CommandBase {
         if (autoSeq){
             CommandScheduler.getInstance().schedule(
                     new SequentialCommandGroup(
-                            new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HIGH_BUCKET),
+                            new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HIGH_BUCKET, 0),
                             new WaitCommand(1000),
                             new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.DEPOSIT)
                     )

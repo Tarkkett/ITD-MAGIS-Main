@@ -37,7 +37,7 @@ public class SetIntakeStateCommand extends SequentialCommandGroup {
                 );
                 break;
             case HOME:
-                if (states.robotState == StateMachine._RobotState.DEPOSIT){
+                if (states.getRobotState() == StateMachine._RobotState.DEPOSIT){
                     addCommands(
                             new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.PACKED),
                             new SetIntakeGripStateCommand(manager, IntakeManager._GripState.RELEASE),

@@ -21,7 +21,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     }
 
     private static final int MIN_THRESHOLD =70;
-    private static final int MAX_THRESHOLD =2200;
+    private static final int MAX_THRESHOLD =2500;
     public boolean selectingProcess = false;
 
     HardwareManager hardwareManager;
@@ -284,7 +284,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         CLEARED_ALL(800),
         HOME        (50),
         STUCK       (0),
-        HIGH_BUCKET (2600),
+        HIGH_BUCKET (2420),
         LOW_BUCKET  (1200),
         HIGH_CHAMBER_LOWER(780),
         HANG_READY(2220),

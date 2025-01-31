@@ -62,7 +62,7 @@ public abstract class OpModeTemplate extends OpMode {
 
         telemetryManager = new TelemetryManager(this);
 
-        stateMachine = new StateMachine(outtakeManager, intakeManager, driveManager, telemetry, gamepad_driver, gamepad_codriver, hardwareManager);
+        stateMachine = StateMachine.getInstance(outtakeManager, intakeManager, driveManager, telemetry, gamepad_driver, gamepad_codriver, hardwareManager);
 
         if (isAuto) SetSystemDefaults();
 

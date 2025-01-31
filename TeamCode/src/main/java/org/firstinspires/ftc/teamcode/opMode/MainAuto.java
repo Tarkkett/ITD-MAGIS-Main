@@ -40,7 +40,7 @@ public class MainAuto extends OpModeTemplate {
     private Action testTraj;
 
     private final float DIST_X_CHAMBER = 10;
-    private final float DIST_Y_CHAMBER = -36f;
+    private final float DIST_Y_CHAMBER = -32f;
 
     private Action mainAutonomous;
 
@@ -53,27 +53,27 @@ public class MainAuto extends OpModeTemplate {
                 .build();
 
         trajToHang1st = drive.actionBuilder(new Pose2d(50, -62, Math.toRadians(-270)))
-                .strafeToConstantHeading(new Vector2d(8, -36))
+                .strafeToConstantHeading(new Vector2d(8, DIST_Y_CHAMBER))
                 .build();
         trajToHang2nd = drive.actionBuilder(new Pose2d(43, -62, Math.toRadians(-270)))
-                .strafeToConstantHeading(new Vector2d(6, -36))
+                .strafeToConstantHeading(new Vector2d(6, DIST_Y_CHAMBER))
                 .build();
         trajToHang3rd = drive.actionBuilder(new Pose2d(43, -62, Math.toRadians(-270)))
-                .strafeToConstantHeading(new Vector2d(4, -36))
+                .strafeToConstantHeading(new Vector2d(4, DIST_Y_CHAMBER))
                 .build();
         trajToHang4th = drive.actionBuilder(new Pose2d(43, -62, Math.toRadians(-270)))
-                .strafeToConstantHeading(new Vector2d(2, -36))
+                .strafeToConstantHeading(new Vector2d(2, DIST_Y_CHAMBER))
                 .build();
 
-        trajToPickup1st = drive.actionBuilder(new Pose2d(8, -36, Math.toRadians(-270)))
+        trajToPickup1st = drive.actionBuilder(new Pose2d(8, DIST_Y_CHAMBER, Math.toRadians(-270)))
                 .setReversed(true) //Pickup 1
                 .splineToConstantHeading(new Vector2d(43, -62), Math.toRadians(-90))
                 .build();
-        trajToPickup2nd = drive.actionBuilder(new Pose2d(6, -36,Math.toRadians(-270)))
+        trajToPickup2nd = drive.actionBuilder(new Pose2d(6, DIST_Y_CHAMBER,Math.toRadians(-270)))
                 .setReversed(true)
                 .splineToConstantHeading(new Vector2d(43, -62), Math.toRadians(-90))
                 .build();
-        trajToPickup3rd = drive.actionBuilder(new Pose2d(4, -36, Math.toRadians(-270)))
+        trajToPickup3rd = drive.actionBuilder(new Pose2d(4, DIST_Y_CHAMBER, Math.toRadians(-270)))
                 .setReversed(true)
                 .splineToConstantHeading(new Vector2d(43, -62), Math.toRadians(-90))
                 .build();
@@ -86,7 +86,7 @@ public class MainAuto extends OpModeTemplate {
                 .strafeToConstantHeading(new Vector2d(DIST_X_CHAMBER, DIST_Y_CHAMBER))
                 .waitSeconds(0.2f)
 
-                .strafeToConstantHeading(new Vector2d(30, -36))
+                .strafeToConstantHeading(new Vector2d(30, DIST_Y_CHAMBER))
                 .splineToConstantHeading(new Vector2d(46, -10), Math.toRadians(-20))
                 .splineToConstantHeading(new Vector2d(50, -20), Math.toRadians(-90))
                 .strafeToConstantHeading(new Vector2d(50, -55), new TranslationalVelConstraint(80), new ProfileAccelConstraint(-32, 1))
@@ -105,7 +105,7 @@ public class MainAuto extends OpModeTemplate {
 
                 //Cycle >>>>>>> 1
                 .waitSeconds(0.12f) //Hang 1
-                .splineToConstantHeading(new Vector2d(8, -36), Math.toRadians(90))
+                .splineToConstantHeading(new Vector2d(8, DIST_Y_CHAMBER), Math.toRadians(90))
 
                 .waitSeconds(0.12f)
                 .setReversed(true) //Pickup 1
@@ -113,7 +113,7 @@ public class MainAuto extends OpModeTemplate {
                 //>>>>>>>>>>>>>>
                 //Cycle >>>>>>> 2
                 .waitSeconds(0.12f) //Hang 2
-                .splineToConstantHeading(new Vector2d(6, -36), Math.toRadians(90))
+                .splineToConstantHeading(new Vector2d(6, DIST_Y_CHAMBER), Math.toRadians(90))
 
                 .waitSeconds(0.12f) //Pickup 2
                 .setReversed(true)
@@ -121,7 +121,7 @@ public class MainAuto extends OpModeTemplate {
                 //>>>>>>>>>>>>>>
                 //Cycle >>>>>>> 3
                 .waitSeconds(0.12f) //Hang 3
-                .splineToConstantHeading(new Vector2d(4, -36), Math.toRadians(90))
+                .splineToConstantHeading(new Vector2d(4, DIST_Y_CHAMBER), Math.toRadians(90))
 
                 .waitSeconds(0.12f) //Pickup 3
                 .setReversed(true)
@@ -179,7 +179,7 @@ public class MainAuto extends OpModeTemplate {
                     )
             ),
             outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.GRIP),
-            new SleepAction(0.15f),
+            new SleepAction(0.05f),
 
             //DriveToHangAndBack 1st ===============>
             new ParallelAction(
@@ -212,7 +212,7 @@ public class MainAuto extends OpModeTemplate {
                 )
             ),
             outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.GRIP),
-            new SleepAction(0.15),
+            new SleepAction(0.05),
 
             //DriveToHangAndBack 2nd ===============>
             new ParallelAction(
@@ -246,7 +246,7 @@ public class MainAuto extends OpModeTemplate {
                 )
             ),
             outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.GRIP),
-            new SleepAction(0.15),
+            new SleepAction(0.05),
 
 
                 //DriveToHangAndBack 3rd ===============>
@@ -281,7 +281,7 @@ public class MainAuto extends OpModeTemplate {
                 )
             ),
             outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.GRIP),
-            new SleepAction(0.15),
+            new SleepAction(0.05),
 
 
                 //DriveToHangAndBack 4th ===============>

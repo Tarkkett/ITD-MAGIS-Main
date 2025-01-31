@@ -20,8 +20,8 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
         float getPosition();
     }
 
-    private static final int MIN_SLIDE_RETRACT = 200;
-    private static final int MAX_SLIDE_EXTEND = 850;
+    private static final int MIN_SLIDE_RETRACT = 100;
+    private static final int MAX_SLIDE_EXTEND = 650;
 
     private final HardwareManager hardwareManager;
     public boolean selectingProcess = false;
@@ -36,7 +36,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
 
     private boolean isAutoLoop = true;
 
-    public PID_PARAMS params = new PID_PARAMS(0.02, 0.0, 0.0006, 5);
+    public PID_PARAMS params = new PID_PARAMS(0.018, 0.0, 0.0006, 5);
     C_PID controller = new C_PID(params);
 
     public IntakeManager(HardwareManager hardwareManager, Telemetry telemetry, GamepadPlus gamepadDriver, GamepadPlus gamepadCodriver) {
@@ -176,7 +176,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     }
 
     public enum _SlideState implements Positionable {
-        EXTENDED    (550),
+        EXTENDED    (600),
         TRANSFER    (400),
         RETRACTED   (10),
         TRANSFER_WAIT(340);
