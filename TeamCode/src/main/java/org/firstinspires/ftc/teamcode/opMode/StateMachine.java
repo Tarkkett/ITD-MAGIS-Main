@@ -111,7 +111,9 @@ public class StateMachine implements State<StateMachine._RobotState> {
         tel.addData("Outtake feels like:", outtakeState);
         tel.addData("Drivetrain feels like:", driveState);
         tel.addData("Robot feels like:", GetSubsystemState());
-        tel.addData("Speciment servo pos", hw.outtakeExtendoServo.getPosition());
+        tel.addData("Lift left current pos", hw.liftLeft.getCurrentPosition());
+        tel.addData("Lift right current pos", hw.liftRight.getCurrentPosition());
+        tel.addData("Lift target pos", outtakeManager.GetLiftTargetPos());
         tel.addData("CanHome", outtakeManager.canHome());
         tel.update();
     }

@@ -39,7 +39,7 @@ public class DepositPositionSelector extends CommandBase {
                     new SequentialCommandGroup(
                             new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HIGH_BUCKET),
                             new WaitCommand(1000),
-                            new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.DEPOSIT)
+                            new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.DEPOSIT_SPECIMEN)
                     )
             );
         }
@@ -58,7 +58,7 @@ public class DepositPositionSelector extends CommandBase {
                                         new WaitCommand(200),
                                         new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.DEPOSIT),
                                         new WaitCommand(500),
-                                        new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.DEPOSIT),
+                                        new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.DEPOSIT_SPECIMEN),
                                         new WaitCommand(400),
                                         new SetOuttakeYawServoCommand(manager, OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoUp),
                                         new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.DEPOSIT_BACK)
@@ -84,7 +84,7 @@ public class DepositPositionSelector extends CommandBase {
                                         new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.GRIP),
                                         new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.DEPOSIT),
                                         new WaitCommand(550),
-                                        new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.DEPOSIT)
+                                        new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.DEPOSIT_SPECIMEN)
                                 )
 
                         )

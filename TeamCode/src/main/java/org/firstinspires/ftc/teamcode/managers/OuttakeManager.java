@@ -166,11 +166,11 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
             case TRANSFER:
                 hardwareManager.outtakeTiltServo.setPosition(_OuttakeTiltServoState.TRANSFER.getPosition());
                 break;
-            case DEPOSIT:
-                hardwareManager.outtakeTiltServo.setPosition(_OuttakeTiltServoState.DEPOSIT.getPosition());
+            case DEPOSIT_SPECIMEN:
+                hardwareManager.outtakeTiltServo.setPosition(_OuttakeTiltServoState.DEPOSIT_SPECIMEN.getPosition());
                 break;
-            case DEPOSIT_POST:
-                hardwareManager.outtakeTiltServo.setPosition(_OuttakeTiltServoState.DEPOSIT_POST.getPosition());
+            case DEPOSIT_SAMPLE:
+                hardwareManager.outtakeTiltServo.setPosition(_OuttakeTiltServoState.DEPOSIT_SAMPLE.getPosition());
                 break;
         }
     }
@@ -277,7 +277,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     public enum _LiftState implements Positionable{
         LOW_CHAMBER (100),
         LOW_RUNG    (200),
-        HIGH_CHAMBER(1750),
+        HIGH_CHAMBER(1550),
         HIGH_RUNG   (1000),
         TRANSFER    (250),
         CLEARED(400),
@@ -305,7 +305,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
 
     public enum _ExtendoServoState implements Positionable {
         AUTO_DEPOSIT(0.27f),
-        PICKUP(0.035f),
+        PICKUP(0.0f),
         DEPOSIT(0.265f),
         TRANSFER(0.15f),
         ZERO(0f),
@@ -325,10 +325,10 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     }
 
     public enum _OuttakeTiltServoState implements Positionable {
-        DEPOSIT(1f),
-        DEPOSIT_POST(0.9f),
-        PICKUP(0.1f),
-        TRANSFER(1f);
+        DEPOSIT_SPECIMEN(0.72f),
+        DEPOSIT_SAMPLE(1f),
+        PICKUP(0f),
+        TRANSFER(0.72f);
 
         private final float position;
 
@@ -359,9 +359,9 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     }
 
     public enum _OuttakeYawServoState implements Positionable {
-        HORIZONTAL_ServoDown    (0f),
+        HORIZONTAL_ServoDown    (1f),
         VERTICAL     (0.5f),
-        HORIZONTAL_ServoUp(1f);
+        HORIZONTAL_ServoUp(0f);
 
         private final float position;
 

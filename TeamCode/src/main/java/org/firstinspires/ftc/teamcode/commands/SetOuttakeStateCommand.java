@@ -22,7 +22,7 @@ public class SetOuttakeStateCommand extends SequentialCommandGroup {
             case HOME:
                 addCommands(
                     new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.PICKUP),
-                    new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.DEPOSIT),
+                    new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.DEPOSIT_SPECIMEN),
                     new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.GRIP),
                     new SetOuttakeYawServoCommand(manager, OuttakeManager._OuttakeYawServoState.VERTICAL),
                     new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HOME)
@@ -37,6 +37,7 @@ public class SetOuttakeStateCommand extends SequentialCommandGroup {
                 break;
             case DEPOSIT:
                 addCommands(
+                    new SetOuttakeYawServoCommand(manager, OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoDown),
                     new SetLiftPositionCommand(manager, OuttakeManager._LiftState.CLEARED_ALL),
                     new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.DEPOSIT_FORWARDPUSH),
                     new WaitCommand(300),
@@ -46,7 +47,6 @@ public class SetOuttakeStateCommand extends SequentialCommandGroup {
                     new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.PICKUP),
                     new WaitCommand(300),
                     new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.RELEASE),
-                    new SetOuttakeYawServoCommand(manager, OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoDown),
                     new DepositPositionSelector(gamepad_driver, gamepad_codriver, manager)
                 );
                 break;
@@ -56,7 +56,7 @@ public class SetOuttakeStateCommand extends SequentialCommandGroup {
                     new WaitCommand(300),
                     new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.DEPOSIT),
                     new WaitCommand(300),
-                    new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.DEPOSIT),
+                    new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.DEPOSIT_SPECIMEN),
                     new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.GRIP),
                     new SetOuttakeYawServoCommand(manager, OuttakeManager._OuttakeYawServoState.VERTICAL),
                     new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HOME)
