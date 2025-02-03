@@ -177,7 +177,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
 
     public enum _SlideState implements Positionable {
         EXTENDED    (550),
-        TRANSFER    (400),
+        TRANSFER    (200),
         RETRACTED   (10),
         TRANSFER_WAIT(340);
 
@@ -228,7 +228,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
 
     }
     public enum _YawServoState implements Positionable{
-        TRANSFER(0.33f),
+        TRANSFER(0.58f),
         PICKUP_DEFAULT(0.85f),
         //Increment for manual
         MANUAL(0.1f),

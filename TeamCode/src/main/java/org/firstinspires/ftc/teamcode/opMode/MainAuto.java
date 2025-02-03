@@ -36,7 +36,7 @@ public class MainAuto extends OpModeTemplate {
     private Action testTraj;
 
     private final float DIST_X_CHAMBER = 10;
-    private final float DIST_Y_CHAMBER = -32f;
+    private final float DIST_Y_CHAMBER = -31f;
 
     private Action mainAutonomous;
 
@@ -49,19 +49,19 @@ public class MainAuto extends OpModeTemplate {
                 .build();
 
         trajToHang1st = drive.actionBuilder(new Pose2d(50, -62, Math.toRadians(-270)))
-                .strafeToConstantHeading(new Vector2d(8, DIST_Y_CHAMBER))
+                .strafeToConstantHeading(new Vector2d(8, DIST_Y_CHAMBER), null, new ProfileAccelConstraint(-25, 55))
                 .build();
 
         trajToHang2nd = drive.actionBuilder(new Pose2d(43, -62, Math.toRadians(-270)))
-                .strafeToConstantHeading(new Vector2d(6, DIST_Y_CHAMBER))
+                .strafeToConstantHeading(new Vector2d(6, DIST_Y_CHAMBER), null, new ProfileAccelConstraint(-25, 55))
                 .build();
 
         trajToHang3rd = drive.actionBuilder(new Pose2d(43, -62, Math.toRadians(-270)))
-                .strafeToConstantHeading(new Vector2d(4, DIST_Y_CHAMBER))
+                .strafeToConstantHeading(new Vector2d(4, DIST_Y_CHAMBER), null, new ProfileAccelConstraint(-25, 55))
                 .build();
 
         trajToHang4th = drive.actionBuilder(new Pose2d(43, -62, Math.toRadians(-270)))
-                .strafeToConstantHeading(new Vector2d(2, DIST_Y_CHAMBER))
+                .strafeToConstantHeading(new Vector2d(2, DIST_Y_CHAMBER), null, new ProfileAccelConstraint(-25, 55))
                 .build();
 
         trajToPickup1st = drive.actionBuilder(new Pose2d(8, DIST_Y_CHAMBER, Math.toRadians(-270)))
@@ -132,22 +132,22 @@ public class MainAuto extends OpModeTemplate {
                 .build();
 
         longTraj = drive.actionBuilder(new Pose2d(DIST_X_CHAMBER, DIST_Y_CHAMBER, Math.toRadians(-270)))
-                .strafeToConstantHeading(new Vector2d(30, -36), new TranslationalVelConstraint(35))
-                .splineToConstantHeading(new Vector2d(48, -15), Math.toRadians(-20), new TranslationalVelConstraint(34))
-                .splineToConstantHeading(new Vector2d(50, -25), Math.toRadians(-90), new TranslationalVelConstraint(20))
-                .strafeToConstantHeading(new Vector2d(50, -50), new TranslationalVelConstraint(55))
+                .strafeToConstantHeading(new Vector2d(30, -36), new TranslationalVelConstraint(30))
+                .splineToConstantHeading(new Vector2d(48, -15), Math.toRadians(-20), new TranslationalVelConstraint(30))
+                .splineToConstantHeading(new Vector2d(50, -25), Math.toRadians(-90), new TranslationalVelConstraint(15))
+                .strafeToConstantHeading(new Vector2d(50, -50), new TranslationalVelConstraint(50))
 
 //                .splineToConstantHeading(new Vector2d(43, -55), Math.toRadians(50), new TranslationalVelConstraint(24))
-                .splineToConstantHeading(new Vector2d(56, -10), Math.toRadians(0), new TranslationalVelConstraint(35))
-                .splineToConstantHeading(new Vector2d(58, -20), Math.toRadians(-90), new TranslationalVelConstraint(20))
-                .strafeToConstantHeading(new Vector2d(58, -50), new TranslationalVelConstraint(55))
+                .splineToConstantHeading(new Vector2d(56, -10), Math.toRadians(0), new TranslationalVelConstraint(30))
+                .splineToConstantHeading(new Vector2d(58, -20), Math.toRadians(-90), new TranslationalVelConstraint(15))
+                .strafeToConstantHeading(new Vector2d(58, -50), new TranslationalVelConstraint(50))
 //
 //                .splineToConstantHeading(new Vector2d(53, -50), Math.toRadians(50), new TranslationalVelConstraint(24))
-                .splineToConstantHeading(new Vector2d(63, -10), Math.toRadians(0), new TranslationalVelConstraint(35))
-                .splineToConstantHeading(new Vector2d(65, -20), Math.toRadians(-90), new TranslationalVelConstraint(20))
-                .strafeToConstantHeading(new Vector2d(65, -50), new TranslationalVelConstraint(55))
+                .splineToConstantHeading(new Vector2d(63, -10), Math.toRadians(0), new TranslationalVelConstraint(30))
+                .splineToConstantHeading(new Vector2d(65, -20), Math.toRadians(-90), new TranslationalVelConstraint(15))
+                .strafeToConstantHeading(new Vector2d(65, -50), new TranslationalVelConstraint(50))
 //
-                .splineToConstantHeading(new Vector2d(50, -62), Math.toRadians(-90), new TranslationalVelConstraint(35), new ProfileAccelConstraint(-35, 55))
+                .splineToConstantHeading(new Vector2d(50, -62), Math.toRadians(-90), new TranslationalVelConstraint(30), new ProfileAccelConstraint(-25, 55))
 
 //                .strafeToConstantHeading(new Vector2d(9, -62))
                 .build();

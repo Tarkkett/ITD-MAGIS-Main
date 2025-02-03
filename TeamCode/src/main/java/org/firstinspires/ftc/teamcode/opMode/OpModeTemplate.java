@@ -70,7 +70,7 @@ public abstract class OpModeTemplate extends OpMode {
 
     protected void SetSystemDefaults() {
         CommandScheduler.getInstance().schedule(
-                new SetServosToDefaultsCommand(outtakeManager, intakeManager)
+                new SetServosToDefaultsCommand(outtakeManager, intakeManager, hardwareManager)
         );
     }
 

@@ -99,9 +99,9 @@ public class DepositPositionSelector extends CommandBase {
             else if (gamepad_codriver.gamepad.cross) {
                 CommandScheduler.getInstance().schedule(
                         new SequentialCommandGroup(
-                                new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.DEPOSIT_FORWARDPUSH),
+//                                new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.DEPOSIT_FORWARDPUSH),
                                 new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HIGH_CHAMBER_LOWER),
-                                new WaitCommand(650),
+                                new WaitCommand(750),
                                 new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.RELEASE)
                         )
                 );

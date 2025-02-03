@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.commands;
 
+import com.acmerobotics.roadrunner.SleepAction;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
@@ -26,35 +27,32 @@ public class TransferCommand extends SequentialCommandGroup {
 
             addCommands(
                     new SetIntakeGripStateCommand(intake, IntakeManager._GripState.GRIP),
+                    new AdjustYawServoCommand(intake, IntakeManager._YawServoState.TRANSFER),
+                    new SetIntakeTiltServoPosCommand( intake, IntakeManager._TiltServoState.TRANSFER),
+                    new SetIntakeSlidePositionCommand(intake, IntakeManager._SlideState.TRANSFER),
+                    new SetLiftPositionCommand(outtake, OuttakeManager._LiftState.CLEARED_ALL),
+
+                    new SetOuttakeTiltServoCommand(outtake, OuttakeManager._OuttakeTiltServoState.PICKUP),
+                    new SetOuttakeExtendoServoCommand(outtake, OuttakeManager._ExtendoServoState.AUTO_DEPOSIT),
+                    new SetOuttakeClawStateCommand(outtake, OuttakeManager._OuttakeClawServoState.RELEASE),
+                    new SetOuttakeYawServoCommand(outtake, OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoDown),
+
+                    new WaitCommand(2000),
+                    new SetOuttakeTiltServoCommand(outtake, OuttakeManager._OuttakeTiltServoState.TRANSFER),
+                    new WaitCommand(1000),
                     new SetOuttakeExtendoServoCommand(outtake, OuttakeManager._ExtendoServoState.TRANSFER),
-                    new WaitCommand(250),
-                    new SetIntakeTiltServoPosCommand(intake, IntakeManager._TiltServoState.TRANSFER),
-                    new WaitCommand(300),
-                    new ParallelCommandGroup(
-                            new SetIntakeSlidePositionCommand(intake, IntakeManager._SlideState.EXTENDED),
-                            new AdjustYawServoCommand(intake, IntakeManager._YawServoState.TRANSFER, 0),
-                            new SetOuttakeClawStateCommand(outtake, OuttakeManager._OuttakeClawServoState.RELEASE),
-                            new SetOuttakeTiltServoCommand(outtake, OuttakeManager._OuttakeTiltServoState.TRANSFER),
-                            new SetOuttakeYawServoCommand(outtake, OuttakeManager._OuttakeYawServoState.VERTICAL)
-                    ),
-                    new WaitCommand(200),
+
+                    new WaitCommand(1000),
                     new SetLiftPositionCommand(outtake, OuttakeManager._LiftState.TRANSFER),
-                    new WaitCommand(200),
-                    new SequentialCommandGroup(
-                        new SetIntakeSlidePositionCommand(intake, IntakeManager._SlideState.TRANSFER),
-                        new WaitCommand(500),
-                        new SetOuttakeClawStateCommand(outtake, OuttakeManager._OuttakeClawServoState.GRIP),
-                        new WaitCommand(200),
-                        new SetIntakeGripStateCommand(intake, IntakeManager._GripState.RELEASE),
-                        new WaitCommand(300),
-                        new SetIntakeTiltServoPosCommand(intake, IntakeManager._TiltServoState.PACKED),
-                        new SetLiftPositionCommand(outtake, OuttakeManager._LiftState.CLEARED),
-                        new SetOuttakeYawServoCommand(outtake, OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoDown),
-                        new SetOuttakeExtendoServoCommand(outtake, OuttakeManager._ExtendoServoState.DEPOSIT),
-                        new SetOuttakeTiltServoCommand(outtake, OuttakeManager._OuttakeTiltServoState.PICKUP),
-                        new WaitCommand(600),
-                        new SetOuttakeExtendoServoCommand(outtake, OuttakeManager._ExtendoServoState.PICKUP)
-                    )
+                    new WaitCommand(500),
+                    new SetOuttakeExtendoServoCommand(outtake, OuttakeManager._ExtendoServoState.TRANSFER_PUSH),
+                    new WaitCommand(500),
+
+                    new SetOuttakeClawStateCommand(outtake, OuttakeManager._OuttakeClawServoState.GRIP),
+                    new WaitCommand(1000),
+                    new SetIntakeGripStateCommand(intake, IntakeManager._GripState.RELEASE),
+                    new SetLiftPositionCommand(outtake, OuttakeManager._LiftState.CLEARED)
+
             );
         }
     }

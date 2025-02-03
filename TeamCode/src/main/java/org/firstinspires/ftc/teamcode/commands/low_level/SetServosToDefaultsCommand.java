@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.commands.low_level;
 
+import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+import com.arcrobotics.ftclib.command.WaitCommand;
 
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.AdjustYawServoCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeTiltServoPosCommand;
@@ -8,18 +10,22 @@ import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeClawS
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeTiltServoCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeExtendoServoCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeYawServoCommand;
+import org.firstinspires.ftc.teamcode.managers.HardwareManager;
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 
 public class SetServosToDefaultsCommand extends SequentialCommandGroup {
-    public SetServosToDefaultsCommand(OuttakeManager outtakeManager, IntakeManager intakeManager) {
+    public SetServosToDefaultsCommand(OuttakeManager outtakeManager, IntakeManager intakeManager, HardwareManager hwmanager) {
         addCommands(
 
-                //?Deposit
-                new SetOuttakeExtendoServoCommand(outtakeManager, OuttakeManager._ExtendoServoState.TRANSFER),
-                new SetOuttakeTiltServoCommand(outtakeManager, OuttakeManager._OuttakeTiltServoState.DEPOSIT_SPECIMEN),
-                new SetOuttakeYawServoCommand(outtakeManager, OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoDown),
                 new SetOuttakeClawStateCommand(outtakeManager, OuttakeManager._OuttakeClawServoState.GRIP),
+                new WaitCommand(400),
+                new SetOuttakeTiltServoCommand(outtakeManager, OuttakeManager._OuttakeTiltServoState.DEPOSIT_SPECIMEN),
+                new WaitCommand(400),
+                //?Deposit
+                new SetOuttakeExtendoServoCommand(outtakeManager, OuttakeManager._ExtendoServoState.DEPOSIT),
+                new SetOuttakeYawServoCommand(outtakeManager, OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoUp),
+
 
                 //?Intake
                 new AdjustYawServoCommand(intakeManager, IntakeManager._YawServoState.TRANSFER),

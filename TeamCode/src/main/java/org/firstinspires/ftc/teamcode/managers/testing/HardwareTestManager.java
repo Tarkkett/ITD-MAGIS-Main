@@ -32,7 +32,7 @@ public class HardwareTestManager{
 
     //?Outtake servos
     public static float outtakeClawServoPos = 0.25f;
-    public static float outtakeTiltServoPos = 0f;
+    public static float outtakeTiltServoPos = 0.65f;
     public static float outtakeExtendoServoPos = 0f;
     public static float outtakeYawServoPos = 0f;
 
