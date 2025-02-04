@@ -121,6 +121,15 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
                 case HIGH_CHAMBER:
                     targetPosition = (int) _LiftState.HIGH_CHAMBER.getPosition();
                     break;
+                case HIGH_CHAMBER_AUTO:
+                    targetPosition = (int) _LiftState.HIGH_CHAMBER_AUTO.getPosition();
+                    break;
+                case HIGH_CHAMBER_LOWER_REVERSED:
+                    targetPosition = (int) _LiftState.HIGH_CHAMBER_LOWER_REVERSED.getPosition();
+                    break;
+                case HIGH_CHAMBER_REVERSED:
+                    targetPosition = (int) _LiftState.HIGH_CHAMBER_REVERSED.getPosition();
+                    break;
                 case LOW_CHAMBER:
                     targetPosition = (int) _LiftState.LOW_CHAMBER.getPosition();
                     break;
@@ -149,7 +158,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
                     targetPosition = (int) _LiftState.ZERO.getPosition();
                     break;
                 case STUCK:
-                    //!Mag4.2
+                    //!Mag5.2
                     break;
             }
         }
@@ -197,6 +206,9 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
                 break;
             case DEPOSIT_FORWARDPUSH:
                 hardwareManager.outtakeExtendoServo.setPosition(_ExtendoServoState.DEPOSIT_FORWARDPUSH.getPosition());
+                break;
+            case DEPOSIT_BACKPUSH:
+                hardwareManager.outtakeExtendoServo.setPosition(_ExtendoServoState.DEPOSIT_BACKPUSH.getPosition());
                 break;
             case AUTO_DEPOSIT:
                 hardwareManager.outtakeExtendoServo.setPosition(_ExtendoServoState.AUTO_DEPOSIT.getPosition());
@@ -292,7 +304,10 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         HIGH_CHAMBER_LOWER(710),
         HANG_READY(2220),
         HANG_DOWN(1500),
-        ZERO(0);
+        ZERO(0),
+        HIGH_CHAMBER_AUTO(1360),
+        HIGH_CHAMBER_REVERSED(1900),
+        HIGH_CHAMBER_LOWER_REVERSED(1430);
 
         private final float position;
 
@@ -314,7 +329,8 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         TRANSFER_PUSH(0.08f),
         ZERO(0f),
         DEPOSIT_BACK(0.12f),
-        DEPOSIT_FORWARDPUSH(0.215f);
+        DEPOSIT_FORWARDPUSH(0.215f),
+        DEPOSIT_BACKPUSH(0.25f);
 
         private final float position;
 
@@ -347,7 +363,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     }
 
     public enum _OuttakeClawServoState implements Positionable {
-        GRIP    (0.25f),
+        GRIP    (0.27f),
         RELEASE     (0f);
 
         private final float position;

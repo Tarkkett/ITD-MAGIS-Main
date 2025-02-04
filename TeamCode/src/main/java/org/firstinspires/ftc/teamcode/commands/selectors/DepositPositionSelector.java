@@ -50,17 +50,35 @@ public class DepositPositionSelector extends CommandBase {
     public void execute(){
 
         if (manager.selectingProcess){
+            //!Up to Down
+//            if (gamepad_codriver.gamepad.circle){
+//                CommandScheduler.getInstance().schedule(
+//                        new ParallelCommandGroup(
+//                                new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HIGH_CHAMBER),
+//                                new SequentialCommandGroup(
+//                                        new WaitCommand(200),
+//                                        new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.DEPOSIT),
+//                                        new WaitCommand(500),
+//                                        new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.DEPOSIT_SPECIMEN),
+//                                        new WaitCommand(400),
+//                                        new SetOuttakeYawServoCommand(manager, OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoUp),
+//                                        new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.DEPOSIT_BACK)
+//                                )
+//
+//                        )
+//                );
+//            }
+            //! Down to Up
             if (gamepad_codriver.gamepad.circle){
                 CommandScheduler.getInstance().schedule(
                         new ParallelCommandGroup(
-                                new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HIGH_CHAMBER),
+                                new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HIGH_CHAMBER_LOWER_REVERSED),
                                 new SequentialCommandGroup(
                                         new WaitCommand(200),
                                         new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.DEPOSIT),
                                         new WaitCommand(500),
                                         new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.DEPOSIT_SPECIMEN),
                                         new WaitCommand(400),
-                                        new SetOuttakeYawServoCommand(manager, OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoUp),
                                         new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.DEPOSIT_BACK)
                                 )
 
@@ -96,11 +114,22 @@ public class DepositPositionSelector extends CommandBase {
             else if (gamepad_codriver.gamepad.dpad_down){
                 CommandScheduler.getInstance().schedule(new MoveLiftSomeBit(manager, -50));
             }
+            //! Up to Down
+//            else if (gamepad_codriver.gamepad.cross) {
+//                CommandScheduler.getInstance().schedule(
+//                        new SequentialCommandGroup(
+//                                new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HIGH_CHAMBER_LOWER),
+//                                new WaitCommand(750),
+//                                new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.RELEASE)
+//                        )
+//                );
+//
+//            }
+            //! Down to up
             else if (gamepad_codriver.gamepad.cross) {
                 CommandScheduler.getInstance().schedule(
                         new SequentialCommandGroup(
-//                                new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.DEPOSIT_FORWARDPUSH),
-                                new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HIGH_CHAMBER_LOWER),
+                                new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HIGH_CHAMBER_REVERSED),
                                 new WaitCommand(750),
                                 new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.RELEASE)
                         )

@@ -59,13 +59,13 @@ public class MovementControlRunnable implements Runnable {
             }
             return 0.5;
         }
-        if (gamepad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > TRIGGER_MARGIN){
-//        else if (gamepad.isDown(GamepadKeys.Button.LEFT_BUMPER)) {
-            return 0.2;
+//        if (gamepad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > TRIGGER_MARGIN){
+        else if (gamepad.isDown(GamepadKeys.Button.LEFT_BUMPER)) {
+            return 0.3;
         }
-        if (gamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > TRIGGER_MARGIN){
-//        else if (gamepad.isDown(GamepadKeys.Button.RIGHT_BUMPER)) {
-            return 0.4;
+//        if (gamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > TRIGGER_MARGIN){
+        else if (gamepad.isDown(GamepadKeys.Button.RIGHT_BUMPER)) {
+            return 0.5;
         }
         return 1.0;
     }

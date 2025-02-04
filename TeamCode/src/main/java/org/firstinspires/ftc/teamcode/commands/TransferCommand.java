@@ -35,12 +35,12 @@ public class TransferCommand extends SequentialCommandGroup {
                     new SetOuttakeTiltServoCommand(outtake, OuttakeManager._OuttakeTiltServoState.PICKUP),
                     new SetOuttakeExtendoServoCommand(outtake, OuttakeManager._ExtendoServoState.AUTO_DEPOSIT),
                     new SetOuttakeClawStateCommand(outtake, OuttakeManager._OuttakeClawServoState.RELEASE),
-                    new SetOuttakeYawServoCommand(outtake, OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoDown),
+                    new SetOuttakeYawServoCommand(outtake, OuttakeManager._OuttakeYawServoState.VERTICAL),
 
                     new WaitCommand(2000),
                     new SetOuttakeTiltServoCommand(outtake, OuttakeManager._OuttakeTiltServoState.TRANSFER),
                     new WaitCommand(1000),
-                    new SetOuttakeExtendoServoCommand(outtake, OuttakeManager._ExtendoServoState.TRANSFER),
+                    new SetOuttakeExtendoServoCommand(outtake, OuttakeManager._ExtendoServoState.ZERO),
 
                     new WaitCommand(1000),
                     new SetLiftPositionCommand(outtake, OuttakeManager._LiftState.TRANSFER),
