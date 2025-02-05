@@ -16,13 +16,18 @@ import org.firstinspires.ftc.teamcode.util.PID_PARAMS;
 @Config
 public class IntakeManager implements Manager<IntakeManager._IntakeState> {
 
-    private static final int MIN_SLIDE_RETRACT = 200;
-    private static final int MAX_SLIDE_EXTEND = 850;
+    public interface Positionable {
+        float getPosition();
+    }
+
+    private static final int MIN_SLIDE_RETRACT = 0;
+    private static final int MAX_SLIDE_EXTEND = 650;
 
     private final HardwareManager hardwareManager;
     public boolean selectingProcess = false;
     private Telemetry telemetry;
     private GamepadPlus gamepad_driver;
+    private GamepadPlus gamepad_codriver;
 
     public int targetPosition;
     public int encoderPos = 0;
@@ -31,32 +36,36 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
 
     private boolean isAutoLoop = true;
 
-    public PID_PARAMS params = new PID_PARAMS(0.02, 0.0, 0.0006, 5);
+    public PID_PARAMS params = new PID_PARAMS(0.01, 0.002, 0.0004, 5);
     C_PID controller = new C_PID(params);
 
-    public IntakeManager(HardwareManager hardwareManager, Telemetry telemetry, GamepadPlus gamepadDriver) {
+    public IntakeManager(HardwareManager hardwareManager, Telemetry telemetry, GamepadPlus gamepadDriver, GamepadPlus gamepadCodriver) {
         this.gamepad_driver = gamepadDriver;
         this.telemetry = telemetry;
         this.hardwareManager = hardwareManager;
+        this.gamepad_codriver = gamepadCodriver;
+    }
+
+    private void updateTelemetry() {
+        telemetry.addData("CurrentPos", encoderPos);
+        telemetry.addData("TargetPos", targetPosition);
+        telemetry.update();
     }
 
     @Override
     public void loop() {
-
         controller.tune(params);
 
         FtcDashboard dashboard = FtcDashboard.getInstance();
         telemetry = dashboard.getTelemetry();
         encoderPos = hardwareManager.intake.getCurrentPosition();
-        telemetry.addData("CurrentPos", encoderPos);
-        telemetry.addData("TargetPos", targetPosition);
-        telemetry.update();
 
+        updateTelemetry();
 
         double power = controller.update(targetPosition, encoderPos);
         hardwareManager.intake.setPower(power);
-
     }
+
 
     @Override
     public _IntakeState GetManagerState() {
@@ -154,7 +163,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
             targetPosition = newPos;
         }
         else{
-            gamepad_driver.gamepad.rumbleBlips(3);
+            gamepad_codriver.gamepad.rumbleBlips(3);
         }
     }
 
@@ -166,11 +175,11 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
         }
     }
 
-    public enum _SlideState {
+    public enum _SlideState implements Positionable {
         EXTENDED    (550),
-        TRANSFER    (200),
+        TRANSFER    (170),
         RETRACTED   (10),
-        TRANSFER_WAIT(340);
+        TRANSFER_WAIT(300);
 
         private final float position;
 
@@ -178,11 +187,12 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
             this.position = position;
         }
 
+        @Override
         public float getPosition() {
             return position;
         }
     }
-    public enum _GripState {
+    public enum _GripState implements Positionable {
         RELEASE(0.1f),
         GRIP(0.8f);
 
@@ -192,15 +202,16 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
             this.position = position;
         }
 
+        @Override
         public float getPosition() {
             return position;
         }
     }
-    public enum _TiltServoState{
-        TRANSFER(0.32f),
-        LOWERED (0.95f),
+    public enum _TiltServoState implements Positionable{
+        TRANSFER(0.33f),
+        LOWERED (0.965f),
         AIMING(0.87f),
-        PACKED(0.25f),
+        PACKED(0.3f),
         CLEARED(0.5f),
         AIMING_UPPER(0.8f);
 
@@ -210,18 +221,19 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
             this.position = position;
         }
 
+        @Override
         public float getPosition() {
             return position;
         }
 
     }
-    public enum _YawServoState{
-        TRANSFER(0.33f),
-        PICKUP_DEFAULT(0.93f),
+    public enum _YawServoState implements Positionable{
+        TRANSFER(0.34f),
+        PICKUP_DEFAULT(0.85f),
         //Increment for manual
         MANUAL(0.1f),
-        AUTO_1(0.62f),
-        AUTO_2(0.685f),
+        AUTO_1(0.6f),
+        AUTO_2(0.7f),
         AUTO_3(0.74f);
 
         private final float position;
@@ -230,6 +242,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
             this.position = position;
         }
 
+        @Override
         public float getPosition() {
             return position;
         }

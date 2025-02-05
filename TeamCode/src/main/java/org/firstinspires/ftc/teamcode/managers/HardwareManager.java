@@ -25,13 +25,12 @@ public class HardwareManager{
     Blinker.Step blinkRed = new Blinker.Step();
 
     DcMotorEx frontLeft;
-    DcMotorEx legMotor;
     DcMotorEx frontRight;
     DcMotorEx backLeft;
     DcMotorEx backRight;
 
-    DcMotorEx liftRight;
-    DcMotorEx liftLeft;
+    public DcMotorEx liftRight;
+    public DcMotorEx liftLeft;
 
     DcMotorEx intake;
 
@@ -40,8 +39,10 @@ public class HardwareManager{
     public Servo yawServo;
 
     public Servo outtakeTiltServo;
-    public Servo specimentServo;
+    public Servo outtakeExtendoServo;
     public Servo outtakeClawServo;
+    public Servo outtakeYawServo;
+
 
     public static int IMU_DATA_SAMPLING_RATE = 10;
 
@@ -74,15 +75,14 @@ public class HardwareManager{
 
         intake = this.hmap.get(DcMotorEx.class, "intakeMotor");
 
-        legMotor = this.hmap.get(DcMotorEx.class, "legMotor");
-
         gripServo = this.hmap.get(Servo.class, "gripServo");
         intakeTiltServo = this.hmap.get(Servo.class, "intakeTiltServo");
         yawServo = this.hmap.get(Servo.class, "yawServo");
 
         outtakeTiltServo = this.hmap.get(Servo.class, "outtakeTiltServo");
-        specimentServo = this.hmap.get(Servo.class, "specimentServo");
+        outtakeExtendoServo = this.hmap.get(Servo.class, "outtakeExtendoServo");
         outtakeClawServo = this.hmap.get(Servo.class, "outtakeClawServo");
+        outtakeYawServo = this.hmap.get(Servo.class, "outtakeYawServo");
 
         //! Odometry setup in Pinpoint class!
 
@@ -100,14 +100,14 @@ public class HardwareManager{
         intake.setDirection(DcMotorSimple.Direction.REVERSE);
 
         liftRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        liftLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        legMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        outtakeTiltServo.setPosition(0.7);
 
         //?========================QUALITY FUNCTIONS===============================//
 

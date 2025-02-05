@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.managers.testing;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.arcrobotics.ftclib.command.CommandScheduler;
 
+import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetLiftPositionCommand;
 import org.firstinspires.ftc.teamcode.drivers.C_PID;
 import org.firstinspires.ftc.teamcode.managers.DriveManager;
 import org.firstinspires.ftc.teamcode.managers.HardwareManager;
@@ -16,24 +18,26 @@ public class HardwareTestManager{
     DriveManager drive;
     HardwareManager hardware;
 
-    C_PID intakeController = new C_PID(0,0,0);
-    C_PID outtakeController = new C_PID(0.03,0.5,0.1);
+    public static double OUTTAKE_Kp = 0.012;
+    public static double OUTTAKE_Ki = 0;
+    public static double OUTTAKE_Kd = 0.0003;
+    public static double INTAKE_Kp = 0.01;
+    public static double INTAKE_Ki = 0.002;
+    public static double INTAKE_Kd = 0.0004;
 
-    public static double OUTTAKE_Kp;
-    public static double OUTTAKE_Ki;
-    public static double OUTTAKE_Kd;
-    public static double INTAKE_Kp;
-    public static double INTAKE_Ki;
-    public static double INTAKE_Kd;
-
-    public static float intakeTiltServoPos = 0.5f;
+    //?Intake servos
+    public static float intakeTiltServoPos = 0.25f;
     public static float intakeClawServoPos = 0.5f;
-    public static float outtakeClawServoPos = 0.5f;
-    public static float outtakeTiltServoPos = 0.5f;
-    public static float specimentServoPos = 0.5f;
-    public static float intakeYawServoPos = 0.5f;
+    public static float intakeYawServoPos = 0.36f;
 
-    public static int outtakeTargetPos = 0;
+    //?Outtake servos
+    public static float outtakeClawServoPos = 0.25f;
+    public static float outtakeTiltServoPos = 0.65f;
+    public static float outtakeExtendoServoPos = 0f;
+    public static float outtakeYawServoPos = 0f;
+
+
+    public static int outtakeTargetPos = 400;
     public static int intakeTargetPos = 0;
 
 
@@ -60,8 +64,11 @@ public class HardwareTestManager{
         //? Outtake
         hardware.outtakeClawServo.setPosition(outtakeClawServoPos);
         hardware.outtakeTiltServo.setPosition(outtakeTiltServoPos);
-        hardware.specimentServo.setPosition(specimentServoPos);
+        hardware.outtakeExtendoServo.setPosition(outtakeExtendoServoPos);
+        hardware.outtakeYawServo.setPosition(outtakeYawServoPos);
 
-        outtake.targetPosition = outtakeTargetPos;
+        CommandScheduler.getInstance().schedule(new SetLiftPositionCommand(outtake, null, outtakeTargetPos));
+
+        CommandScheduler.getInstance().run();
     }
 }

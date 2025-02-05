@@ -9,6 +9,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.MoveIntakeSomeBit;
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeGripStateCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeSlidePositionCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeTiltServoPosCommand;
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.util.GamepadPlus;
@@ -55,7 +56,6 @@ public class IntakePositionSelector extends CommandBase {
                                 new WaitCommand(400),
                                 new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.AIMING_UPPER)
                         )
-
                 );
 
             } else if (gamepad_codriver.isDown(gamepad_driver.triangle)) {
@@ -66,7 +66,23 @@ public class IntakePositionSelector extends CommandBase {
                         )
 
                 );
-            } else if (gamepad_codriver.rightTrigger() > 0.2) {
+            } else if (gamepad_codriver.isDown(gamepad_driver.cross)) {
+                CommandScheduler.getInstance().schedule(
+                        new SequentialCommandGroup(
+                                new SetIntakeSlidePositionCommand(manager, IntakeManager._SlideState.RETRACTED)
+                        )
+
+                );
+            }
+            else if (gamepad_codriver.isDown(gamepad_driver.circle)) {
+                CommandScheduler.getInstance().schedule(
+                        new SequentialCommandGroup(
+                                new SetIntakeSlidePositionCommand(manager, IntakeManager._SlideState.EXTENDED)
+                        )
+
+                );
+            }
+            else if (gamepad_codriver.rightTrigger() > 0.2) {
                 CommandScheduler.getInstance().schedule(
                         new SequentialCommandGroup(
                                 new SetIntakeGripStateCommand(manager, IntakeManager._GripState.RELEASE),

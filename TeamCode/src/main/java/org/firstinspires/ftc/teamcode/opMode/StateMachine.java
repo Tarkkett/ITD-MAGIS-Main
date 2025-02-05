@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.opMode;
 
 import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
+import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.commands.SetIntakeStateCommand;
@@ -15,9 +17,6 @@ import org.firstinspires.ftc.teamcode.util.GamepadPlus;
 import org.firstinspires.ftc.teamcode.util.State;
 
 public class StateMachine implements State<StateMachine._RobotState> {
-
-    private static StateMachine instance;
-
     public _RobotState robotState = _RobotState.HOME;
 
     private OuttakeManager outtakeManager;
@@ -45,96 +44,99 @@ public class StateMachine implements State<StateMachine._RobotState> {
         this.hw = hw;
     }
 
-    public static StateMachine getInstance(OuttakeManager outtake, IntakeManager intake, DriveManager drive, Telemetry tel, GamepadPlus gamepad_driver, GamepadPlus gamepad_codriver, HardwareManager hw) {
-        if (instance == null) {
-            instance = new StateMachine(outtake, intake, drive, tel, gamepad_driver, gamepad_codriver, hw);
-        }
-        return instance;
-    }
-
     @Override
     public void SetSubsystemState(_RobotState newState) {
 
-            switch (newState) {
-                case DEPOSIT:
+        switch (newState) {
+            case DEPOSIT:
+                if (robotState != _RobotState.DEPOSIT){
                     robotState = _RobotState.DEPOSIT;
-                    outtakeManager.managerState = OuttakeManager._OuttakeState.DEPOSIT;
-                    intakeManager.managerState = IntakeManager._IntakeState.HOME;
                     intakeManager.selectingProcess = false;
                     CommandScheduler.getInstance().schedule(
                             new ParallelCommandGroup(
-                                    new SetIntakeStateCommand(IntakeManager._IntakeState.HOME, intakeManager, gamepad_driver, gamepad_codriver),
+                                    new SetIntakeStateCommand(IntakeManager._IntakeState.HOME, intakeManager, this, gamepad_driver, gamepad_codriver),
                                     new SetOuttakeStateCommand(OuttakeManager._OuttakeState.DEPOSIT, outtakeManager, gamepad_driver, gamepad_codriver)
                             )
                     );
-                    break;
-                case INTAKE:
+                } else {
+                    Warn(gamepad_codriver);
+                }
+                break;
+            case INTAKE:
+                if (robotState != _RobotState.INTAKE) {
                     robotState = _RobotState.INTAKE;
-                    intakeManager.managerState = IntakeManager._IntakeState.INTAKE;
                     outtakeManager.selectingProcess = false;
-                    outtakeManager.managerState = OuttakeManager._OuttakeState.HOME;
                     CommandScheduler.getInstance().schedule(
                             new ParallelCommandGroup(
-                                    new SetOuttakeStateCommand(OuttakeManager._OuttakeState.HOME, outtakeManager, gamepad_driver, gamepad_codriver),
-                                    new SetIntakeStateCommand(IntakeManager._IntakeState.INTAKE, intakeManager, gamepad_driver, gamepad_codriver)
+                                    new SetOuttakeStateCommand(OuttakeManager._OuttakeState.PICKUP, outtakeManager, gamepad_driver, gamepad_codriver),
+                                    new SetIntakeStateCommand(IntakeManager._IntakeState.INTAKE, intakeManager, this, gamepad_driver, gamepad_codriver)
                             )
                     );
-                    break;
-                case TRANSFER:
+                } else {
+                    Warn(gamepad_codriver);
+                }
+                break;
+            case TRANSFER:
+                if (robotState == _RobotState.INTAKE) {
                     robotState = _RobotState.TRANSFER;
-                    intakeManager.managerState = IntakeManager._IntakeState.TRANSFER;
-                    outtakeManager.managerState = OuttakeManager._OuttakeState.TRANSFER;
                     intakeManager.selectingProcess = false;
                     outtakeManager.selectingProcess = false;
                     CommandScheduler.getInstance().schedule(
-                        new TransferCommand(intakeManager, outtakeManager)
+                            new TransferCommand(intakeManager, outtakeManager)
                     );
-                    break;
-                case HOME:
-                    robotState = _RobotState.HOME;
-                    intakeManager.managerState = IntakeManager._IntakeState.HOME;
-                    outtakeManager.managerState = OuttakeManager._OuttakeState.HOME;
-                    CommandScheduler.getInstance().schedule(
-                            new ParallelCommandGroup(
-                                    new SetIntakeStateCommand(IntakeManager._IntakeState.HOME, intakeManager, gamepad_driver, gamepad_codriver),
-                                    new SetOuttakeStateCommand(OuttakeManager._OuttakeState.HOME, outtakeManager, gamepad_driver, gamepad_codriver)
-                            )
-                    );
-                    break;
-                case CALIBRATION:
-                    intakeManager.managerState = IntakeManager._IntakeState.CALIBRATION;
-                    outtakeManager.managerState = OuttakeManager._OuttakeState.CALIBRATION;
-                    break;
-            }
+                } else {
+                    Warn(gamepad_codriver);
+                }
+                break;
+            case HOME:
+                robotState = _RobotState.HOME;
+                CommandScheduler.getInstance().schedule(
+                        new ParallelCommandGroup(
+                                new SetIntakeStateCommand(IntakeManager._IntakeState.HOME, intakeManager, this, gamepad_driver, gamepad_codriver),
+                                new SetOuttakeStateCommand(OuttakeManager._OuttakeState.HOME, outtakeManager, gamepad_driver, gamepad_codriver)
+                        )
+                );
+                break;
+            case CALIBRATION:
+                intakeManager.managerState = IntakeManager._IntakeState.CALIBRATION;
+                outtakeManager.managerState = OuttakeManager._OuttakeState.CALIBRATION;
+                break;
+        }
+    }
+
+    private void Warn(GamepadPlus gamepadCodriver) {
+        gamepadCodriver.gamepad.rumble(400);
+        gamepadCodriver.gamepad.setLedColor(255, 0, 0, 2000);
     }
 
     @Override
-    public _RobotState GetSubsystemState() {
+    public _RobotState GetSystemState() {
         return robotState;
     }
 
     @Override
     public void loop() {
         StateCheck();
-        tel.addData("Intake feels like:", intakeState);
-        tel.addData("Outtake feels like:", outtakeState);
-        tel.addData("Drivetrain feels like:", driveState);
-        tel.addData("Robot feels like:", GetSubsystemState());
-        tel.addData("Speciment servo pos", hw.specimentServo.getPosition());
-        tel.addData("Speciment servo closed pos", OuttakeManager._SpecimentServoState.CLOSED.getPosition());
-        tel.addData("CanHome", outtakeManager.canHome());
-        tel.update();
-
+        if (robotState == _RobotState.CALIBRATION) {
+            tel.addData("Intake feels like:", intakeState);
+            tel.addData("Outtake feels like:", outtakeState);
+            tel.addData("Drivetrain feels like:", driveState);
+            tel.addData("Robot feels like:", GetSystemState());
+            tel.addData("Lift left current pos", hw.liftLeft.getCurrentPosition());
+            tel.addData("Lift right current pos", hw.liftRight.getCurrentPosition());
+            tel.addData("Lift target pos", outtakeManager.GetLiftTargetPos());
+            tel.addData("CanHome", outtakeManager.canHome());
+            tel.update();
+        }
     }
 
     private void StateCheck() {
         intakeState = intakeManager.GetManagerState();
         outtakeState = outtakeManager.GetManagerState();
         driveState = driveManager.GetManagerState();
-
     }
 
-    public void SetSubsystemState(DriveManager._DriveState driveState) {
+    public void SetDrivetrainState(DriveManager._DriveState driveState) {
         switch (driveState){
             case LOCKED:
                 driveManager.onLocked();
