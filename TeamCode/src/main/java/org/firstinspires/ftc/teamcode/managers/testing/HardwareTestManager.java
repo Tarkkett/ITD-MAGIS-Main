@@ -21,9 +21,9 @@ public class HardwareTestManager{
     public static double OUTTAKE_Kp = 0.012;
     public static double OUTTAKE_Ki = 0;
     public static double OUTTAKE_Kd = 0.0003;
-    public static double INTAKE_Kp = 0.02;
-    public static double INTAKE_Ki = 0;
-    public static double INTAKE_Kd = 0.0006;
+    public static double INTAKE_Kp = 0.01;
+    public static double INTAKE_Ki = 0.002;
+    public static double INTAKE_Kd = 0.0004;
 
     //?Intake servos
     public static float intakeTiltServoPos = 0.25f;

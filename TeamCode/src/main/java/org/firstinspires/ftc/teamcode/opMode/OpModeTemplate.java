@@ -18,8 +18,6 @@ public abstract class OpModeTemplate extends OpMode {
 
     //!Kotlin
 
-    protected TelemetryManager telemetryManager;
-
     //!Java
 
     protected boolean teamSelected = false;
@@ -59,8 +57,6 @@ public abstract class OpModeTemplate extends OpMode {
         outtakeManager = new OuttakeManager(hardwareManager, telemetry, intakeManager);
 
         driveManager = new DriveManager(hardwareManager, telemetry, gamepad_driver, drive, outtakeManager);
-
-        telemetryManager = new TelemetryManager(this);
 
         stateMachine = new StateMachine(outtakeManager, intakeManager, driveManager, telemetry, gamepad_driver, gamepad_codriver, hardwareManager);
 

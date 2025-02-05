@@ -22,6 +22,7 @@ public class SetServosToDefaultsCommand extends SequentialCommandGroup {
                 new WaitCommand(400),
                 new SetOuttakeTiltServoCommand(outtakeManager, OuttakeManager._OuttakeTiltServoState.DEPOSIT_SPECIMEN),
                 new WaitCommand(400),
+
                 //?Deposit
                 new SetOuttakeExtendoServoCommand(outtakeManager, OuttakeManager._ExtendoServoState.DEPOSIT),
                 new SetOuttakeYawServoCommand(outtakeManager, OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoUp),

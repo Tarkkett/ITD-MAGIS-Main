@@ -6,10 +6,8 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.commands.low_level.SetRobotState;
-import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeClawStateCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.ToggleOuttakeClawCommand;
 import org.firstinspires.ftc.teamcode.managers.DriveManager;
-import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 
 @TeleOp(name = "Main TeleOp", group = "OpMode")
 public class MainTeleOp extends OpModeTemplate {
@@ -25,14 +23,18 @@ public class MainTeleOp extends OpModeTemplate {
         //* Toggle drivetrain lock
         gamepad_driver.getGamepadButton(gamepad_driver.share)
             .toggleWhenActive(
-                new InstantCommand(() -> stateMachine.SetSubsystemState(DriveManager._DriveState.LOCKED)),
-                new InstantCommand(() -> stateMachine.SetSubsystemState(DriveManager._DriveState.UNLOCKED)));
+                new InstantCommand(() -> stateMachine.SetDrivetrainState(DriveManager._DriveState.LOCKED)),
+                new InstantCommand(() -> stateMachine.SetDrivetrainState(DriveManager._DriveState.UNLOCKED)));
 
-        //* Toggle between intake and transfer
+        //* Enable intake settings
         gamepad_codriver.getGamepadButton(gamepad_codriver.leftBumper)
-            .toggleWhenPressed(
-                    new SetRobotState(stateMachine, StateMachine._RobotState.INTAKE, false),
-                    new SetRobotState(stateMachine, StateMachine._RobotState.TRANSFER, false));
+            .whenPressed(
+                    new SetRobotState(stateMachine, StateMachine._RobotState.INTAKE, false));
+
+        //* Transfer Sequence
+        gamepad_codriver.getGamepadButton(gamepad_codriver.dpad_Right)
+                .whenPressed(
+                        new SetRobotState(stateMachine, StateMachine._RobotState.TRANSFER, false));
 
         //* Go to deposit settings
         gamepad_codriver.getGamepadButton(gamepad_codriver.rightBumper)

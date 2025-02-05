@@ -36,7 +36,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
 
     private boolean isAutoLoop = true;
 
-    public PID_PARAMS params = new PID_PARAMS(0.019, 0.0, 0.00062, 5);
+    public PID_PARAMS params = new PID_PARAMS(0.01, 0.002, 0.0004, 5);
     C_PID controller = new C_PID(params);
 
     public IntakeManager(HardwareManager hardwareManager, Telemetry telemetry, GamepadPlus gamepadDriver, GamepadPlus gamepadCodriver) {
@@ -177,9 +177,9 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
 
     public enum _SlideState implements Positionable {
         EXTENDED    (550),
-        TRANSFER    (240),
+        TRANSFER    (170),
         RETRACTED   (10),
-        TRANSFER_WAIT(340);
+        TRANSFER_WAIT(300);
 
         private final float position;
 
@@ -208,10 +208,10 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
         }
     }
     public enum _TiltServoState implements Positionable{
-        TRANSFER(0.36f),
+        TRANSFER(0.33f),
         LOWERED (0.965f),
         AIMING(0.87f),
-        PACKED(0.25f),
+        PACKED(0.3f),
         CLEARED(0.5f),
         AIMING_UPPER(0.8f);
 
@@ -228,7 +228,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
 
     }
     public enum _YawServoState implements Positionable{
-        TRANSFER(0.58f),
+        TRANSFER(0.34f),
         PICKUP_DEFAULT(0.85f),
         //Increment for manual
         MANUAL(0.1f),

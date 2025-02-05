@@ -72,6 +72,7 @@ public class DepositPositionSelector extends CommandBase {
             if (gamepad_codriver.gamepad.circle){
                 CommandScheduler.getInstance().schedule(
                         new ParallelCommandGroup(
+                                new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.GRIP),
                                 new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HIGH_CHAMBER_LOWER_REVERSED),
                                 new SequentialCommandGroup(
                                         new WaitCommand(200),
@@ -87,7 +88,21 @@ public class DepositPositionSelector extends CommandBase {
             }
             else if (gamepad_codriver.gamepad.square){
                 if (manager.canHome()){
-                    CommandScheduler.getInstance().schedule(new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HOME));
+                    CommandScheduler.getInstance().schedule(
+                            new SequentialCommandGroup(
+                                    new SetOuttakeYawServoCommand(manager, OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoDown),
+                                    new SetLiftPositionCommand(manager, OuttakeManager._LiftState.CLEARED_ALL),
+                                    new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.DEPOSIT_FORWARDPUSH),
+                                    new WaitCommand(300),
+                                    new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.PICKUP),
+                                    new WaitCommand(450),
+                                    new SetLiftPositionCommand(manager, OuttakeManager._LiftState.ZERO),
+                                    new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.PICKUP),
+                                    new WaitCommand(300),
+                                    new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.RELEASE),
+                                    new DepositPositionSelector(gamepad_driver, gamepad_codriver, manager)
+                            )
+                    );
                 }
                 else {gamepad_codriver.rumble(400);}
             }

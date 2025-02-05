@@ -175,6 +175,9 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
             case TRANSFER:
                 hardwareManager.outtakeTiltServo.setPosition(_OuttakeTiltServoState.TRANSFER.getPosition());
                 break;
+            case BALANCE:
+                hardwareManager.outtakeTiltServo.setPosition(_OuttakeTiltServoState.BALANCE.getPosition());
+                break;
             case DEPOSIT_SPECIMEN:
                 hardwareManager.outtakeTiltServo.setPosition(_OuttakeTiltServoState.DEPOSIT_SPECIMEN.getPosition());
                 break;
@@ -223,6 +226,9 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
                 break;
             case RELEASE:
                 hardwareManager.outtakeClawServo.setPosition(_OuttakeClawServoState.RELEASE.getPosition());
+                break;
+            case BALANCE:
+                hardwareManager.outtakeClawServo.setPosition(_OuttakeClawServoState.BALANCE.getPosition());
                 break;
         }
     }
@@ -348,7 +354,8 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         DEPOSIT_SPECIMEN(0.72f),
         DEPOSIT_SAMPLE(1f),
         PICKUP(0f),
-        TRANSFER(0.65f);
+        TRANSFER(0.65f),
+        BALANCE(0.35f);
 
         private final float position;
 
@@ -364,7 +371,8 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
 
     public enum _OuttakeClawServoState implements Positionable {
         GRIP    (0.27f),
-        RELEASE     (0f);
+        RELEASE     (0f),
+        BALANCE(0.22f);
 
         private final float position;
 
@@ -379,9 +387,9 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     }
 
     public enum _OuttakeYawServoState implements Positionable {
-        HORIZONTAL_ServoDown    (1f),
-        VERTICAL     (0.5f),
-        HORIZONTAL_ServoUp(0f);
+        HORIZONTAL_ServoDown    (0.94f),
+        VERTICAL     (0.36f),
+        HORIZONTAL_ServoUp(0.1f);
 
         private final float position;
 

@@ -29,29 +29,35 @@ public class TransferCommand extends SequentialCommandGroup {
                     new SetIntakeGripStateCommand(intake, IntakeManager._GripState.GRIP),
                     new AdjustYawServoCommand(intake, IntakeManager._YawServoState.TRANSFER),
                     new SetIntakeTiltServoPosCommand( intake, IntakeManager._TiltServoState.TRANSFER),
-                    new SetIntakeSlidePositionCommand(intake, IntakeManager._SlideState.TRANSFER),
-                    new SetLiftPositionCommand(outtake, OuttakeManager._LiftState.CLEARED_ALL),
+                    new SetIntakeSlidePositionCommand(intake, IntakeManager._SlideState.TRANSFER_WAIT),
+                    new SetLiftPositionCommand(outtake, OuttakeManager._LiftState.ZERO),
 
-                    new SetOuttakeTiltServoCommand(outtake, OuttakeManager._OuttakeTiltServoState.PICKUP),
-                    new SetOuttakeExtendoServoCommand(outtake, OuttakeManager._ExtendoServoState.AUTO_DEPOSIT),
+                    new SetOuttakeTiltServoCommand(outtake, OuttakeManager._OuttakeTiltServoState.TRANSFER),
+                    new SetOuttakeExtendoServoCommand(outtake, OuttakeManager._ExtendoServoState.ZERO),
                     new SetOuttakeClawStateCommand(outtake, OuttakeManager._OuttakeClawServoState.RELEASE),
                     new SetOuttakeYawServoCommand(outtake, OuttakeManager._OuttakeYawServoState.VERTICAL),
 
-                    new WaitCommand(2000),
-                    new SetOuttakeTiltServoCommand(outtake, OuttakeManager._OuttakeTiltServoState.TRANSFER),
-                    new WaitCommand(1000),
-                    new SetOuttakeExtendoServoCommand(outtake, OuttakeManager._ExtendoServoState.ZERO),
-
-                    new WaitCommand(1000),
-                    new SetLiftPositionCommand(outtake, OuttakeManager._LiftState.TRANSFER),
-                    new WaitCommand(500),
-                    new SetOuttakeExtendoServoCommand(outtake, OuttakeManager._ExtendoServoState.TRANSFER_PUSH),
-                    new WaitCommand(500),
-
+                    new WaitCommand(1500),
+                    new SetIntakeSlidePositionCommand(intake, IntakeManager._SlideState.TRANSFER),
+                    new WaitCommand(300),
                     new SetOuttakeClawStateCommand(outtake, OuttakeManager._OuttakeClawServoState.GRIP),
-                    new WaitCommand(1000),
+                    new WaitCommand(150),
                     new SetIntakeGripStateCommand(intake, IntakeManager._GripState.RELEASE),
-                    new SetLiftPositionCommand(outtake, OuttakeManager._LiftState.CLEARED)
+                    new WaitCommand(300),
+                    new SetLiftPositionCommand(outtake, OuttakeManager._LiftState.CLEARED_ALL),
+                    new WaitCommand(100),
+                    new SetIntakeSlidePositionCommand(intake, IntakeManager._SlideState.RETRACTED),
+                    new SetOuttakeYawServoCommand(outtake, OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoUp),
+                    new WaitCommand(350),
+                    new SetOuttakeClawStateCommand(outtake, OuttakeManager._OuttakeClawServoState.BALANCE),
+                    new SetOuttakeTiltServoCommand(outtake, OuttakeManager._OuttakeTiltServoState.BALANCE),
+                    new WaitCommand(500),
+                    new SetOuttakeClawStateCommand(outtake, OuttakeManager._OuttakeClawServoState.GRIP),
+                    new SetLiftPositionCommand(outtake, OuttakeManager._LiftState.HIGH_BUCKET),
+                    new WaitCommand(150),
+                    new SetOuttakeExtendoServoCommand(outtake, OuttakeManager._ExtendoServoState.AUTO_DEPOSIT),
+                    new SetOuttakeTiltServoCommand(outtake, OuttakeManager._OuttakeTiltServoState.DEPOSIT_SAMPLE)
+
 
             );
         }
