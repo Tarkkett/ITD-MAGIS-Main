@@ -14,9 +14,10 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
+import org.threeten.bp.zone.ZoneRules;
 
-@Autonomous(name = "FourSpecimenStable", group = "OpMode", preselectTeleOp = "Main TeleOp")
-public class FourSpecimenStable extends OpModeTemplate {
+@Autonomous(name = "Main Auto", group = "OpMode", preselectTeleOp = "Main TeleOp")
+public class FourSpecimenOfficialField extends OpModeTemplate {
 
     private Pose2d beginPose = new Pose2d(0, 0, 0);
     private TurnConstraints turnConstraints = new TurnConstraints(2.3, -2.3, 2.7);
@@ -36,7 +37,8 @@ public class FourSpecimenStable extends OpModeTemplate {
     private Action testTraj;
 
     private final float DIST_X_CHAMBER = 10;
-    private final float DIST_Y_CHAMBER = -32f;
+    private final float DIST_Y_CHAMBER = -32.5f;
+    private final float DIST_Y_ZONE = -63.5f;
 
     private Action mainAutonomous;
 
@@ -44,36 +46,36 @@ public class FourSpecimenStable extends OpModeTemplate {
     public void init() {
         initSystems(true);
 
-        initialTraj = drive.actionBuilder(new Pose2d(new Vector2d(9, -63), Math.toRadians(-270)))
+        initialTraj = drive.actionBuilder(new Pose2d(new Vector2d(9, DIST_Y_ZONE), Math.toRadians(-270)))
                 .strafeToConstantHeading(new Vector2d(DIST_X_CHAMBER, DIST_Y_CHAMBER), new TranslationalVelConstraint(50), new ProfileAccelConstraint(-25, 55))
                 .build();
 
-        trajToHang1st = drive.actionBuilder(new Pose2d(50, -63, Math.toRadians(-270)))
+        trajToHang1st = drive.actionBuilder(new Pose2d(50, DIST_Y_ZONE, Math.toRadians(-270)))
                 .splineToConstantHeading(new Vector2d(7, DIST_Y_CHAMBER), Math.toRadians(-270), null, new ProfileAccelConstraint(-23, 55))
                 .build();
 
-        trajToHang2nd = drive.actionBuilder(new Pose2d(38, -63, Math.toRadians(-270)))
+        trajToHang2nd = drive.actionBuilder(new Pose2d(38, DIST_Y_ZONE, Math.toRadians(-270)))
                 .splineToConstantHeading(new Vector2d(5, DIST_Y_CHAMBER), Math.toRadians(-270),null, new ProfileAccelConstraint(-23, 55))
                 .build();
 
-        trajToHang3rd = drive.actionBuilder(new Pose2d(38, -63, Math.toRadians(-270)))
+        trajToHang3rd = drive.actionBuilder(new Pose2d(38, DIST_Y_ZONE, Math.toRadians(-270)))
                 .splineToConstantHeading(new Vector2d(3, DIST_Y_CHAMBER), Math.toRadians(-270),null, new ProfileAccelConstraint(-23, 55))
                 .build();
 
         trajToPickup1st = drive.actionBuilder(new Pose2d(7, DIST_Y_CHAMBER, Math.toRadians(-270)))
                 .setReversed(true) //Pickup 1
-                .splineToConstantHeading(new Vector2d(38, -63), Math.toRadians(-90), null, new ProfileAccelConstraint(-25, 55))
+                .splineToConstantHeading(new Vector2d(38, DIST_Y_ZONE), Math.toRadians(-90), null, new ProfileAccelConstraint(-25, 55))
                 .build();
         trajToPickup2nd = drive.actionBuilder(new Pose2d(5, DIST_Y_CHAMBER, Math.toRadians(-270)))
                 .setReversed(true)
-                .splineToConstantHeading(new Vector2d(38, -63), Math.toRadians(-90), null, new ProfileAccelConstraint(-25, 55))
+                .splineToConstantHeading(new Vector2d(38, DIST_Y_ZONE), Math.toRadians(-90), null, new ProfileAccelConstraint(-25, 55))
                 .build();
 
         endTraj = drive.actionBuilder(new Pose2d(3, DIST_Y_CHAMBER, Math.toRadians(-270)))
-                .strafeToConstantHeading(new Vector2d(55, -60), new TranslationalVelConstraint(100), new ProfileAccelConstraint(-100, 100))
+                .strafeToConstantHeading(new Vector2d(55, DIST_Y_ZONE), new TranslationalVelConstraint(100), new ProfileAccelConstraint(-100, 100))
                 .build();
 
-        testTraj = drive.actionBuilder(new Pose2d(new Vector2d(9, -63), Math.toRadians(-270)))
+        testTraj = drive.actionBuilder(new Pose2d(new Vector2d(9, DIST_Y_ZONE), Math.toRadians(-270)))
                 .strafeToConstantHeading(new Vector2d(DIST_X_CHAMBER, DIST_Y_CHAMBER))
                 .waitSeconds(0.2f)
 
@@ -92,7 +94,7 @@ public class FourSpecimenStable extends OpModeTemplate {
                 .splineToConstantHeading(new Vector2d(65, -20), Math.toRadians(-90), new TranslationalVelConstraint(25))
                 .strafeToConstantHeading(new Vector2d(65, -50))
 
-                .splineToConstantHeading(new Vector2d(50, -63), Math.toRadians(-90))
+                .splineToConstantHeading(new Vector2d(50, DIST_Y_ZONE), Math.toRadians(-90))
 
                 //Cycle >>>>>>> 1
                 .waitSeconds(0.12f) //Hang 1
@@ -145,7 +147,7 @@ public class FourSpecimenStable extends OpModeTemplate {
                 .splineToConstantHeading(new Vector2d(67, -15), Math.toRadians(-90), new TranslationalVelConstraint(15))
                 .strafeToConstantHeading(new Vector2d(67, -50), new TranslationalVelConstraint(52))
 
-                .splineToConstantHeading(new Vector2d(50, -63), Math.toRadians(-90), new TranslationalVelConstraint(23), new ProfileAccelConstraint(-25, 55))
+                .splineToConstantHeading(new Vector2d(50, DIST_Y_ZONE), Math.toRadians(-90), new TranslationalVelConstraint(23), new ProfileAccelConstraint(-25, 55))
                 .build();
 
 
@@ -157,11 +159,11 @@ public class FourSpecimenStable extends OpModeTemplate {
                         intakeManager.GripAction(IntakeManager._GripState.RELEASE),
                         initialTraj,
                         new SequentialAction(
-                            new SleepAction(1.6f),
-                            outtakeManager.DriveLift((int) OuttakeManager._LiftState.HIGH_CHAMBER_REVERSED.getPosition()),
-                            new SleepAction(0.35),
-                            outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.RELEASE),
-                            new SleepAction(0.15)
+                                new SleepAction(1.6f),
+                                outtakeManager.DriveLift((int) OuttakeManager._LiftState.HIGH_CHAMBER_REVERSED.getPosition()),
+                                new SleepAction(0.35),
+                                outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.RELEASE),
+                                new SleepAction(0.15)
                         )
                 ),
 

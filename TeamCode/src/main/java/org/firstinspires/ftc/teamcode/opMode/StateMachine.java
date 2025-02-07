@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opMode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
@@ -117,17 +118,22 @@ public class StateMachine implements State<StateMachine._RobotState> {
     @Override
     public void loop() {
         StateCheck();
-        if (robotState == _RobotState.CALIBRATION) {
-            tel.addData("Intake feels like:", intakeState);
-            tel.addData("Outtake feels like:", outtakeState);
-            tel.addData("Drivetrain feels like:", driveState);
-            tel.addData("Robot feels like:", GetSystemState());
-            tel.addData("Lift left current pos", hw.liftLeft.getCurrentPosition());
-            tel.addData("Lift right current pos", hw.liftRight.getCurrentPosition());
-            tel.addData("Lift target pos", outtakeManager.GetLiftTargetPos());
-            tel.addData("CanHome", outtakeManager.canHome());
-            tel.update();
-        }
+//        if (robotState == _RobotState.CALIBRATION) {
+            FtcDashboard dashboard = FtcDashboard.getInstance();
+            Telemetry telemetry = dashboard.getTelemetry();
+            telemetry.addData("Intake feels like:", intakeState);
+            telemetry.addData("Outtake feels like:", outtakeState);
+            telemetry.addData("Drivetrain feels like:", driveState);
+            telemetry.addData("Robot feels like:", GetSystemState());
+            telemetry.addData("Lift left current pos", hw.liftLeft.getCurrentPosition());
+            telemetry.addData("Lift right current pos", hw.liftRight.getCurrentPosition());
+            telemetry.addData("Lift target pos", outtakeManager.GetLiftTargetPos());
+//            telemetry.addData("Current Heading", driveManager.currentHeading);
+//            telemetry.addData("Target Heading", driveManager.targetHeading);
+//            telemetry.addData("Corrected Heading", driveManager.correctedRotation);
+//            telemetry.addData("Heading Error", driveManager.headingError);
+            telemetry.update();
+//        }
     }
 
     private void StateCheck() {

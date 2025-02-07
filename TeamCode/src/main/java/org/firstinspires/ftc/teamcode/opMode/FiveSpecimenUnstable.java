@@ -18,27 +18,19 @@ import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 @Autonomous(name = "FiveSpecimenUnstable", group = "OpMode", preselectTeleOp = "Main TeleOp")
 public class FiveSpecimenUnstable extends OpModeTemplate {
 
-    private Pose2d beginPose = new Pose2d(0, 0, 0);
-    private TurnConstraints turnConstraints = new TurnConstraints(2.3, -2.3, 2.7);
-    private TranslationalVelConstraint maxVel = new TranslationalVelConstraint(60);
-    private TranslationalVelConstraint minVel = new TranslationalVelConstraint(45);
-
     private Action trajToPickup1st;
-
     private Action trajToPickup2nd;
     private Action initialTraj;
     private Action trajToHang1st;
     private Action trajToHang2nd;
     private Action trajToHang3rd;
-
     private Action longTraj;
-    private Action endTraj;
 
     private final float DIST_X_CHAMBER = 10;
     private final float DIST_Y_CHAMBER = -31f;
 
     private Action mainAutonomous;
-    private float demon_multiplier = 1.4f;
+    private float demon_multiplier = 1.3f;
     private Action trajToPickup3rd;
     private Action trajToHang4th;
 
@@ -80,9 +72,6 @@ public class FiveSpecimenUnstable extends OpModeTemplate {
                 .splineToConstantHeading(new Vector2d(38, -62), Math.toRadians(-90), null, new ProfileAccelConstraint(-24 * 1.1, 56 * 1.2))
                 .build();
 
-        endTraj = drive.actionBuilder(new Pose2d(3, DIST_Y_CHAMBER, Math.toRadians(-270)))
-                .strafeToConstantHeading(new Vector2d(55, -60), new TranslationalVelConstraint(101), new ProfileAccelConstraint(-40, 55))
-                .build();
 
         longTraj = drive.actionBuilder(new Pose2d(DIST_X_CHAMBER, DIST_Y_CHAMBER, Math.toRadians(-270)))
                 .strafeToConstantHeading(new Vector2d(30, -36), new TranslationalVelConstraint(36 * demon_multiplier))

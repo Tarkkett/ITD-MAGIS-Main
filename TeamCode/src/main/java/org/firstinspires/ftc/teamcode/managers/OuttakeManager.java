@@ -95,7 +95,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     /**
      * @return isGRIP
      */
-    public boolean GetClawState() {
+    public boolean isClosed() {
         if (hardwareManager.outtakeClawServo.getPosition() > _OuttakeClawServoState.GRIP.getPosition() - 0.05 &&
                 hardwareManager.outtakeClawServo.getPosition() < _OuttakeClawServoState.GRIP.getPosition() + 0.05){
             return true;
@@ -106,15 +106,6 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     public void update(_LiftState targetState, int... position) {
         if (targetState != null) {
             switch (targetState) {
-                case HIGH_RUNG:
-                    targetPosition = (int) _LiftState.HIGH_RUNG.getPosition();
-                    break;
-                case LOW_RUNG:
-                    targetPosition = (int) _LiftState.LOW_RUNG.getPosition();
-                    break;
-                case LOW_BUCKET:
-                    targetPosition = (int) _LiftState.LOW_BUCKET.getPosition();
-                    break;
                 case HIGH_BUCKET:
                     targetPosition = (int) _LiftState.HIGH_BUCKET.getPosition();
                     break;
@@ -130,9 +121,6 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
                 case HIGH_CHAMBER_REVERSED:
                     targetPosition = (int) _LiftState.HIGH_CHAMBER_REVERSED.getPosition();
                     break;
-                case LOW_CHAMBER:
-                    targetPosition = (int) _LiftState.LOW_CHAMBER.getPosition();
-                    break;
                 case TRANSFER:
                     targetPosition = (int) _LiftState.TRANSFER.getPosition();
                     break;
@@ -145,9 +133,6 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
                 case HANG_READY:
                     targetPosition = (int) _LiftState.HANG_READY.getPosition();
                     break;
-                case HANG_DOWN:
-                    targetPosition = (int) _LiftState.HANG_DOWN.getPosition();
-                    break;
                 case CLEARED:
                     targetPosition = (int) _LiftState.CLEARED.getPosition();
                     break;
@@ -157,8 +142,8 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
                 case ZERO:
                     targetPosition = (int) _LiftState.ZERO.getPosition();
                     break;
-                case STUCK:
-                    //!Mag5.2
+                case HANG_DOWN:
+                    targetPosition = (int) _LiftState.HANG_DOWN.getPosition();
                     break;
             }
         }
@@ -296,24 +281,19 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     }
 
     public enum _LiftState implements Positionable{
-        LOW_CHAMBER (100),
-        LOW_RUNG    (200),
         HIGH_CHAMBER(1400),
-        HIGH_RUNG   (1000),
         TRANSFER    (120),
         CLEARED(400),
         CLEARED_ALL(800),
         HOME        (50),
-        STUCK       (0),
         HIGH_BUCKET (2420),
-        LOW_BUCKET  (1200),
-        HIGH_CHAMBER_LOWER(710),
+        HIGH_CHAMBER_LOWER(700),
         HANG_READY(2220),
-        HANG_DOWN(1500),
         ZERO(0),
         HIGH_CHAMBER_AUTO(1360),
         HIGH_CHAMBER_REVERSED(1900),
-        HIGH_CHAMBER_LOWER_REVERSED(1430);
+        HIGH_CHAMBER_LOWER_REVERSED(1430),
+        HANG_DOWN(1500);
 
         private final float position;
 
@@ -328,13 +308,13 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     }
 
     public enum _ExtendoServoState implements Positionable {
-        AUTO_DEPOSIT(0.27f),
+        AUTO_DEPOSIT(0.29f),
         PICKUP(0.0f),
         DEPOSIT(0.265f),
         TRANSFER(0.05f),
         TRANSFER_PUSH(0.08f),
         ZERO(0f),
-        DEPOSIT_BACK(0.12f),
+        DEPOSIT_BACK(0.15f),
         DEPOSIT_FORWARDPUSH(0.215f),
         DEPOSIT_BACKPUSH(0.25f);
 
@@ -351,9 +331,9 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     }
 
     public enum _OuttakeTiltServoState implements Positionable {
-        DEPOSIT_SPECIMEN(0.72f),
+        DEPOSIT_SPECIMEN(0.752f),
         DEPOSIT_SAMPLE(1f),
-        PICKUP(0f),
+        PICKUP(0.05f),
         TRANSFER(0.65f),
         BALANCE(0.35f);
 
@@ -387,9 +367,9 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     }
 
     public enum _OuttakeYawServoState implements Positionable {
-        HORIZONTAL_ServoDown    (0.94f),
+        HORIZONTAL_ServoDown    (1f),
         VERTICAL     (0.36f),
-        HORIZONTAL_ServoUp(0.1f);
+        HORIZONTAL_ServoUp(0f);
 
         private final float position;
 

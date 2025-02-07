@@ -86,21 +86,20 @@ public class DepositPositionSelector extends CommandBase {
                         )
                 );
             }
-            else if (gamepad_codriver.gamepad.square){
+            if (gamepad_codriver.gamepad.square){
                 if (manager.canHome()){
                     CommandScheduler.getInstance().schedule(
                             new SequentialCommandGroup(
-                                    new SetOuttakeYawServoCommand(manager, OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoDown),
+                                    new SetOuttakeYawServoCommand(manager, OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoUp),
                                     new SetLiftPositionCommand(manager, OuttakeManager._LiftState.CLEARED_ALL),
                                     new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.DEPOSIT_FORWARDPUSH),
-                                    new WaitCommand(300),
+                                    new WaitCommand(250),
                                     new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.PICKUP),
-                                    new WaitCommand(450),
+                                    new WaitCommand(850),
                                     new SetLiftPositionCommand(manager, OuttakeManager._LiftState.ZERO),
                                     new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.PICKUP),
                                     new WaitCommand(300),
-                                    new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.RELEASE),
-                                    new DepositPositionSelector(gamepad_driver, gamepad_codriver, manager)
+                                    new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.RELEASE)
                             )
                     );
                 }
@@ -145,19 +144,13 @@ public class DepositPositionSelector extends CommandBase {
                 CommandScheduler.getInstance().schedule(
                         new SequentialCommandGroup(
                                 new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HIGH_CHAMBER_REVERSED),
-                                new WaitCommand(750),
+                                new WaitCommand(550),
                                 new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.RELEASE)
                         )
                 );
 
             }
-            else if (gamepad_codriver.gamepad.dpad_right){
-                CommandScheduler.getInstance().schedule(
-                        new SequentialCommandGroup(
-                                new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.RELEASE)
-                        )
-                );
-            }
+
             else if (gamepad_codriver.gamepad.share) {
                 if (manager.canHang()){
                     CommandScheduler.getInstance().schedule(

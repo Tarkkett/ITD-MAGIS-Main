@@ -12,7 +12,6 @@ import org.firstinspires.ftc.teamcode.managers.DriveManager;
 import org.firstinspires.ftc.teamcode.managers.HardwareManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 import org.firstinspires.ftc.teamcode.util.GamepadPlus;
-import org.firstinspires.ftc.teamcode.kotlin.TelemetryManager;
 
 public abstract class OpModeTemplate extends OpMode {
 
@@ -48,7 +47,7 @@ public abstract class OpModeTemplate extends OpMode {
         drive = new PinpointDrive(hardwareMap, startingPos);
 
         hardwareManager = new HardwareManager(hardwareMap);
-        hardwareManager.InitHw();
+        hardwareManager.InitHw(isAuto);
 
         gamepad_driver = new GamepadPlus(gamepad1);
         gamepad_codriver = new GamepadPlus(gamepad2);
@@ -68,6 +67,7 @@ public abstract class OpModeTemplate extends OpMode {
         CommandScheduler.getInstance().schedule(
                 new SetServosToDefaultsCommand(outtakeManager, intakeManager, hardwareManager)
         );
+        CommandScheduler.getInstance().run();
     }
 
     private void SetupAuto() {

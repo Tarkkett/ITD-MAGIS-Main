@@ -37,12 +37,12 @@ public class SetOuttakeStateCommand extends SequentialCommandGroup {
                 break;
             case DEPOSIT:
                 addCommands(
-                    new SetOuttakeYawServoCommand(manager, OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoDown),
+                    new SetOuttakeYawServoCommand(manager, OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoUp),
                     new SetLiftPositionCommand(manager, OuttakeManager._LiftState.CLEARED_ALL),
                     new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.DEPOSIT_FORWARDPUSH),
-                    new WaitCommand(300),
+                    new WaitCommand(250),
                     new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.PICKUP),
-                    new WaitCommand(450),
+                    new WaitCommand(850),
                     new SetLiftPositionCommand(manager, OuttakeManager._LiftState.ZERO),
                     new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.PICKUP),
                     new WaitCommand(300),

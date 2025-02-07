@@ -59,7 +59,7 @@ public class HardwareManager{
         return instance;
     }
 
-    public void InitHw(){
+    public void InitHw(boolean isAuto){
 
         //?===============================SETUP================================//
 
@@ -107,7 +107,7 @@ public class HardwareManager{
         liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        outtakeTiltServo.setPosition(0.7);
+
 
         //?========================QUALITY FUNCTIONS===============================//
 

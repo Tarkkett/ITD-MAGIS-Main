@@ -20,18 +20,18 @@ public class SetServosToDefaultsCommand extends SequentialCommandGroup {
 
                 new SetOuttakeClawStateCommand(outtakeManager, OuttakeManager._OuttakeClawServoState.GRIP),
                 new WaitCommand(400),
-                new SetOuttakeTiltServoCommand(outtakeManager, OuttakeManager._OuttakeTiltServoState.DEPOSIT_SPECIMEN),
-                new WaitCommand(400),
 
                 //?Deposit
-                new SetOuttakeExtendoServoCommand(outtakeManager, OuttakeManager._ExtendoServoState.DEPOSIT),
+                new SetOuttakeExtendoServoCommand(outtakeManager, OuttakeManager._ExtendoServoState.DEPOSIT_BACK),
                 new SetOuttakeYawServoCommand(outtakeManager, OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoUp),
 
 
                 //?Intake
                 new AdjustYawServoCommand(intakeManager, IntakeManager._YawServoState.TRANSFER),
-                new SetIntakeTiltServoPosCommand(intakeManager, IntakeManager._TiltServoState.PACKED)
-        );
+                new SetIntakeTiltServoPosCommand(intakeManager, IntakeManager._TiltServoState.PACKED),
+                new SetOuttakeTiltServoCommand(outtakeManager, OuttakeManager._OuttakeTiltServoState.DEPOSIT_SPECIMEN)
+
+                );
 
     }
 }

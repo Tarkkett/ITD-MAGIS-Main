@@ -37,7 +37,7 @@ public class TransferCommand extends SequentialCommandGroup {
                     new SetOuttakeClawStateCommand(outtake, OuttakeManager._OuttakeClawServoState.RELEASE),
                     new SetOuttakeYawServoCommand(outtake, OuttakeManager._OuttakeYawServoState.VERTICAL),
 
-                    new WaitCommand(1500),
+                    new WaitCommand(1100),
                     new SetIntakeSlidePositionCommand(intake, IntakeManager._SlideState.TRANSFER),
                     new WaitCommand(300),
                     new SetOuttakeClawStateCommand(outtake, OuttakeManager._OuttakeClawServoState.GRIP),

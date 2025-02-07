@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.commands.low_level.outtake;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.command.CommandScheduler;
-import com.arcrobotics.ftclib.command.InstantCommand;
 
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 import org.firstinspires.ftc.teamcode.util.GamepadPlus;
@@ -18,7 +17,7 @@ public class ToggleOuttakeClawCommand extends CommandBase {
 
     @Override
     public void initialize(){
-        if (!outtakeManager.GetClawState()){
+        if (!outtakeManager.isClosed()){
             gamepad_codriver.rumble(200);
             CommandScheduler.getInstance().schedule(
                     new SetOuttakeClawStateCommand(outtakeManager, OuttakeManager._OuttakeClawServoState.GRIP)

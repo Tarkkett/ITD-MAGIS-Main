@@ -16,6 +16,10 @@ import org.firstinspires.ftc.teamcode.util.PID_PARAMS;
 @Config
 public class IntakeManager implements Manager<IntakeManager._IntakeState> {
 
+    public boolean isLowered() {
+        return hardwareManager.intakeTiltServo.getPosition() > 0.5f;
+    }
+
     public interface Positionable {
         float getPosition();
     }
