@@ -14,10 +14,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
-import org.threeten.bp.zone.ZoneRules;
 
-@Autonomous(name = "Main Auto", group = "OpMode", preselectTeleOp = "Main TeleOp")
-public class FourSpecimenOfficialField extends OpModeTemplate {
+@Autonomous(name = "Main Auto BLUE", group = "OpMode", preselectTeleOp = "Main TeleOp")
+public class FourSpecimenOfficialFieldBLUE extends OpModeTemplate {
 
     private Pose2d beginPose = new Pose2d(0, 0, 0);
     private TurnConstraints turnConstraints = new TurnConstraints(2.3, -2.3, 2.7);
@@ -47,19 +46,19 @@ public class FourSpecimenOfficialField extends OpModeTemplate {
         initSystems(true);
 
         initialTraj = drive.actionBuilder(new Pose2d(new Vector2d(9, DIST_Y_ZONE), Math.toRadians(-270)))
-                .strafeToConstantHeading(new Vector2d(DIST_X_CHAMBER, DIST_Y_CHAMBER), new TranslationalVelConstraint(50), new ProfileAccelConstraint(-25, 55))
+                .strafeToConstantHeading(new Vector2d(DIST_X_CHAMBER, DIST_Y_CHAMBER), new TranslationalVelConstraint(50), new ProfileAccelConstraint(-22, 55))
                 .build();
 
         trajToHang1st = drive.actionBuilder(new Pose2d(50, DIST_Y_ZONE, Math.toRadians(-270)))
-                .splineToConstantHeading(new Vector2d(7, DIST_Y_CHAMBER), Math.toRadians(-270), null, new ProfileAccelConstraint(-23, 55))
+                .splineToConstantHeading(new Vector2d(7, DIST_Y_CHAMBER), Math.toRadians(-270), null, new ProfileAccelConstraint(-22, 55))
                 .build();
 
         trajToHang2nd = drive.actionBuilder(new Pose2d(38, DIST_Y_ZONE, Math.toRadians(-270)))
-                .splineToConstantHeading(new Vector2d(5, DIST_Y_CHAMBER), Math.toRadians(-270),null, new ProfileAccelConstraint(-23, 55))
+                .splineToConstantHeading(new Vector2d(5, DIST_Y_CHAMBER), Math.toRadians(-270),null, new ProfileAccelConstraint(-22, 55))
                 .build();
 
         trajToHang3rd = drive.actionBuilder(new Pose2d(38, DIST_Y_ZONE, Math.toRadians(-270)))
-                .splineToConstantHeading(new Vector2d(3, DIST_Y_CHAMBER), Math.toRadians(-270),null, new ProfileAccelConstraint(-23, 55))
+                .splineToConstantHeading(new Vector2d(3, DIST_Y_CHAMBER), Math.toRadians(-270),null, new ProfileAccelConstraint(-22, 55))
                 .build();
 
         trajToPickup1st = drive.actionBuilder(new Pose2d(7, DIST_Y_CHAMBER, Math.toRadians(-270)))
@@ -136,13 +135,13 @@ public class FourSpecimenOfficialField extends OpModeTemplate {
 
                 .strafeToConstantHeading(new Vector2d(50, -15), new TranslationalVelConstraint(52), new ProfileAccelConstraint(-100, 20))
 
-                .splineToConstantHeading(new Vector2d(58, -15), Math.toRadians(-90), new TranslationalVelConstraint(15))
-                .strafeToConstantHeading(new Vector2d(58, -50), new TranslationalVelConstraint(52))
+                .splineToConstantHeading(new Vector2d(57, -15), Math.toRadians(-90), new TranslationalVelConstraint(15))
+                .strafeToConstantHeading(new Vector2d(57, -50), new TranslationalVelConstraint(52))
 
-                .splineToConstantHeading(new Vector2d(58, -51), Math.toRadians(-90), new TranslationalVelConstraint(15), new ProfileAccelConstraint(-25, 10))
-                .splineToConstantHeading(new Vector2d(58, -50), Math.toRadians(-270), new TranslationalVelConstraint(15), new ProfileAccelConstraint(-25, 10))
+                .splineToConstantHeading(new Vector2d(57, -51), Math.toRadians(-90), new TranslationalVelConstraint(15), new ProfileAccelConstraint(-25, 10))
+                .splineToConstantHeading(new Vector2d(57, -50), Math.toRadians(-270), new TranslationalVelConstraint(15), new ProfileAccelConstraint(-25, 10))
 
-                .strafeToConstantHeading(new Vector2d(58, -15), new TranslationalVelConstraint(52), new ProfileAccelConstraint(-30, 20))
+                .strafeToConstantHeading(new Vector2d(57, -15), new TranslationalVelConstraint(52), new ProfileAccelConstraint(-30, 20))
 
                 .splineToConstantHeading(new Vector2d(67, -15), Math.toRadians(-90), new TranslationalVelConstraint(15))
                 .strafeToConstantHeading(new Vector2d(67, -50), new TranslationalVelConstraint(52))

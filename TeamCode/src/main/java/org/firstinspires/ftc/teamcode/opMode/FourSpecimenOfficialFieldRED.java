@@ -47,11 +47,11 @@ public class FourSpecimenOfficialFieldRED extends OpModeTemplate {
         initSystems(true);
 
         initialTraj = drive.actionBuilder(new Pose2d(new Vector2d(9, DIST_Y_ZONE), Math.toRadians(-270)))
-                .strafeToConstantHeading(new Vector2d(DIST_X_CHAMBER, DIST_Y_CHAMBER), new TranslationalVelConstraint(50), new ProfileAccelConstraint(-25, 55))
+                .strafeToConstantHeading(new Vector2d(DIST_X_CHAMBER, DIST_Y_CHAMBER), new TranslationalVelConstraint(50), new ProfileAccelConstraint(-23, 55))
                 .build();
 
         trajToHang1st = drive.actionBuilder(new Pose2d(50, DIST_Y_ZONE, Math.toRadians(-270)))
-                .splineToConstantHeading(new Vector2d(8, DIST_Y_CHAMBER), Math.toRadians(-270), null, new ProfileAccelConstraint(-23, 55))
+                .splineToConstantHeading(new Vector2d(8, DIST_Y_CHAMBER + 1), Math.toRadians(-270), null, new ProfileAccelConstraint(-23, 55))
                 .build();
 
         trajToHang2nd = drive.actionBuilder(new Pose2d(38, DIST_Y_ZONE, Math.toRadians(-270)))
@@ -62,7 +62,7 @@ public class FourSpecimenOfficialFieldRED extends OpModeTemplate {
                 .splineToConstantHeading(new Vector2d(3, DIST_Y_CHAMBER), Math.toRadians(-270),null, new ProfileAccelConstraint(-23, 55))
                 .build();
 
-        trajToPickup1st = drive.actionBuilder(new Pose2d(8, DIST_Y_CHAMBER, Math.toRadians(-270)))
+        trajToPickup1st = drive.actionBuilder(new Pose2d(8, DIST_Y_CHAMBER + 1, Math.toRadians(-270)))
                 .setReversed(true) //Pickup 1
                 .splineToConstantHeading(new Vector2d(38, DIST_Y_ZONE), Math.toRadians(-90), null, new ProfileAccelConstraint(-25, 55))
                 .build();
