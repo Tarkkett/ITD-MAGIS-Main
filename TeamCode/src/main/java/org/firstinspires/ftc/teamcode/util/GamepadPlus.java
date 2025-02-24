@@ -32,10 +32,6 @@ public class GamepadPlus extends GamepadEx {
         super.gamepad.rumble(durationMs);
     }
 
-    public void rumble (double rumble1, double rumble2, int durationMs){
-        super.gamepad.rumble(rumble1, rumble2, durationMs);
-    }
-
     public float leftTrigger(){
         return super.gamepad.left_trigger;
     }
@@ -64,4 +60,12 @@ public class GamepadPlus extends GamepadEx {
 
     public float squareInput(double input) {return (float) (-Math.signum(input) * Math.pow(input, 2));}
     public float rootInput(double input) {return (float) (-Math.signum(input) * Math.sqrt(Math.abs(input)));}
+
+    public boolean driveInput() {
+        return (getRightX() > 0.1 || getRightX() < -0.1 || getRightY() > 0.1 || getRightY() < -0.1);
+    }
+
+    public void setLedColor(double r, double g, double b, int durationMs) {
+        super.gamepad.setLedColor(r, g, b, durationMs);
+    }
 }

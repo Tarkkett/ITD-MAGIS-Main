@@ -2,9 +2,7 @@ package org.firstinspires.ftc.teamcode.opMode;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.arcrobotics.ftclib.command.CommandScheduler;
-import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
-import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.commands.SetIntakeStateCommand;
@@ -145,10 +143,10 @@ public class StateMachine implements State<StateMachine._RobotState> {
     public void SetDrivetrainState(DriveManager._DriveState driveState) {
         switch (driveState){
             case LOCKED:
-                driveManager.onLocked();
+                driveManager.Lock();
                 break;
             case UNLOCKED:
-                driveManager.onUnlocked();
+                driveManager.Unlock();
                 break;
         }
     }

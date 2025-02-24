@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.util.PID_PARAMS;
 public class IntakeManager implements Manager<IntakeManager._IntakeState> {
 
     public boolean isLowered() {
-        return hardwareManager.intakeTiltServo.getPosition() > 0.5f;
+        return hardwareManager.intakeTiltSrv.getPosition() > 0.5f;
     }
 
     public interface Positionable {
@@ -104,10 +104,10 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     public void update(_GripState targetState) {
         switch (targetState){
             case GRIP:
-                hardwareManager.gripServo.setPosition(_GripState.GRIP.getPosition());
+                hardwareManager.intakeGripSrv.setPosition(_GripState.GRIP.getPosition());
                 break;
             case RELEASE:
-                hardwareManager.gripServo.setPosition(_GripState.RELEASE.getPosition());
+                hardwareManager.intakeGripSrv.setPosition(_GripState.RELEASE.getPosition());
                 break;
         }
     }
@@ -115,22 +115,22 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     public void update(_TiltServoState targetState){
         switch (targetState){
             case TRANSFER:
-                hardwareManager.intakeTiltServo.setPosition(_TiltServoState.TRANSFER.getPosition());
+                hardwareManager.intakeTiltSrv.setPosition(_TiltServoState.TRANSFER.getPosition());
                 break;
             case LOWERED:
-                hardwareManager.intakeTiltServo.setPosition(_TiltServoState.LOWERED.getPosition());
+                hardwareManager.intakeTiltSrv.setPosition(_TiltServoState.LOWERED.getPosition());
                 break;
             case AIMING:
-                hardwareManager.intakeTiltServo.setPosition(_TiltServoState.AIMING.getPosition());
+                hardwareManager.intakeTiltSrv.setPosition(_TiltServoState.AIMING.getPosition());
                 break;
             case PACKED:
-                hardwareManager.intakeTiltServo.setPosition(_TiltServoState.PACKED.getPosition());
+                hardwareManager.intakeTiltSrv.setPosition(_TiltServoState.PACKED.getPosition());
                 break;
             case CLEARED:
-                hardwareManager.intakeTiltServo.setPosition(_TiltServoState.CLEARED.getPosition());
+                hardwareManager.intakeTiltSrv.setPosition(_TiltServoState.CLEARED.getPosition());
                 break;
             case AIMING_UPPER:
-                hardwareManager.intakeTiltServo.setPosition(_TiltServoState.AIMING_UPPER.getPosition());
+                hardwareManager.intakeTiltSrv.setPosition(_TiltServoState.AIMING_UPPER.getPosition());
                 break;
 
         }
@@ -139,23 +139,23 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     public void update(_YawServoState targetState, double i){
         switch (targetState){
             case TRANSFER:
-                hardwareManager.yawServo.setPosition(_YawServoState.TRANSFER.getPosition());
+                hardwareManager.intakeYawSrv.setPosition(_YawServoState.TRANSFER.getPosition());
                 break;
             case PICKUP_DEFAULT:
-                hardwareManager.yawServo.setPosition(_YawServoState.PICKUP_DEFAULT.getPosition());
+                hardwareManager.intakeYawSrv.setPosition(_YawServoState.PICKUP_DEFAULT.getPosition());
                 break;
             case AUTO_1:
-                hardwareManager.yawServo.setPosition(_YawServoState.AUTO_1.getPosition());
+                hardwareManager.intakeYawSrv.setPosition(_YawServoState.AUTO_1.getPosition());
                 break;
             case AUTO_2:
-                hardwareManager.yawServo.setPosition(_YawServoState.AUTO_2.getPosition());
+                hardwareManager.intakeYawSrv.setPosition(_YawServoState.AUTO_2.getPosition());
                 break;
             case AUTO_3:
-                hardwareManager.yawServo.setPosition(_YawServoState.AUTO_3.getPosition());
+                hardwareManager.intakeYawSrv.setPosition(_YawServoState.AUTO_3.getPosition());
                 break;
             case MANUAL:
-                double currentPos = hardwareManager.yawServo.getPosition();
-                hardwareManager.yawServo.setPosition(currentPos + i);
+                double currentPos = hardwareManager.intakeYawSrv.getPosition();
+                hardwareManager.intakeYawSrv.setPosition(currentPos + i);
                 break;
 
         }
@@ -175,7 +175,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
         if (selectingProcess) {
             telemetry.addData("Yaw servo", yawServoAngle);
             telemetry.update();
-            hardwareManager.yawServo.setPosition(yawServoAngle);
+            hardwareManager.intakeYawSrv.setPosition(yawServoAngle);
         }
     }
 

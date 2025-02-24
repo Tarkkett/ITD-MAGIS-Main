@@ -15,12 +15,11 @@ import org.firstinspires.ftc.teamcode.util.GamepadPlus;
 
 public abstract class OpModeTemplate extends OpMode {
 
-    //!Kotlin
-
-    //!Java
-
     protected boolean teamSelected = false;
     protected boolean sideSelected = false;
+    protected Alliance team = Alliance.UNKNOWN;
+    protected Side side = Side.UNKNOWN;
+
 
 
     protected GamepadPlus gamepad_driver;
@@ -33,12 +32,11 @@ public abstract class OpModeTemplate extends OpMode {
     protected IntakeManager intakeManager;
 
     PinpointDrive drive;
+
+    //Zero point
     private final Pose2d startingPos = new Pose2d(new Vector2d(9,-62), Math.toRadians(-270));
 
     protected boolean isAuto = false;
-
-    protected Alliance team = Alliance.UNKNOWN;
-    protected Side side = Side.UNKNOWN;
 
     protected void initSystems(boolean isAuto){
 
@@ -68,12 +66,6 @@ public abstract class OpModeTemplate extends OpMode {
                 new SetServosToDefaultsCommand(outtakeManager, intakeManager, hardwareManager)
         );
         CommandScheduler.getInstance().run();
-    }
-
-    private void SetupAuto() {
-
-        //...
-        //* Continue in init_loop()
     }
 
     @Override
@@ -135,10 +127,11 @@ public abstract class OpModeTemplate extends OpMode {
         UNKNOWN
     }
 
+
+    //! Stop OpMode procedure
     @Override
     public void stop() {
         CommandScheduler.getInstance().reset();
         driveManager.stopMovementControlThread();
-
     }
 }

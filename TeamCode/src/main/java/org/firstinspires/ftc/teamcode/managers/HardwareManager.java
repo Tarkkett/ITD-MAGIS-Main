@@ -2,13 +2,13 @@ package org.firstinspires.ftc.teamcode.managers;
 
 import android.graphics.Color;
 
+import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,15 +34,15 @@ public class HardwareManager{
 
     DcMotorEx intake;
 
-    public Servo gripServo;
-    public Servo intakeTiltServo;
-    public Servo yawServo;
+    public ServoEx intakeGripSrv;
+    public ServoEx intakeTiltSrv;
+    public ServoEx intakeYawSrv;
 
-    public Servo outtakeTiltServo;
-    public Servo outtakeExtendoServo;
-    public Servo outtakeClawServo;
-    public Servo outtakeYawServo;
-
+    public ServoEx outtakeArmTiltSrvLeft;
+    public ServoEx outtakeArmTiltSrvRight;
+    public ServoEx outtakeDepositorPitchSrv;
+    public ServoEx outtakeDepositorYawSrv;
+    public ServoEx getOuttakeDepositorGripSrv;
 
     public static int IMU_DATA_SAMPLING_RATE = 10;
 
@@ -61,6 +61,8 @@ public class HardwareManager{
 
     public void InitHw(boolean isAuto){
 
+        assert isAuto;
+
         //?===============================SETUP================================//
 
         hubs = this.hmap.getAll(LynxModule.class);
@@ -75,16 +77,17 @@ public class HardwareManager{
 
         intake = this.hmap.get(DcMotorEx.class, "intakeMotor");
 
-        gripServo = this.hmap.get(Servo.class, "gripServo");
-        intakeTiltServo = this.hmap.get(Servo.class, "intakeTiltServo");
-        yawServo = this.hmap.get(Servo.class, "yawServo");
+        intakeGripSrv = this.hmap.get(ServoEx.class, "gripServo");
+        intakeTiltSrv = this.hmap.get(ServoEx.class, "intakeTiltServo");
+        intakeYawSrv = this.hmap.get(ServoEx.class, "yawServo");
 
-        outtakeTiltServo = this.hmap.get(Servo.class, "outtakeTiltServo");
-        outtakeExtendoServo = this.hmap.get(Servo.class, "outtakeExtendoServo");
-        outtakeClawServo = this.hmap.get(Servo.class, "outtakeClawServo");
-        outtakeYawServo = this.hmap.get(Servo.class, "outtakeYawServo");
+        outtakeArmTiltSrvLeft = this.hmap.get(ServoEx.class, "outtakeTiltLeftServo");
+        outtakeArmTiltSrvRight = this.hmap.get(ServoEx.class, "outtakeTiltRightServo");
+        outtakeDepositorPitchSrv = this.hmap.get(ServoEx.class, "outtakeDepositorPitchServo");
+        outtakeDepositorYawSrv = this.hmap.get(ServoEx.class, "outtakeDepositorYawServo");
+        getOuttakeDepositorGripSrv = this.hmap.get(ServoEx.class, "outtakeDepositorGripServo");
 
-        //! Odometry setup in Pinpoint class!
+        //! Odometry setup in PinpointDrive Class!
 
         //?===========================CONFIGURATION================================//
 
@@ -107,8 +110,6 @@ public class HardwareManager{
         liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-
-
         //?========================QUALITY FUNCTIONS===============================//
 
         setupBulkReading();
@@ -118,7 +119,6 @@ public class HardwareManager{
 
     private void setupBulkReading() {
         for(LynxModule hub : hubs){
-            //! Auto for now -> setup manual in the near future!
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
     }
@@ -153,7 +153,7 @@ public class HardwareManager{
         }
     }
 
-    public void lockDrivetrain() {
+    public void stopDriveMotors() {
         frontLeft.setPower(0);
         frontRight.setPower(0);
         backLeft.setPower(0);

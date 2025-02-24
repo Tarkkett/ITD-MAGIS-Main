@@ -5,11 +5,7 @@ import com.arcrobotics.ftclib.geometry.Pose2d;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.MovementControlRunnable;
 import org.firstinspires.ftc.teamcode.PinpointDrive;
-import org.firstinspires.ftc.teamcode.util.State;
 import org.firstinspires.ftc.teamcode.util.GamepadPlus;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class DriveManager implements Manager<DriveManager._DriveState> {
 
@@ -31,14 +27,13 @@ public class DriveManager implements Manager<DriveManager._DriveState> {
     }
 
     private void configureDrive(PinpointDrive drive, OuttakeManager outtakeManager) {
-
         movementControlRunnable = new MovementControlRunnable(telemetry, this, gamepadDriver, drive, outtakeManager);
         movementControlThread = new Thread(movementControlRunnable);
         movementControlThread.start();
     }
 
     @Override
-    public void loop() {}
+    public void loop() { /* Continue */ }
 
     @Override
     public _DriveState GetManagerState() {
@@ -68,25 +63,21 @@ public class DriveManager implements Manager<DriveManager._DriveState> {
             hardwareManager.backRight.setPower(backRightPower * powerMultiplier);
         }
         else {
-            if ((gamepadDriver.gamepad.left_stick_x > 0.1) ||
-                    (gamepadDriver.gamepad.left_stick_x < -0.1) ||
-                    (gamepadDriver.gamepad.left_stick_y > 0.1) ||
-                    (gamepadDriver.gamepad.left_stick_y < -0.1))
-            {
+            if (gamepadDriver.driveInput()) {
                 gamepadDriver.rumble(100);
             }
         }
     }
 
-    public void onLocked() {
+    public void Lock() {
         managerState = _DriveState.LOCKED;
-        hardwareManager.lockDrivetrain();
-        gamepadDriver.gamepad.setLedColor(1, 0, 0, 100000);
+        hardwareManager.stopDriveMotors();
+        gamepadDriver.setLedColor(1.0d, 0, 0, 100000);
     }
 
-    public void onUnlocked(){
+    public void Unlock(){
         managerState = _DriveState.UNLOCKED;
-        gamepadDriver.gamepad.setLedColor(0, 1, 0, 100000);
+        gamepadDriver.setLedColor(0, 1.0d, 0, 100000);
     }
 
     public void stopMovementControlThread() {

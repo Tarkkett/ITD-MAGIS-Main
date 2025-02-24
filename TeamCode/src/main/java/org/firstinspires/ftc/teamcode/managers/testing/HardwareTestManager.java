@@ -4,7 +4,6 @@ import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetLiftPositionCommand;
-import org.firstinspires.ftc.teamcode.drivers.C_PID;
 import org.firstinspires.ftc.teamcode.managers.DriveManager;
 import org.firstinspires.ftc.teamcode.managers.HardwareManager;
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
@@ -55,9 +54,9 @@ public class HardwareTestManager{
 
         //? Intake
 
-        hardware.intakeTiltServo.setPosition(intakeTiltServoPos);
-        hardware.gripServo.setPosition(intakeClawServoPos);
-        hardware.yawServo.setPosition(intakeYawServoPos);
+        hardware.intakeTiltSrv.setPosition(intakeTiltServoPos);
+        hardware.intakeGripSrv.setPosition(intakeClawServoPos);
+        hardware.intakeYawSrv.setPosition(intakeYawServoPos);
 
         intake.targetPosition = intakeTargetPos;
 
