@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.managers.DriveManager;
 import org.firstinspires.ftc.teamcode.managers.HardwareManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
+import org.firstinspires.ftc.teamcode.managers.testing.HardwareTestManager;
 import org.firstinspires.ftc.teamcode.util.GamepadPlus;
 
 public abstract class OpModeTemplate extends OpMode {
@@ -30,6 +31,8 @@ public abstract class OpModeTemplate extends OpMode {
     protected DriveManager driveManager;
     protected OuttakeManager outtakeManager;
     protected IntakeManager intakeManager;
+
+    protected HardwareTestManager testManager;
 
     PinpointDrive drive;
 
@@ -55,7 +58,9 @@ public abstract class OpModeTemplate extends OpMode {
 
         driveManager = new DriveManager(hardwareManager, telemetry, gamepad_driver, drive, outtakeManager);
 
-        stateMachine = new StateMachine(outtakeManager, intakeManager, driveManager, telemetry, gamepad_driver, gamepad_codriver, hardwareManager);
+        testManager = new HardwareTestManager(hardwareManager, outtakeManager, intakeManager, driveManager, telemetry);
+
+        stateMachine = new StateMachine(outtakeManager, intakeManager, driveManager, telemetry, gamepad_driver, gamepad_codriver, hardwareManager, testManager);
 
         if (isAuto) SetSystemDefaults();
 

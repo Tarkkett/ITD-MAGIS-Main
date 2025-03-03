@@ -101,13 +101,13 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
         }
     }
 
-    public void update(_GripState targetState) {
+    public void update(_ClawState targetState) {
         switch (targetState){
-            case GRIP:
-                hardwareManager.intakeGripSrv.setPosition(_GripState.GRIP.getPosition());
+            case CLOSED:
+                hardwareManager.intakeGripSrv.setPosition(_ClawState.CLOSED.getPosition());
                 break;
-            case RELEASE:
-                hardwareManager.intakeGripSrv.setPosition(_GripState.RELEASE.getPosition());
+            case OPEN:
+                hardwareManager.intakeGripSrv.setPosition(_ClawState.OPEN.getPosition());
                 break;
         }
     }
@@ -153,6 +153,9 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
             case AUTO_3:
                 hardwareManager.intakeYawSrv.setPosition(_YawServoState.AUTO_3.getPosition());
                 break;
+            case HOME:
+                hardwareManager.intakeYawSrv.setPosition(_YawServoState.HOME.getPosition());
+                break;
             case MANUAL:
                 double currentPos = hardwareManager.intakeYawSrv.getPosition();
                 hardwareManager.intakeYawSrv.setPosition(currentPos + i);
@@ -196,13 +199,13 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
             return position;
         }
     }
-    public enum _GripState implements Positionable {
-        RELEASE(0.1f),
-        GRIP(0.8f);
+    public enum _ClawState implements Positionable {
+        OPEN(0.1f),
+        CLOSED(0.8f);
 
         private final float position;
 
-        _GripState(float position) {
+        _ClawState(float position) {
             this.position = position;
         }
 
@@ -238,7 +241,8 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
         MANUAL(0.1f),
         AUTO_1(0.6f),
         AUTO_2(0.7f),
-        AUTO_3(0.74f);
+        AUTO_3(0.74f),
+        HOME(0.3f);
 
         private final float position;
 
@@ -331,7 +335,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
             }
         };
     }
-    public Action GripAction(_GripState state) {
+    public Action GripAction(_ClawState state) {
         return new Action(){
             private boolean initialize = false;
             @Override

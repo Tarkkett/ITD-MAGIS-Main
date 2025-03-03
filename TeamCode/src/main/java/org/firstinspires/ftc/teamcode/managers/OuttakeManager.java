@@ -39,6 +39,8 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
 
     private boolean isAutoLoop = true;
 
+    public boolean canPickup = false;
+
     protected  _LiftMode mode;
 
     public OuttakeManager(HardwareManager hardwareManager, Telemetry telemetry, IntakeManager intakeManager){
@@ -96,8 +98,8 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
      * @return isGRIP
      */
     public boolean isClosed() {
-        if (hardwareManager.outtakeClawServo.getPosition() > _OuttakeClawServoState.GRIP.getPosition() - 0.05 &&
-                hardwareManager.outtakeClawServo.getPosition() < _OuttakeClawServoState.GRIP.getPosition() + 0.05){
+        if (hardwareManager.outtakeDepositorClawSrv.getPosition() > _OuttakeClawServoState.CLOSED.getPosition() - 0.05 &&
+                hardwareManager.outtakeDepositorClawSrv.getPosition() < _OuttakeClawServoState.CLOSED.getPosition() + 0.05){
             return true;
         }
         else return false;
@@ -153,83 +155,19 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     }
 
     public void update(_OuttakeTiltServoState targetState) {
-        switch (targetState){
-            case PICKUP:
-                hardwareManager.outtakeTiltServo.setPosition(_OuttakeTiltServoState.PICKUP.getPosition());
-                break;
-            case TRANSFER:
-                hardwareManager.outtakeTiltServo.setPosition(_OuttakeTiltServoState.TRANSFER.getPosition());
-                break;
-            case BALANCE:
-                hardwareManager.outtakeTiltServo.setPosition(_OuttakeTiltServoState.BALANCE.getPosition());
-                break;
-            case DEPOSIT_SPECIMEN:
-                hardwareManager.outtakeTiltServo.setPosition(_OuttakeTiltServoState.DEPOSIT_SPECIMEN.getPosition());
-                break;
-            case DEPOSIT_SAMPLE:
-                hardwareManager.outtakeTiltServo.setPosition(_OuttakeTiltServoState.DEPOSIT_SAMPLE.getPosition());
-                break;
-        }
+        hardwareManager.setOuttakeArmTiltServos(targetState.getPosition());
     }
 
-    public void update(_ExtendoServoState targetState) {
-        switch (targetState){
-            case PICKUP:
-                hardwareManager.outtakeExtendoServo.setPosition(_ExtendoServoState.PICKUP.getPosition());
-                break;
-            case DEPOSIT:
-                hardwareManager.outtakeExtendoServo.setPosition(_ExtendoServoState.DEPOSIT.getPosition());
-                break;
-            case TRANSFER:
-                hardwareManager.outtakeExtendoServo.setPosition(_ExtendoServoState.TRANSFER.getPosition());
-                break;
-            case TRANSFER_PUSH:
-                hardwareManager.outtakeExtendoServo.setPosition(_ExtendoServoState.TRANSFER_PUSH.getPosition());
-                break;
-            case ZERO:
-                hardwareManager.outtakeExtendoServo.setPosition(_ExtendoServoState.ZERO.getPosition());
-                break;
-            case DEPOSIT_BACK:
-                hardwareManager.outtakeExtendoServo.setPosition(_ExtendoServoState.DEPOSIT_BACK.getPosition());
-                break;
-            case DEPOSIT_FORWARDPUSH:
-                hardwareManager.outtakeExtendoServo.setPosition(_ExtendoServoState.DEPOSIT_FORWARDPUSH.getPosition());
-                break;
-            case DEPOSIT_BACKPUSH:
-                hardwareManager.outtakeExtendoServo.setPosition(_ExtendoServoState.DEPOSIT_BACKPUSH.getPosition());
-                break;
-            case AUTO_DEPOSIT:
-                hardwareManager.outtakeExtendoServo.setPosition(_ExtendoServoState.AUTO_DEPOSIT.getPosition());
-                break;
-        }
+    public void update(_PitchServoState targetState) {
+        hardwareManager.outtakeDepositorPitchSrv.setPosition(targetState.getPosition());
     }
 
     public void update(_OuttakeClawServoState targetState) {
-        switch (targetState){
-            case GRIP:
-                hardwareManager.outtakeClawServo.setPosition(_OuttakeClawServoState.GRIP.getPosition());
-                break;
-            case RELEASE:
-                hardwareManager.outtakeClawServo.setPosition(_OuttakeClawServoState.RELEASE.getPosition());
-                break;
-            case BALANCE:
-                hardwareManager.outtakeClawServo.setPosition(_OuttakeClawServoState.BALANCE.getPosition());
-                break;
-        }
+        hardwareManager.outtakeDepositorClawSrv.setPosition(targetState.getPosition());
     }
 
     public void update(_OuttakeYawServoState targetState) {
-        switch (targetState){
-            case HORIZONTAL_ServoDown:
-                hardwareManager.outtakeYawServo.setPosition(_OuttakeYawServoState.HORIZONTAL_ServoDown.getPosition());
-                break;
-            case VERTICAL:
-                hardwareManager.outtakeYawServo.setPosition(_OuttakeYawServoState.VERTICAL.getPosition());
-                break;
-            case HORIZONTAL_ServoUp:
-                hardwareManager.outtakeYawServo.setPosition(_OuttakeYawServoState.HORIZONTAL_ServoUp.getPosition());
-                break;
-        }
+        hardwareManager.outtakeDepositorYawSrv.setPosition(targetState.getPosition());
     }
 
     public int GetLiftTargetPos(){
@@ -239,10 +177,18 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         return encoderPos;
     }
 
+    private static final int MAX_CHANGE_PER_CYCLE = 5;
+    private static final double SMOOTHING_FACTOR = 0.2;
+
     public void lowerLiftPosition(int i) {
-        int newPos = encoderPos + i;
-        if (newPos > MIN_THRESHOLD && newPos < MAX_THRESHOLD){
-            targetPosition = newPos;
+        int desiredPos = encoderPos + i;
+
+        if (desiredPos > MIN_THRESHOLD && desiredPos < MAX_THRESHOLD) {
+
+            int limitedChange = (int) (Math.signum(i) * Math.min(Math.abs(i), MAX_CHANGE_PER_CYCLE));
+            int rateLimitedPos = targetPosition + limitedChange;
+
+            targetPosition = (int) (SMOOTHING_FACTOR * rateLimitedPos + (1 - SMOOTHING_FACTOR) * targetPosition);
         }
     }
 
@@ -252,14 +198,6 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         } else{
             mode = _LiftMode.MANUAL;
         }
-    }
-
-    //!Watch
-    public boolean canHome() {
-        if (hardwareManager.outtakeExtendoServo.getPosition() > (double) _ExtendoServoState.PICKUP.position - 0.1 && hardwareManager.outtakeExtendoServo.getPosition() < (double) _ExtendoServoState.PICKUP.position + 0.1d){
-            return false;
-        }
-        else return true;
     }
 
     public boolean canHang() {
@@ -281,7 +219,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     }
 
     public enum _LiftState implements Positionable{
-        HIGH_CHAMBER(1400),
+        HIGH_CHAMBER(450),
         TRANSFER    (120),
         CLEARED(400),
         CLEARED_ALL(800),
@@ -307,20 +245,18 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         }
     }
 
-    public enum _ExtendoServoState implements Positionable {
-        AUTO_DEPOSIT(0.29f),
-        PICKUP(0.0f),
-        DEPOSIT(0.265f),
-        TRANSFER(0.05f),
-        TRANSFER_PUSH(0.08f),
-        ZERO(0f),
-        DEPOSIT_BACK(0.15f),
-        DEPOSIT_FORWARDPUSH(0.215f),
-        DEPOSIT_BACKPUSH(0.25f);
+    public enum _PitchServoState implements Positionable {
+        HOME(0.7f),
+        PICKUP(0.7f),
+        DEPOSIT_SPECIMEN(0.28f),
+        DEPOSIT_SAMPLE(0.0f),
+        TRANSFER(0.7f),
+        ZERO(0.0f),
+        HANG(HOME.getPosition());
 
         private final float position;
 
-        _ExtendoServoState(float position) {
+        _PitchServoState(float position) {
             this.position = position;
         }
 
@@ -331,11 +267,13 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     }
 
     public enum _OuttakeTiltServoState implements Positionable {
-        DEPOSIT_SPECIMEN(0.752f),
-        DEPOSIT_SAMPLE(1f),
-        PICKUP(0.05f),
-        TRANSFER(0.65f),
-        BALANCE(0.35f);
+        DEPOSIT_SPECIMEN(0.9f),
+        DEPOSIT_SAMPLE(0.8f),
+        PICKUP(0.2f),
+        TRANSFER(0.0f),
+        ZERO(0.0f),
+        HOME(0.36f),
+        DEPOSIT_CLEARED(1.0f);
 
         private final float position;
 
@@ -350,10 +288,8 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     }
 
     public enum _OuttakeClawServoState implements Positionable {
-        GRIP    (0.27f),
-        RELEASE     (0f),
-        BALANCE(0.22f);
-
+        CLOSED(1f),
+        OPEN(0.5f);
         private final float position;
 
         _OuttakeClawServoState(float position) {
@@ -366,10 +302,11 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         }
     }
 
+    //Relative to HOME position
     public enum _OuttakeYawServoState implements Positionable {
-        HORIZONTAL_ServoDown    (1f),
-        VERTICAL     (0.36f),
-        HORIZONTAL_ServoUp(0f);
+        HORIZONTAL_ServoDown    (0.13f),
+        VERTICAL     (0.48f),
+        HORIZONTAL_ServoUp(0.83f);
 
         private final float position;
 
@@ -383,7 +320,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         }
     }
 
-    public Action OuttakeExtendoAction(_ExtendoServoState state) {
+    public Action PitchAction(_PitchServoState state) {
         return new Action(){
             private boolean initialize = false;
             @Override
@@ -453,7 +390,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         };
     }
 
-    public Action DriveLift(int position){
+    public Action SetLift(int position){
         return new Action(){
 
             private boolean initialized = false;

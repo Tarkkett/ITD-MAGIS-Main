@@ -20,12 +20,12 @@ public class ToggleOuttakeClawCommand extends CommandBase {
         if (!outtakeManager.isClosed()){
             gamepad_codriver.rumble(200);
             CommandScheduler.getInstance().schedule(
-                    new SetOuttakeClawStateCommand(outtakeManager, OuttakeManager._OuttakeClawServoState.GRIP)
+                    new SetOuttakeClawStateCommand(outtakeManager, OuttakeManager._OuttakeClawServoState.CLOSED)
             );
         }
         else {
             CommandScheduler.getInstance().schedule(
-                    new SetOuttakeClawStateCommand(outtakeManager, OuttakeManager._OuttakeClawServoState.RELEASE)
+                    new SetOuttakeClawStateCommand(outtakeManager, OuttakeManager._OuttakeClawServoState.OPEN)
             );
         }
     }

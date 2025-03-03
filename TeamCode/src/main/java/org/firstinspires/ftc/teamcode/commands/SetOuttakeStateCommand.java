@@ -4,9 +4,9 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeClawStateCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakePitchServoCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeTiltServoCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetLiftPositionCommand;
-import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeExtendoServoCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeYawServoCommand;
 import org.firstinspires.ftc.teamcode.commands.selectors.DepositPositionSelector;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
@@ -21,10 +21,10 @@ public class SetOuttakeStateCommand extends SequentialCommandGroup {
         switch (targetState){
             case HOME:
                 addCommands(
-                    new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.PICKUP),
-                    new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.DEPOSIT_SPECIMEN),
-                    new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.GRIP),
-                    new SetOuttakeYawServoCommand(manager, OuttakeManager._OuttakeYawServoState.VERTICAL),
+                    new SetOuttakePitchServoCommand(manager, OuttakeManager._PitchServoState.PICKUP),
+                    new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.HOME),
+                    new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.OPEN),
+                    new SetOuttakeYawServoCommand(manager, OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoUp),
                     new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HOME)
                 );
                 break;
@@ -32,34 +32,19 @@ public class SetOuttakeStateCommand extends SequentialCommandGroup {
                 addCommands(
                     new SetLiftPositionCommand(manager, OuttakeManager._LiftState.TRANSFER),
                     new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.PICKUP),
-                    new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.TRANSFER)
-                );
-                break;
-            case DEPOSIT:
-                addCommands(
-                    new SetOuttakeYawServoCommand(manager, OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoUp),
-                    new SetLiftPositionCommand(manager, OuttakeManager._LiftState.CLEARED_ALL),
-                    new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.DEPOSIT_FORWARDPUSH),
-                    new WaitCommand(250),
-                    new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.PICKUP),
-                    new WaitCommand(850),
-                    new SetLiftPositionCommand(manager, OuttakeManager._LiftState.ZERO),
-                    new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.PICKUP),
-                    new WaitCommand(300),
-                    new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.RELEASE),
-                    new DepositPositionSelector(gamepad_driver, gamepad_codriver, manager)
+                    new SetOuttakePitchServoCommand(manager, OuttakeManager._PitchServoState.TRANSFER)
                 );
                 break;
             case PICKUP:
                 addCommands(
-                    new SetLiftPositionCommand(manager, OuttakeManager._LiftState.CLEARED),
-                    new WaitCommand(300),
-                    new SetOuttakeExtendoServoCommand(manager, OuttakeManager._ExtendoServoState.DEPOSIT),
-                    new WaitCommand(300),
-                    new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.DEPOSIT_SPECIMEN),
-                    new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.GRIP),
-                    new SetOuttakeYawServoCommand(manager, OuttakeManager._OuttakeYawServoState.VERTICAL),
-                    new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HOME)
+                        new SetOuttakeYawServoCommand(manager, OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoUp),
+                        new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.HOME),
+                        new SetLiftPositionCommand(manager, OuttakeManager._LiftState.ZERO),
+                        new SetOuttakePitchServoCommand(manager, OuttakeManager._PitchServoState.PICKUP),
+                        new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.OPEN),
+                        new WaitCommand( 1000),
+                        new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.PICKUP),
+                        new DepositPositionSelector(gamepad_driver, gamepad_codriver, manager)
                 );
                 break;
         }

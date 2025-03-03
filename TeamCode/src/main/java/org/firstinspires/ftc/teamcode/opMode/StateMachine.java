@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.managers.DriveManager;
 import org.firstinspires.ftc.teamcode.managers.HardwareManager;
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
+import org.firstinspires.ftc.teamcode.managers.testing.HardwareTestManager;
 import org.firstinspires.ftc.teamcode.util.GamepadPlus;
 import org.firstinspires.ftc.teamcode.util.State;
 
@@ -21,6 +22,7 @@ public class StateMachine implements State<StateMachine._RobotState> {
     private OuttakeManager outtakeManager;
     private IntakeManager intakeManager;
     private DriveManager driveManager;
+    private HardwareTestManager testManager;
 
     IntakeManager._IntakeState intakeState;
     OuttakeManager._OuttakeState outtakeState;
@@ -33,7 +35,7 @@ public class StateMachine implements State<StateMachine._RobotState> {
 
     Telemetry tel;
 
-    public StateMachine(OuttakeManager outtake, IntakeManager intake, DriveManager drive, Telemetry tel, GamepadPlus gamepad_driver, GamepadPlus gamepad_codriver, HardwareManager hw){
+    public StateMachine(OuttakeManager outtake, IntakeManager intake, DriveManager drive, Telemetry tel, GamepadPlus gamepad_driver, GamepadPlus gamepad_codriver, HardwareManager hw, HardwareTestManager testManager){
         this.outtakeManager = outtake;
         this.intakeManager = intake;
         this.tel = tel;
@@ -41,6 +43,7 @@ public class StateMachine implements State<StateMachine._RobotState> {
         this.gamepad_driver = gamepad_driver;
         this.driveManager = drive;
         this.hw = hw;
+        this.testManager = testManager;
     }
 
     @Override
@@ -54,7 +57,7 @@ public class StateMachine implements State<StateMachine._RobotState> {
                     CommandScheduler.getInstance().schedule(
                             new ParallelCommandGroup(
                                     new SetIntakeStateCommand(IntakeManager._IntakeState.HOME, intakeManager, this, gamepad_driver, gamepad_codriver),
-                                    new SetOuttakeStateCommand(OuttakeManager._OuttakeState.DEPOSIT, outtakeManager, gamepad_driver, gamepad_codriver)
+                                    new SetOuttakeStateCommand(OuttakeManager._OuttakeState.PICKUP, outtakeManager, gamepad_driver, gamepad_codriver)
                             )
                     );
                 } else {
@@ -67,7 +70,7 @@ public class StateMachine implements State<StateMachine._RobotState> {
                     outtakeManager.selectingProcess = false;
                     CommandScheduler.getInstance().schedule(
                             new ParallelCommandGroup(
-                                    new SetOuttakeStateCommand(OuttakeManager._OuttakeState.PICKUP, outtakeManager, gamepad_driver, gamepad_codriver),
+                                    new SetOuttakeStateCommand(OuttakeManager._OuttakeState.HOME, outtakeManager, gamepad_driver, gamepad_codriver),
                                     new SetIntakeStateCommand(IntakeManager._IntakeState.INTAKE, intakeManager, this, gamepad_driver, gamepad_codriver)
                             )
                     );
@@ -116,7 +119,7 @@ public class StateMachine implements State<StateMachine._RobotState> {
     @Override
     public void loop() {
         StateCheck();
-//        if (robotState == _RobotState.CALIBRATION) {
+        if (robotState == _RobotState.CALIBRATION) {
             FtcDashboard dashboard = FtcDashboard.getInstance();
             Telemetry telemetry = dashboard.getTelemetry();
             telemetry.addData("Intake feels like:", intakeState);
@@ -126,12 +129,10 @@ public class StateMachine implements State<StateMachine._RobotState> {
             telemetry.addData("Lift left current pos", hw.liftLeft.getCurrentPosition());
             telemetry.addData("Lift right current pos", hw.liftRight.getCurrentPosition());
             telemetry.addData("Lift target pos", outtakeManager.GetLiftTargetPos());
-//            telemetry.addData("Current Heading", driveManager.currentHeading);
-//            telemetry.addData("Target Heading", driveManager.targetHeading);
-//            telemetry.addData("Corrected Heading", driveManager.correctedRotation);
-//            telemetry.addData("Heading Error", driveManager.headingError);
             telemetry.update();
-//        }
+
+            testManager.loop();
+        }
     }
 
     private void StateCheck() {

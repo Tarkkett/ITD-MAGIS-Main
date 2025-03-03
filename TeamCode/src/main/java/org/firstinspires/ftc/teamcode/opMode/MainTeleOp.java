@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.commands.low_level.SetRobotState;
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.ToggleIntakeTiltCommand;
-import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeExtendoServoCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakePitchServoCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.ToggleOuttakeClawCommand;
 import org.firstinspires.ftc.teamcode.managers.DriveManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
@@ -50,6 +50,7 @@ public class MainTeleOp extends OpModeTemplate {
             .whenPressed(
                     new InstantCommand(() -> drive.pinpoint.resetPosAndIMU()));
 
+        //* Switch to CALIBRATION mode
         gamepad_codriver.getGamepadButton(gamepad_codriver.options)
                 .whenPressed(
                         new SetRobotState(stateMachine, StateMachine._RobotState.CALIBRATION));
@@ -67,10 +68,8 @@ public class MainTeleOp extends OpModeTemplate {
     public void start(){
         CommandScheduler.getInstance().cancelAll();
         CommandScheduler.getInstance().schedule(new SequentialCommandGroup(
-
                 new SetRobotState(stateMachine, StateMachine._RobotState.HOME),
                 new InstantCommand(() -> drive.pinpoint.resetPosAndIMU()),
-                new SetOuttakeExtendoServoCommand(outtakeManager, OuttakeManager._ExtendoServoState.AUTO_DEPOSIT),
                 new InstantCommand(() -> driveManager.Unlock())
         ));
     }

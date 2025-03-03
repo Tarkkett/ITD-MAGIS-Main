@@ -4,6 +4,7 @@ import com.arcrobotics.ftclib.command.InstantCommand;
 
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 
+@Deprecated
 public class UncoupleLiftPIDCommand extends InstantCommand {
     public UncoupleLiftPIDCommand(OuttakeManager manager, boolean isAuto){
         super(()->manager.updateMode(isAuto));

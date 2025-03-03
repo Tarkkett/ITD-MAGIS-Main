@@ -4,8 +4,9 @@ import com.arcrobotics.ftclib.command.InstantCommand;
 
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 
-public class MoveLiftSomeBit extends InstantCommand {
-    public MoveLiftSomeBit(OuttakeManager manager, int i) {
+public class MoveLiftCommand extends InstantCommand {
+    public MoveLiftCommand(OuttakeManager manager, int i) {
         manager.lowerLiftPosition(i);
     }
+
 }

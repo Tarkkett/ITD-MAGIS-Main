@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,7 +43,7 @@ public class HardwareManager{
     public ServoEx outtakeArmTiltSrvRight;
     public ServoEx outtakeDepositorPitchSrv;
     public ServoEx outtakeDepositorYawSrv;
-    public ServoEx getOuttakeDepositorGripSrv;
+    public ServoEx outtakeDepositorClawSrv;
 
     public static int IMU_DATA_SAMPLING_RATE = 10;
 
@@ -61,8 +62,6 @@ public class HardwareManager{
 
     public void InitHw(boolean isAuto){
 
-        assert isAuto;
-
         //?===============================SETUP================================//
 
         hubs = this.hmap.getAll(LynxModule.class);
@@ -77,15 +76,15 @@ public class HardwareManager{
 
         intake = this.hmap.get(DcMotorEx.class, "intakeMotor");
 
-        intakeGripSrv = this.hmap.get(ServoEx.class, "gripServo");
+        intakeGripSrv = this.hmap.get(ServoEx.class, "intakeClawServo");
         intakeTiltSrv = this.hmap.get(ServoEx.class, "intakeTiltServo");
-        intakeYawSrv = this.hmap.get(ServoEx.class, "yawServo");
+        intakeYawSrv = this.hmap.get(ServoEx.class, "intakeYawServo");
 
         outtakeArmTiltSrvLeft = this.hmap.get(ServoEx.class, "outtakeTiltLeftServo");
         outtakeArmTiltSrvRight = this.hmap.get(ServoEx.class, "outtakeTiltRightServo");
         outtakeDepositorPitchSrv = this.hmap.get(ServoEx.class, "outtakeDepositorPitchServo");
         outtakeDepositorYawSrv = this.hmap.get(ServoEx.class, "outtakeDepositorYawServo");
-        getOuttakeDepositorGripSrv = this.hmap.get(ServoEx.class, "outtakeDepositorGripServo");
+        outtakeDepositorClawSrv = this.hmap.get(ServoEx.class, "outtakeDepositorClawServo");
 
         //! Odometry setup in PinpointDrive Class!
 
@@ -109,6 +108,8 @@ public class HardwareManager{
 
         liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        outtakeArmTiltSrvLeft.setInverted(true);
 
         //?========================QUALITY FUNCTIONS===============================//
 
@@ -158,5 +159,10 @@ public class HardwareManager{
         frontRight.setPower(0);
         backLeft.setPower(0);
         backRight.setPower(0);
+    }
+
+    public void setOuttakeArmTiltServos(float pos){
+        outtakeArmTiltSrvLeft.setPosition(pos);
+        outtakeArmTiltSrvRight.setPosition(pos);
     }
 }

@@ -14,7 +14,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
-import org.threeten.bp.zone.ZoneRules;
 
 @Autonomous(name = "Main Auto RED", group = "OpMode", preselectTeleOp = "Main TeleOp")
 public class FourSpecimenOfficialFieldRED extends OpModeTemplate {
@@ -154,15 +153,15 @@ public class FourSpecimenOfficialFieldRED extends OpModeTemplate {
         //!MAIN
         mainAutonomous = new SequentialAction(
                 new ParallelAction(
-                        outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.AUTO_DEPOSIT),
-                        outtakeManager.DriveLift((int) OuttakeManager._LiftState.HIGH_CHAMBER_LOWER_REVERSED.getPosition()),
-                        intakeManager.GripAction(IntakeManager._GripState.RELEASE),
+                        outtakeManager.PitchAction(OuttakeManager._PitchServoState.DEPOSIT_SPECIMEN),
+                        outtakeManager.SetLift((int) OuttakeManager._LiftState.HIGH_CHAMBER_LOWER_REVERSED.getPosition()),
+                        intakeManager.GripAction(IntakeManager._ClawState.OPEN),
                         initialTraj,
                         new SequentialAction(
                                 new SleepAction(1.6f),
-                                outtakeManager.DriveLift((int) OuttakeManager._LiftState.HIGH_CHAMBER_REVERSED.getPosition()),
+                                outtakeManager.SetLift((int) OuttakeManager._LiftState.HIGH_CHAMBER_REVERSED.getPosition()),
                                 new SleepAction(0.35),
-                                outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.RELEASE),
+                                outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.OPEN),
                                 new SleepAction(0.15)
                         )
                 ),
@@ -171,16 +170,16 @@ public class FourSpecimenOfficialFieldRED extends OpModeTemplate {
                         longTraj,
                         new SequentialAction(
                                 outtakeManager.YawAction(OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoUp),
-                                outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.GRIP),
+                                outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.CLOSED),
                                 outtakeManager.TiltAction(OuttakeManager._OuttakeTiltServoState.PICKUP),
                                 new SleepAction(0.85),
-                                outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.ZERO),
+                                outtakeManager.PitchAction(OuttakeManager._PitchServoState.ZERO),
                                 new SleepAction(0.3),
-                                outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.RELEASE),
-                                outtakeManager.DriveLift((int) OuttakeManager._LiftState.ZERO.getPosition())
+                                outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.OPEN),
+                                outtakeManager.SetLift((int) OuttakeManager._LiftState.ZERO.getPosition())
                         )
                 ),
-                outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.GRIP),
+                outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.CLOSED),
                 new SleepAction(0.05f),
 
                 //DriveToHangAndBack 1st ===============>
@@ -190,19 +189,19 @@ public class FourSpecimenOfficialFieldRED extends OpModeTemplate {
                                 trajToHang1st
                         ),
                         new SequentialAction(
-                                outtakeManager.DriveLift((int) OuttakeManager._LiftState.HIGH_CHAMBER_LOWER_REVERSED.getPosition()),
-                                outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.AUTO_DEPOSIT),
+                                outtakeManager.SetLift((int) OuttakeManager._LiftState.HIGH_CHAMBER_LOWER_REVERSED.getPosition()),
+                                outtakeManager.PitchAction(OuttakeManager._PitchServoState.DEPOSIT_SPECIMEN),
                                 new SleepAction(0.3f),
                                 outtakeManager.TiltAction(OuttakeManager._OuttakeTiltServoState.DEPOSIT_SPECIMEN),
                                 new SleepAction(0.5f),
-                                outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.DEPOSIT_BACKPUSH)
+                                outtakeManager.PitchAction(OuttakeManager._PitchServoState.DEPOSIT_SPECIMEN)
 //                                outtakeManager.YawAction(OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoDown)
                         ),
                         new SequentialAction(
                                 new SleepAction(2.4),
-                                outtakeManager.DriveLift((int) OuttakeManager._LiftState.HIGH_CHAMBER_REVERSED.getPosition()),
+                                outtakeManager.SetLift((int) OuttakeManager._LiftState.HIGH_CHAMBER_REVERSED.getPosition()),
                                 new SleepAction(0.3f),
-                                outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.RELEASE)
+                                outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.OPEN)
                         )
                 ),
 
@@ -210,15 +209,15 @@ public class FourSpecimenOfficialFieldRED extends OpModeTemplate {
                         trajToPickup1st,
                         new SequentialAction(
                                 outtakeManager.YawAction(OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoUp),
-                                outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.GRIP),
+                                outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.CLOSED),
                                 outtakeManager.TiltAction(OuttakeManager._OuttakeTiltServoState.PICKUP),
                                 new SleepAction(0.85f),
-                                outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.ZERO),
-                                outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.RELEASE),
-                                outtakeManager.DriveLift((int) OuttakeManager._LiftState.ZERO.getPosition())
+                                outtakeManager.PitchAction(OuttakeManager._PitchServoState.ZERO),
+                                outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.OPEN),
+                                outtakeManager.SetLift((int) OuttakeManager._LiftState.ZERO.getPosition())
                         )
                 ),
-                outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.GRIP),
+                outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.CLOSED),
                 new SleepAction(0.05),
 
                 //DriveToHangAndBack 2nd ===============>
@@ -228,31 +227,31 @@ public class FourSpecimenOfficialFieldRED extends OpModeTemplate {
                                 trajToHang2nd
                         ),
                         new SequentialAction(
-                                outtakeManager.DriveLift((int) OuttakeManager._LiftState.HIGH_CHAMBER_LOWER_REVERSED.getPosition()),
-                                outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.AUTO_DEPOSIT),
+                                outtakeManager.SetLift((int) OuttakeManager._LiftState.HIGH_CHAMBER_LOWER_REVERSED.getPosition()),
+                                outtakeManager.PitchAction(OuttakeManager._PitchServoState.DEPOSIT_SPECIMEN),
                                 new SleepAction(0.3f),
                                 outtakeManager.TiltAction(OuttakeManager._OuttakeTiltServoState.DEPOSIT_SPECIMEN),
                                 new SleepAction(0.5f),
-                                outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.DEPOSIT_BACKPUSH)
+                                outtakeManager.PitchAction(OuttakeManager._PitchServoState.DEPOSIT_SPECIMEN)
                         )
                 ),
-                outtakeManager.DriveLift((int) OuttakeManager._LiftState.HIGH_CHAMBER_REVERSED.getPosition()),
+                outtakeManager.SetLift((int) OuttakeManager._LiftState.HIGH_CHAMBER_REVERSED.getPosition()),
                 new SleepAction(0.3f),
-                outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.RELEASE),
+                outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.OPEN),
                 new SleepAction(0.1f),
                 new ParallelAction(
                         trajToPickup2nd,
                         new SequentialAction(
                                 outtakeManager.YawAction(OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoUp),
-                                outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.GRIP),
+                                outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.CLOSED),
                                 outtakeManager.TiltAction(OuttakeManager._OuttakeTiltServoState.PICKUP),
                                 new SleepAction(0.85f),
-                                outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.ZERO),
-                                outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.RELEASE),
-                                outtakeManager.DriveLift((int) OuttakeManager._LiftState.ZERO.getPosition())
+                                outtakeManager.PitchAction(OuttakeManager._PitchServoState.ZERO),
+                                outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.OPEN),
+                                outtakeManager.SetLift((int) OuttakeManager._LiftState.ZERO.getPosition())
                         )
                 ),
-                outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.GRIP),
+                outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.CLOSED),
                 new SleepAction(0.05),
 
 
@@ -263,18 +262,18 @@ public class FourSpecimenOfficialFieldRED extends OpModeTemplate {
                                 trajToHang3rd
                         ),
                         new SequentialAction(
-                                outtakeManager.DriveLift((int) OuttakeManager._LiftState.HIGH_CHAMBER_LOWER_REVERSED.getPosition()),
-                                outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.AUTO_DEPOSIT),
+                                outtakeManager.SetLift((int) OuttakeManager._LiftState.HIGH_CHAMBER_LOWER_REVERSED.getPosition()),
+                                outtakeManager.PitchAction(OuttakeManager._PitchServoState.DEPOSIT_SPECIMEN),
                                 new SleepAction(0.3f),
                                 outtakeManager.TiltAction(OuttakeManager._OuttakeTiltServoState.DEPOSIT_SPECIMEN),
                                 new SleepAction(0.5f),
-                                outtakeManager.OuttakeExtendoAction(OuttakeManager._ExtendoServoState.DEPOSIT_BACKPUSH)
+                                outtakeManager.PitchAction(OuttakeManager._PitchServoState.DEPOSIT_SPECIMEN)
 //                                outtakeManager.YawAction(OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoDown)
                         )
                 ),
-                outtakeManager.DriveLift((int) OuttakeManager._LiftState.HIGH_CHAMBER_REVERSED.getPosition()),
+                outtakeManager.SetLift((int) OuttakeManager._LiftState.HIGH_CHAMBER_REVERSED.getPosition()),
                 new SleepAction(0.3f),
-                outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.RELEASE),
+                outtakeManager.ClawAction(OuttakeManager._OuttakeClawServoState.OPEN),
                 new SleepAction(0.1f),
                 endTraj
 

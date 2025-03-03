@@ -5,7 +5,6 @@ import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
-import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.MoveIntakeSomeBit;
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeGripStateCommand;
@@ -52,7 +51,7 @@ public class IntakePositionSelector extends CommandBase {
             } else if (gamepad_codriver.leftTrigger() > 0.2) {
                 CommandScheduler.getInstance().schedule(
                         new SequentialCommandGroup(
-                                new SetIntakeGripStateCommand(manager, IntakeManager._GripState.GRIP),
+                                new SetIntakeGripStateCommand(manager, IntakeManager._ClawState.CLOSED),
                                 new WaitCommand(400),
                                 new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.AIMING_UPPER)
                         )
@@ -61,7 +60,7 @@ public class IntakePositionSelector extends CommandBase {
             } else if (gamepad_codriver.isDown(gamepad_driver.triangle)) {
                 CommandScheduler.getInstance().schedule(
                         new SequentialCommandGroup(
-                                new SetIntakeGripStateCommand(manager, IntakeManager._GripState.RELEASE),
+                                new SetIntakeGripStateCommand(manager, IntakeManager._ClawState.OPEN),
                                 new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.AIMING)
                         )
 
@@ -85,7 +84,7 @@ public class IntakePositionSelector extends CommandBase {
             else if (gamepad_codriver.rightTrigger() > 0.2) {
                 CommandScheduler.getInstance().schedule(
                         new SequentialCommandGroup(
-                                new SetIntakeGripStateCommand(manager, IntakeManager._GripState.RELEASE),
+                                new SetIntakeGripStateCommand(manager, IntakeManager._ClawState.OPEN),
                                 new WaitCommand(100),
                                 new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.LOWERED)
                         )
