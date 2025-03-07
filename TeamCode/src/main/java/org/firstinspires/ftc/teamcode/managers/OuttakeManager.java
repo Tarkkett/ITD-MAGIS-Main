@@ -258,7 +258,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
 
     public enum _OuttakeClawServoState implements Positionable {
         CLOSED(0.9f),
-        OPEN(0.3f);
+        OPEN(0.13f);
         private final float position;
 
         _OuttakeClawServoState(float position) {
