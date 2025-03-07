@@ -90,7 +90,7 @@ public class IntakePositionSelector extends CommandBase {
                         )
                 );
             }
-            ControlYawManually(gamepad_codriver.getRightX(), gamepad_codriver.getRightY());
+            ControlYawManually(gamepad_codriver.getLeftY(), gamepad_codriver.getLeftX());
         }
 
     }
@@ -102,8 +102,11 @@ public class IntakePositionSelector extends CommandBase {
         double wrapped_angle = Math.atan2(Math.sin(shiftAngle), Math.cos(shiftAngle));
         double normalized_angle = (wrapped_angle + Math.PI) / (2 * Math.PI);
         manager.controlYawAngle(normalized_angle);
+    }
 
-        // manager.controlYawAngle((Math.atan2(Math.sin(Math.atan2(rightX, rightY)+ Math.toRadians(shiftAngleCustom)), Math.cos(Math.atan2(rightX, rightY)+ Math.toRadians(shiftAngleCustom))) + Math.PI) / (2 * Math.PI));
+    @Override
+    public void end(boolean interrupted){
+        gamepad_codriver.rumble(200);
     }
 
 }

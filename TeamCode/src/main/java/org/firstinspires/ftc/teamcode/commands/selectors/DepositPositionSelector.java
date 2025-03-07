@@ -6,7 +6,6 @@ import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
-import com.arcrobotics.ftclib.command.WaitUntilCommand;
 
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.MoveLiftCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetLiftPositionCommand;
@@ -14,6 +13,8 @@ import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeClawS
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakePitchServoCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeTiltServoCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeYawServoCommand;
+import org.firstinspires.ftc.teamcode.managers.DriveManager;
+import org.firstinspires.ftc.teamcode.managers.HardwareManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 import org.firstinspires.ftc.teamcode.util.GamepadPlus;
 
@@ -23,29 +24,21 @@ public class DepositPositionSelector extends CommandBase {
     GamepadPlus gamepad_codriver;
     OuttakeManager manager;
 
-    boolean autoSeq = false;
+    DriveManager driveManager;
+    HardwareManager hw;
+    private boolean finish = false;
 
-    public DepositPositionSelector(GamepadPlus gamepad_driver, GamepadPlus gamepad_codriver, OuttakeManager manager){
+    public DepositPositionSelector(GamepadPlus gamepad_driver, GamepadPlus gamepad_codriver, OuttakeManager manager, DriveManager driveManager, HardwareManager hardwareManager){
         this.gamepad_driver = gamepad_driver;
         this.gamepad_codriver = gamepad_codriver;
         this.manager = manager;
-//        this.autoSeq = autoSeq;
+        this.driveManager = driveManager;
+        this.hw = hardwareManager;
     }
 
     @Override
     public void initialize(){
         manager.selectingProcess = true;
-
-        if (autoSeq){
-            CommandScheduler.getInstance().schedule(
-                    new SequentialCommandGroup(
-                            new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HIGH_BUCKET),
-                            new WaitCommand(1000),
-                            new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.DEPOSIT_SPECIMEN)
-                    )
-            );
-        }
-
     }
 
     @Override
@@ -59,26 +52,27 @@ public class DepositPositionSelector extends CommandBase {
                         new ParallelCommandGroup(
                                 new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.CLOSED),
                                 new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HIGH_CHAMBER),
-                                new SetOuttakeYawServoCommand(manager, OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoDown),
+                                new SetOuttakeYawServoCommand(manager, OuttakeManager._OuttakeYawServoState.HORIZONTAL_Deposit),
                                 new SetOuttakePitchServoCommand(manager, OuttakeManager._PitchServoState.DEPOSIT_SPECIMEN),
                                 new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.DEPOSIT_SPECIMEN),
-                                new InstantCommand(() -> manager.canPickup = true)
+                                new InstantCommand(() -> manager.setCanPickup(false))
                         )
                 );
             }
 
             //* Return to pickup
             if (gamepad_codriver.gamepad.square){
+                if (manager.canPickup()) {
                     CommandScheduler.getInstance().schedule(
-                            new WaitUntilCommand(() -> manager.canPickup).withTimeout(1500),
                             new SequentialCommandGroup(
-                                    new SetOuttakeYawServoCommand(manager, OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoUp),
+                                    new SetOuttakeYawServoCommand(manager, OuttakeManager._OuttakeYawServoState.HORIZONTAL_Pickup),
                                     new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.PICKUP),
                                     new SetLiftPositionCommand(manager, OuttakeManager._LiftState.ZERO),
                                     new SetOuttakePitchServoCommand(manager, OuttakeManager._PitchServoState.PICKUP),
                                     new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.OPEN)
                             )
                     );
+                }
             }
 
             //* Prepare for hang
@@ -108,12 +102,13 @@ public class DepositPositionSelector extends CommandBase {
             //* Release scored specimen
             else if (gamepad_codriver.gamepad.cross) {
                 CommandScheduler.getInstance().schedule(
-                        new WaitUntilCommand(() -> !manager.canPickup).withTimeout(1500),
                         new SequentialCommandGroup(
                                 new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.OPEN),
                                 new WaitCommand(200),
                                 new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.DEPOSIT_CLEARED),
-                                new InstantCommand(() -> manager.canPickup = true)
+//                                new SetDriveVectorCommand(hw, driveManager),
+                                new WaitCommand(150),
+                                new InstantCommand(() -> manager.setCanPickup(true))
                         )
                 );
 
@@ -128,6 +123,11 @@ public class DepositPositionSelector extends CommandBase {
                 else gamepad_codriver.rumble(200);
             }
         }
+    }
+
+    @Override
+    public void end(boolean interrupted){
+        gamepad_codriver.rumble(200);
     }
 
 }

@@ -7,8 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.managers.testing.HardwareTestManager;
 
 @TeleOp(name = "TestAllHardware", group = "Testing")
-@Disabled
-@Deprecated
+
 public class TestHardwareWDashboard extends OpModeTemplate {
 
     HardwareTestManager hardwareTestManager;

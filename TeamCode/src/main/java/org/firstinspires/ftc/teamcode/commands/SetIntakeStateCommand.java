@@ -32,7 +32,7 @@ public class SetIntakeStateCommand extends SequentialCommandGroup {
                                 )
 
                         ),
-                        new IntakePositionSelector(manager, gamepad_driver, gamepad_codriver)
+                        new IntakePositionSelector(manager, gamepad_driver, gamepad_codriver).interruptOn(() -> states.robotState == StateMachine._RobotState.DEPOSIT)
                 );
                 break;
             case HOME:

@@ -4,7 +4,6 @@ import com.arcrobotics.ftclib.geometry.Pose2d;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.MovementControlRunnable;
-import org.firstinspires.ftc.teamcode.PinpointDrive;
 import org.firstinspires.ftc.teamcode.util.GamepadPlus;
 
 public class DriveManager implements Manager<DriveManager._DriveState> {
@@ -18,16 +17,16 @@ public class DriveManager implements Manager<DriveManager._DriveState> {
     private Thread movementControlThread;
     private MovementControlRunnable movementControlRunnable;
 
-    public DriveManager(HardwareManager hardwareManager, Telemetry telemetry, GamepadPlus gamepadDriver, PinpointDrive drive, OuttakeManager outtakeManager) {
+    public DriveManager(HardwareManager hardwareManager, Telemetry telemetry, GamepadPlus gamepadDriver, OuttakeManager outtakeManager) {
         this.hardwareManager = hardwareManager;
         this.telemetry = telemetry;
         this.gamepadDriver = gamepadDriver;
 
-        configureDrive(drive, outtakeManager);
+        configureDrive(outtakeManager);
     }
 
-    private void configureDrive(PinpointDrive drive, OuttakeManager outtakeManager) {
-        movementControlRunnable = new MovementControlRunnable(telemetry, this, gamepadDriver, drive, outtakeManager);
+    private void configureDrive(OuttakeManager outtakeManager) {
+        movementControlRunnable = new MovementControlRunnable(telemetry, this, gamepadDriver, outtakeManager, hardwareManager);
         movementControlThread = new Thread(movementControlRunnable);
         movementControlThread.start();
     }
@@ -77,6 +76,7 @@ public class DriveManager implements Manager<DriveManager._DriveState> {
 
     public void Unlock(){
         managerState = _DriveState.UNLOCKED;
+        hardwareManager.stopDriveMotors();
         gamepadDriver.setLedColor(0, 1.0d, 0, 100000);
     }
 

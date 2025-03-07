@@ -20,6 +20,13 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
         return hardwareManager.intakeTiltSrv.getPosition() > 0.5f;
     }
 
+    public _SlideState GetSlideState() {
+        if (encoderPos < 100){
+            return _SlideState.RETRACTED;
+        }
+        else return _SlideState.EXTENDED;
+    }
+
     public interface Positionable {
         float getPosition();
     }

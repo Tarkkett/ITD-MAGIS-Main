@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.managers;
 
 import android.graphics.Color;
 
-import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -10,6 +9,9 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.teamcode.drivers.GoBildaPinpointDriver;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,11 +21,12 @@ import java.util.concurrent.TimeUnit;
 public class HardwareManager{
 
     private static HardwareManager instance;
-
     List<LynxModule> hubs;
     Collection<Blinker.Step> blinks;
     Blinker.Step blinkBlue = new Blinker.Step();
     Blinker.Step blinkRed = new Blinker.Step();
+
+    public GoBildaPinpointDriver pinpointDriver;
 
     DcMotorEx frontLeft;
     DcMotorEx frontRight;
@@ -35,27 +38,27 @@ public class HardwareManager{
 
     DcMotorEx intake;
 
-    public ServoEx intakeGripSrv;
-    public ServoEx intakeTiltSrv;
-    public ServoEx intakeYawSrv;
+    public Servo intakeGripSrv;
+    public Servo intakeTiltSrv;
+    public Servo intakeYawSrv;
 
-    public ServoEx outtakeArmTiltSrvLeft;
-    public ServoEx outtakeArmTiltSrvRight;
-    public ServoEx outtakeDepositorPitchSrv;
-    public ServoEx outtakeDepositorYawSrv;
-    public ServoEx outtakeDepositorClawSrv;
+    public Servo outtakeArmTiltSrvLeft;
+    public Servo outtakeArmTiltSrvRight;
+    public Servo outtakeDepositorPitchSrv;
+    public Servo outtakeDepositorYawSrv;
+    public Servo outtakeDepositorClawSrv;
 
     public static int IMU_DATA_SAMPLING_RATE = 10;
 
     private final HardwareMap hmap;
 
-    public HardwareManager(HardwareMap hmap){
+    public HardwareManager(HardwareMap hmap, boolean isAuto){
         this.hmap = hmap;
     }
 
-    public static HardwareManager getInstance(HardwareMap hmap) {
+    public static HardwareManager getInstance(HardwareMap hmap, boolean isAuto) {
         if (instance == null) {
-            instance = new HardwareManager(hmap);
+            instance = new HardwareManager(hmap, isAuto);
         }
         return instance;
     }
@@ -76,17 +79,17 @@ public class HardwareManager{
 
         intake = this.hmap.get(DcMotorEx.class, "intakeMotor");
 
-        intakeGripSrv = this.hmap.get(ServoEx.class, "intakeClawServo");
-        intakeTiltSrv = this.hmap.get(ServoEx.class, "intakeTiltServo");
-        intakeYawSrv = this.hmap.get(ServoEx.class, "intakeYawServo");
+        intakeGripSrv = this.hmap.get(Servo.class, "intakeClawServo");
+        intakeTiltSrv = this.hmap.get(Servo.class, "intakeTiltServo");
+        intakeYawSrv = this.hmap.get(Servo.class, "intakeYawServo");
 
-        outtakeArmTiltSrvLeft = this.hmap.get(ServoEx.class, "outtakeTiltLeftServo");
-        outtakeArmTiltSrvRight = this.hmap.get(ServoEx.class, "outtakeTiltRightServo");
-        outtakeDepositorPitchSrv = this.hmap.get(ServoEx.class, "outtakeDepositorPitchServo");
-        outtakeDepositorYawSrv = this.hmap.get(ServoEx.class, "outtakeDepositorYawServo");
-        outtakeDepositorClawSrv = this.hmap.get(ServoEx.class, "outtakeDepositorClawServo");
+        outtakeArmTiltSrvLeft = this.hmap.get(Servo.class, "outtakeTiltLeftServo");
+        outtakeArmTiltSrvRight = this.hmap.get(Servo.class, "outtakeTiltRightServo");
+        outtakeDepositorPitchSrv = this.hmap.get(Servo.class, "outtakeDepositorPitchServo");
+        outtakeDepositorYawSrv = this.hmap.get(Servo.class, "outtakeDepositorYawServo");
+        outtakeDepositorClawSrv = this.hmap.get(Servo.class, "outtakeDepositorClawServo");
 
-        //! Odometry setup in PinpointDrive Class!
+        if (!isAuto) {pinpointDriver = this.hmap.get(GoBildaPinpointDriver.class, "pinpoint");}
 
         //?===========================CONFIGURATION================================//
 
@@ -109,7 +112,9 @@ public class HardwareManager{
         liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        outtakeArmTiltSrvLeft.setInverted(true);
+        outtakeArmTiltSrvLeft.setDirection(Servo.Direction.REVERSE);
+
+//        if (!isAuto) {pinpointDriver.resetPosAndIMU();}
 
         //?========================QUALITY FUNCTIONS===============================//
 
@@ -164,5 +169,21 @@ public class HardwareManager{
     public void setOuttakeArmTiltServos(float pos){
         outtakeArmTiltSrvLeft.setPosition(pos);
         outtakeArmTiltSrvRight.setPosition(pos);
+    }
+
+    public void MotorsFullThrottleForOneSec(DriveManager driveManager) {
+        ElapsedTime timer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+
+        driveManager.Lock();
+
+        while(timer.milliseconds() <= 30){
+            frontLeft.setPower(1);
+            frontRight.setPower(1);
+            backLeft.setPower(1);
+            backRight.setPower(1);
+        }
+
+        driveManager.Unlock();
+
     }
 }

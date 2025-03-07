@@ -5,7 +5,6 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.teamcode.PinpointDrive;
 import org.firstinspires.ftc.teamcode.commands.low_level.SetServosToDefaultsCommand;
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.managers.DriveManager;
@@ -34,10 +33,7 @@ public abstract class OpModeTemplate extends OpMode {
 
     protected HardwareTestManager testManager;
 
-    PinpointDrive drive;
-
     //Zero point
-    private final Pose2d startingPos = new Pose2d(new Vector2d(9,-62), Math.toRadians(-270));
 
     protected boolean isAuto = false;
 
@@ -45,23 +41,23 @@ public abstract class OpModeTemplate extends OpMode {
 
         this.isAuto = isAuto;
 
-        drive = new PinpointDrive(hardwareMap, startingPos);
-
-        hardwareManager = new HardwareManager(hardwareMap);
+        hardwareManager = new HardwareManager(hardwareMap, isAuto);
         hardwareManager.InitHw(isAuto);
 
-        gamepad_driver = new GamepadPlus(gamepad1);
-        gamepad_codriver = new GamepadPlus(gamepad2);
-
-        intakeManager = new IntakeManager(hardwareManager, telemetry, gamepad_driver, gamepad_codriver);
         outtakeManager = new OuttakeManager(hardwareManager, telemetry, intakeManager);
+        intakeManager = new IntakeManager(hardwareManager, telemetry, gamepad_driver, gamepad_codriver);
 
-        driveManager = new DriveManager(hardwareManager, telemetry, gamepad_driver, drive, outtakeManager);
+        if (!isAuto) {
+            gamepad_driver = new GamepadPlus(gamepad1);
+            gamepad_codriver = new GamepadPlus(gamepad2);
 
-        testManager = new HardwareTestManager(hardwareManager, outtakeManager, intakeManager, driveManager, telemetry);
+            driveManager = new DriveManager(hardwareManager, telemetry, gamepad_driver, outtakeManager);
 
-        stateMachine = new StateMachine(outtakeManager, intakeManager, driveManager, telemetry, gamepad_driver, gamepad_codriver, hardwareManager, testManager);
+            testManager = new HardwareTestManager(hardwareManager, outtakeManager, intakeManager, driveManager, telemetry);
 
+            stateMachine = new StateMachine(outtakeManager, intakeManager, driveManager, telemetry, gamepad_driver, gamepad_codriver, hardwareManager, testManager);
+
+        }
         if (isAuto) SetSystemDefaults();
 
     }

@@ -48,7 +48,7 @@ public class MainTeleOp extends OpModeTemplate {
         //* Reset IMU
         gamepad_driver.getGamepadButton(gamepad_driver.options)
             .whenPressed(
-                    new InstantCommand(() -> drive.pinpoint.resetPosAndIMU()));
+                    new InstantCommand(() -> hardwareManager.pinpointDriver.resetPosAndIMU()));
 
         //* Switch to CALIBRATION mode
         gamepad_codriver.getGamepadButton(gamepad_codriver.options)
@@ -69,7 +69,7 @@ public class MainTeleOp extends OpModeTemplate {
         CommandScheduler.getInstance().cancelAll();
         CommandScheduler.getInstance().schedule(new SequentialCommandGroup(
                 new SetRobotState(stateMachine, StateMachine._RobotState.HOME),
-                new InstantCommand(() -> drive.pinpoint.resetPosAndIMU()),
+//                new InstantCommand(() -> hardwareManager.pinpointDriver.resetPosAndIMU()),
                 new InstantCommand(() -> driveManager.Unlock())
         ));
     }

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.commands.low_level;
 
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+import com.arcrobotics.ftclib.command.WaitCommand;
 
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.AdjustYawServoCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeTiltServoPosCommand;
@@ -17,8 +18,7 @@ public class SetServosToDefaultsCommand extends SequentialCommandGroup {
         addCommands(
 
                 //?Deposit
-                new SetOuttakePitchServoCommand(outtakeManager, OuttakeManager._PitchServoState.HOME),
-                new SetOuttakeYawServoCommand(outtakeManager, OuttakeManager._OuttakeYawServoState.HORIZONTAL_ServoUp),
+                new SetOuttakeYawServoCommand(outtakeManager, OuttakeManager._OuttakeYawServoState.HORIZONTAL_Pickup),
                 new SetOuttakeTiltServoCommand(outtakeManager, OuttakeManager._OuttakeTiltServoState.HOME),
                 new SetOuttakeClawStateCommand(outtakeManager, OuttakeManager._OuttakeClawServoState.CLOSED),
 
@@ -26,9 +26,11 @@ public class SetServosToDefaultsCommand extends SequentialCommandGroup {
                 //?Intake
                 new AdjustYawServoCommand(intakeManager, IntakeManager._YawServoState.TRANSFER),
                 new SetIntakeTiltServoPosCommand(intakeManager, IntakeManager._TiltServoState.PACKED),
-                new SetOuttakeTiltServoCommand(outtakeManager, OuttakeManager._OuttakeTiltServoState.DEPOSIT_SPECIMEN)
 
-                );
+                new WaitCommand(400),
+                new SetOuttakePitchServoCommand(outtakeManager, OuttakeManager._PitchServoState.HOME)
+
+        );
 
     }
 }

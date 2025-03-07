@@ -20,7 +20,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         float getPosition();
     }
 
-    private static final int MIN_THRESHOLD =70;
+    private static final int MIN_THRESHOLD =0;
     private static final int MAX_THRESHOLD =2200;
     public boolean selectingProcess = false;
 
@@ -39,7 +39,16 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
 
     private boolean isAutoLoop = true;
 
-    public boolean canPickup = false;
+    private boolean canPickup = false;
+
+    public void setCanPickup(boolean canPickup) {
+        this.canPickup = canPickup;
+    }
+
+    public boolean canPickup() {
+        return canPickup;
+    }
+
 
     protected  _LiftMode mode;
 
@@ -107,47 +116,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
 
     public void update(_LiftState targetState, int... position) {
         if (targetState != null) {
-            switch (targetState) {
-                case HIGH_BUCKET:
-                    targetPosition = (int) _LiftState.HIGH_BUCKET.getPosition();
-                    break;
-                case HIGH_CHAMBER:
-                    targetPosition = (int) _LiftState.HIGH_CHAMBER.getPosition();
-                    break;
-                case HIGH_CHAMBER_AUTO:
-                    targetPosition = (int) _LiftState.HIGH_CHAMBER_AUTO.getPosition();
-                    break;
-                case HIGH_CHAMBER_LOWER_REVERSED:
-                    targetPosition = (int) _LiftState.HIGH_CHAMBER_LOWER_REVERSED.getPosition();
-                    break;
-                case HIGH_CHAMBER_REVERSED:
-                    targetPosition = (int) _LiftState.HIGH_CHAMBER_REVERSED.getPosition();
-                    break;
-                case TRANSFER:
-                    targetPosition = (int) _LiftState.TRANSFER.getPosition();
-                    break;
-                case HOME:
-                    targetPosition = (int) _LiftState.HOME.getPosition();
-                    break;
-                case HIGH_CHAMBER_LOWER:
-                    targetPosition = (int) _LiftState.HIGH_CHAMBER_LOWER.getPosition();
-                    break;
-                case HANG_READY:
-                    targetPosition = (int) _LiftState.HANG_READY.getPosition();
-                    break;
-                case CLEARED:
-                    targetPosition = (int) _LiftState.CLEARED.getPosition();
-                    break;
-                case CLEARED_ALL:
-                    targetPosition = (int) _LiftState.CLEARED_ALL.getPosition();
-                    break;
-                case ZERO:
-                    targetPosition = (int) _LiftState.ZERO.getPosition();
-                    break;
-                case HANG_DOWN:
-                    targetPosition = (int) _LiftState.HANG_DOWN.getPosition();
-                    break;
-            }
+            targetPosition = (int) targetState.getPosition();
         }
         else {
             this.targetPosition = position[0];
@@ -177,8 +146,8 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         return encoderPos;
     }
 
-    private static final int MAX_CHANGE_PER_CYCLE = 5;
-    private static final double SMOOTHING_FACTOR = 0.2;
+    private static final int MAX_CHANGE_PER_CYCLE = 10;
+    private static final double SMOOTHING_FACTOR = 0.4;
 
     public void lowerLiftPosition(int i) {
         int desiredPos = encoderPos + i;
@@ -219,7 +188,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     }
 
     public enum _LiftState implements Positionable{
-        HIGH_CHAMBER(450),
+        HIGH_CHAMBER(750),
         TRANSFER    (120),
         CLEARED(400),
         CLEARED_ALL(800),
@@ -246,11 +215,11 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     }
 
     public enum _PitchServoState implements Positionable {
-        HOME(0.7f),
-        PICKUP(0.7f),
-        DEPOSIT_SPECIMEN(0.28f),
-        DEPOSIT_SAMPLE(0.0f),
-        TRANSFER(0.7f),
+        HOME(0.24f),
+        PICKUP(0.24f),
+        DEPOSIT_SPECIMEN(0.73f),
+        DEPOSIT_SAMPLE(0.7f),
+        TRANSFER(0.24f),
         ZERO(0.0f),
         HANG(HOME.getPosition());
 
@@ -267,12 +236,12 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     }
 
     public enum _OuttakeTiltServoState implements Positionable {
-        DEPOSIT_SPECIMEN(0.9f),
+        DEPOSIT_SPECIMEN(0.97f),
         DEPOSIT_SAMPLE(0.8f),
-        PICKUP(0.2f),
+        PICKUP(0.19f),
         TRANSFER(0.0f),
         ZERO(0.0f),
-        HOME(0.36f),
+        HOME(0.28f),
         DEPOSIT_CLEARED(1.0f);
 
         private final float position;
@@ -288,8 +257,8 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     }
 
     public enum _OuttakeClawServoState implements Positionable {
-        CLOSED(1f),
-        OPEN(0.5f);
+        CLOSED(0.9f),
+        OPEN(0.3f);
         private final float position;
 
         _OuttakeClawServoState(float position) {
@@ -304,9 +273,9 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
 
     //Relative to HOME position
     public enum _OuttakeYawServoState implements Positionable {
-        HORIZONTAL_ServoDown    (0.13f),
+        HORIZONTAL_Pickup(0.13f),
         VERTICAL     (0.48f),
-        HORIZONTAL_ServoUp(0.83f);
+        HORIZONTAL_Deposit(0.83f);
 
         private final float position;
 
