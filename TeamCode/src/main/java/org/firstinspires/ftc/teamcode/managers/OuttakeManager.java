@@ -216,7 +216,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
 
     public enum _PitchServoState implements Positionable {
         HOME(0.24f),
-        PICKUP(0.24f),
+        PICKUP(0.225f),
         DEPOSIT_SPECIMEN(0.73f),
         DEPOSIT_SAMPLE(0.7f),
         TRANSFER(0.24f),
@@ -238,7 +238,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     public enum _OuttakeTiltServoState implements Positionable {
         DEPOSIT_SPECIMEN(0.97f),
         DEPOSIT_SAMPLE(0.8f),
-        PICKUP(0.19f),
+        PICKUP(0.178f),
         TRANSFER(0.0f),
         ZERO(0.0f),
         HOME(0.28f),

@@ -36,21 +36,21 @@ public class MainAutoBlue extends OpModeTemplate {
 
     private final Pose startPose = new Pose(8, 63, Math.toRadians(0));
 
-    private final Pose scorePosePreload = new Pose(40.5, 63, Math.toRadians(0));
+    private final Pose scorePosePreload = new Pose(39.5, 63, Math.toRadians(0));
     private final Pose backFromChamberPose = new Pose(30, 42, Math.toRadians(0));
 
-    private final Pose scorePose1 = new Pose(40.5, 66, Math.toRadians(0));
-    private final Pose scorePose2 = new Pose(40.5, 69, Math.toRadians(0));
-    private final Pose scorePose3 = new Pose(40.5, 72, Math.toRadians(0));
-    private final Pose scorePose4 = new Pose(40.5, 75, Math.toRadians(0));
+    private final Pose scorePose1 = new Pose(39.5, 66, Math.toRadians(0));
+    private final Pose scorePose2 = new Pose(39.5, 69, Math.toRadians(0));
+    private final Pose scorePose3 = new Pose(39.5, 72, Math.toRadians(0));
+    private final Pose scorePose4 = new Pose(39.5, 75, Math.toRadians(0));
     private final Pose pickup1Pose = new Pose(60, 24, Math.toRadians(0));
     private final Pose push1Pose = new Pose(24, 24, Math.toRadians(0));
     private final Pose pickup2Pose = new Pose(60, 15, Math.toRadians(0));
     private final Pose push2Pose = new Pose(24, 15, Math.toRadians(0));
-    private final Pose pickup3Pose = new Pose(61, 6, Math.toRadians(0));
-    private final Pose push3Pose = new Pose(20.5, 6, Math.toRadians(0));
+    private final Pose pickup3Pose = new Pose(61, 6.4, Math.toRadians(0));
+    private final Pose push3Pose = new Pose(20.5, 6.4, Math.toRadians(0));
 
-    private final Pose grabPreloadPose = new Pose(7, 26, Math.toRadians(0));
+    private final Pose grabPreloadPose = new Pose(7.2, 26, Math.toRadians(0));
 
     private final Pose parkPose = new Pose(20.5, 70, Math.toRadians(0));
 
@@ -203,7 +203,7 @@ public class MainAutoBlue extends OpModeTemplate {
                             new SequentialCommandGroup(
                                     new SetOuttakeClawStateCommand(outtakeManager, OuttakeManager._OuttakeClawServoState.CLOSED),
                                     new SequentialCommandGroup(
-                                            new WaitCommand(230),
+                                            new WaitCommand(170),
                                             new InstantCommand(() -> follower.followPath(score1,true)),
                                             new InstantCommand(() -> setPathState(4))),
                                             new SetLiftPositionCommand(outtakeManager, OuttakeManager._LiftState.HIGH_CHAMBER),
@@ -241,7 +241,7 @@ public class MainAutoBlue extends OpModeTemplate {
                             new SequentialCommandGroup(
                                     new SetOuttakeClawStateCommand(outtakeManager, OuttakeManager._OuttakeClawServoState.CLOSED),
                                     new SequentialCommandGroup(
-                                            new WaitCommand(230),
+                                            new WaitCommand(170),
                                             new InstantCommand(() -> follower.followPath(score2,true)),
                                             new InstantCommand(() -> setPathState(6))),
                                     new SetLiftPositionCommand(outtakeManager, OuttakeManager._LiftState.HIGH_CHAMBER),
@@ -281,7 +281,7 @@ public class MainAutoBlue extends OpModeTemplate {
                             new SequentialCommandGroup(
                                     new SetOuttakeClawStateCommand(outtakeManager, OuttakeManager._OuttakeClawServoState.CLOSED),
                                     new SequentialCommandGroup(
-                                            new WaitCommand(230),
+                                            new WaitCommand(170),
                                             new InstantCommand(() -> follower.followPath(score3,true)),
                                             new InstantCommand(() -> setPathState(8))),
                                     new SetLiftPositionCommand(outtakeManager, OuttakeManager._LiftState.HIGH_CHAMBER),
@@ -320,7 +320,7 @@ public class MainAutoBlue extends OpModeTemplate {
                             new SequentialCommandGroup(
                                     new SetOuttakeClawStateCommand(outtakeManager, OuttakeManager._OuttakeClawServoState.CLOSED),
                                     new SequentialCommandGroup(
-                                            new WaitCommand(230),
+                                            new WaitCommand(170),
                                             new InstantCommand(() -> follower.followPath(score4,true)),
                                             new InstantCommand(() -> setPathState(10))),
                                     new SetLiftPositionCommand(outtakeManager, OuttakeManager._LiftState.HIGH_CHAMBER),
