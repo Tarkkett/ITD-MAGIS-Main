@@ -1,14 +1,21 @@
 package org.firstinspires.ftc.teamcode.managers;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.geometry.Pose2d;
+import com.arcrobotics.ftclib.geometry.Vector2d;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.MovementControlRunnable;
+import org.firstinspires.ftc.teamcode.drivers.C_PID;
 import org.firstinspires.ftc.teamcode.util.GamepadPlus;
 
+@Config
 public class DriveManager implements Manager<DriveManager._DriveState> {
 
     private final HardwareManager hardwareManager;
+
+    private C_PID headingController = new C_PID(0.3, 0, 0);
     private final Telemetry telemetry;
     private GamepadPlus gamepadDriver;
 
@@ -16,6 +23,9 @@ public class DriveManager implements Manager<DriveManager._DriveState> {
 
     private Thread movementControlThread;
     private MovementControlRunnable movementControlRunnable;
+    public static double P_Heading = 0.0;
+    public static double I_Heading = 0.0;
+    public static double D_Heading = 0.0;
 
     public DriveManager(HardwareManager hardwareManager, Telemetry telemetry, GamepadPlus gamepadDriver, OuttakeManager outtakeManager) {
         this.hardwareManager = hardwareManager;
@@ -39,21 +49,59 @@ public class DriveManager implements Manager<DriveManager._DriveState> {
         return managerState;
     }
 
-    public void drive(Pose2d movementVector, double rotationInput, double powerMultiplier) {
+    private double targetHeading = 0;
+    private boolean holdingHeading = false;
 
-        double cosHeading = Math.cos(-movementVector.getHeading());
-        double sinHeading = Math.sin(-movementVector.getHeading());
+    private double wrapAngle(double angle) {
+        while (angle > Math.PI) angle -= 2 * Math.PI;
+        while (angle < -Math.PI) angle += 2 * Math.PI;
+        return angle;
+    }
+
+    public void drive(Vector2d movementVector, double rotationInput, double powerMultiplier, double currentHeading) {
+
+        currentHeading = wrapAngle(currentHeading);
+
+        headingController.tune(P_Heading, I_Heading, D_Heading);
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        Telemetry telemetry = dashboard.getTelemetry();
+
+        telemetry.addData("CurrentRotation", currentHeading);
+
+        double cosHeading = Math.cos(-currentHeading);
+        double sinHeading = Math.sin(-currentHeading);
+
+        if (Math.abs(rotationInput) > 0.1) {
+            targetHeading = currentHeading;
+            holdingHeading = false;
+        } else if (!holdingHeading) {
+            holdingHeading = true;
+        }
+
+        targetHeading = wrapAngle(targetHeading);
+
+        telemetry.addData("IsHoldingHeading? ", holdingHeading);
+
+        double headingError = wrapAngle(targetHeading - currentHeading);
+        double headingCorrection = holdingHeading ? headingController.update(headingError, 0) : 0;
 
         double adjustedX = movementVector.getX() * cosHeading - movementVector.getY() * sinHeading;
         double adjustedY = movementVector.getX() * sinHeading + movementVector.getY() * cosHeading;
 
         adjustedX *= 1.1;
 
-        double maxMagnitude = Math.max(Math.abs(adjustedY) + Math.abs(adjustedX) + Math.abs(rotationInput), 1);
-        double frontLeftPower = (adjustedY + adjustedX + rotationInput) / maxMagnitude;
-        double backLeftPower = (adjustedY - adjustedX + rotationInput) / maxMagnitude;
-        double frontRightPower = (adjustedY - adjustedX - rotationInput) / maxMagnitude;
-        double backRightPower = (adjustedY + adjustedX - rotationInput) / maxMagnitude;
+        telemetry.addData("TargetRotation", targetHeading);
+
+        double correctedRotation = rotationInput + headingCorrection;
+
+        telemetry.addData("CorrectedRot", correctedRotation);
+        telemetry.update();
+
+        double maxMagnitude = Math.max(Math.abs(adjustedY) + Math.abs(adjustedX) + Math.abs(correctedRotation), 1);
+        double frontLeftPower = (adjustedY + adjustedX + correctedRotation) / maxMagnitude;
+        double backLeftPower = (adjustedY - adjustedX + correctedRotation) / maxMagnitude;
+        double frontRightPower = (adjustedY - adjustedX - correctedRotation) / maxMagnitude;
+        double backRightPower = (adjustedY + adjustedX - correctedRotation) / maxMagnitude;
 
         if (managerState == _DriveState.UNLOCKED) {
             hardwareManager.frontLeft.setPower(frontLeftPower * powerMultiplier);
@@ -67,6 +115,7 @@ public class DriveManager implements Manager<DriveManager._DriveState> {
             }
         }
     }
+
 
     public void Lock() {
         managerState = _DriveState.LOCKED;

@@ -1,9 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.arcrobotics.ftclib.geometry.Pose2d;
-import com.arcrobotics.ftclib.geometry.Rotation2d;
-import com.qualcomm.robotcore.util.ElapsedTime;
+import com.arcrobotics.ftclib.geometry.Vector2d;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.drivers.GoBildaPinpointDriver;
@@ -20,7 +19,7 @@ public class MovementControlRunnable implements Runnable {
     private Telemetry telemetry;
     private GamepadPlus gamepad;
     private volatile boolean running = true;
-    private double headingAngle;
+    private double currentHeading;
     private double TRIGGER_MARGIN = 0.1;
 
     public MovementControlRunnable(Telemetry telemetry, DriveManager driveManager, GamepadPlus gamepad, OuttakeManager outtakeManager, HardwareManager hardwareManager) {
@@ -34,8 +33,6 @@ public class MovementControlRunnable implements Runnable {
     @Override
     public void run() {
         while (running) {
-            ElapsedTime loopTime = new ElapsedTime();
-            loopTime.reset();
 
             double y = gamepad.getLeftY();
             double x = gamepad.getLeftX();
@@ -44,9 +41,9 @@ public class MovementControlRunnable implements Runnable {
 
             hardwareManager.pinpointDriver.update(GoBildaPinpointDriver.readData.ONLY_UPDATE_HEADING);
 
-            headingAngle = hardwareManager.pinpointDriver.getPosition().getHeading(AngleUnit.RADIANS);
+            currentHeading = hardwareManager.pinpointDriver.getPosition().getHeading(AngleUnit.RADIANS);
 
-            driveManager.drive(new Pose2d(x, y, new Rotation2d(headingAngle)), rx, multiplier);
+            driveManager.drive(new Vector2d(x, y), rx, multiplier, currentHeading);
         }
     }
 
