@@ -4,6 +4,7 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.AdjustYawServoCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakePitchServoCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeTiltServoPosCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeClawStateCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakePitchServoCommand;
@@ -22,10 +23,10 @@ public class SetServosToDefaultsCommand extends SequentialCommandGroup {
                 new SetOuttakeTiltServoCommand(outtakeManager, OuttakeManager._OuttakeTiltServoState.HOME),
                 new SetOuttakeClawStateCommand(outtakeManager, OuttakeManager._OuttakeClawServoState.CLOSED),
 
-
                 //?Intake
                 new AdjustYawServoCommand(intakeManager, IntakeManager._YawServoState.TRANSFER),
                 new SetIntakeTiltServoPosCommand(intakeManager, IntakeManager._TiltServoState.PACKED),
+                new SetIntakePitchServoCommand(intakeManager, IntakeManager._PitchServoState.PACKED),
 
                 new WaitCommand(400),
                 new SetOuttakePitchServoCommand(outtakeManager, OuttakeManager._PitchServoState.ZERO)

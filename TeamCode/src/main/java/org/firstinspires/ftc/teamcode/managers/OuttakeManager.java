@@ -1,20 +1,18 @@
 package org.firstinspires.ftc.teamcode.managers;
 
-import androidx.annotation.NonNull;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.Action;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.util.PID_PARAMS;
 import org.firstinspires.ftc.teamcode.drivers.C_PID;
 
 @SuppressWarnings("rawtypes")
-
 @Config
 public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
+
+    public boolean isInProximity() {
+        return hardwareManager.outtakeProximitySensor.getState();
+    }
 
     public interface Positionable {
         float getPosition();
@@ -258,7 +256,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
 
     public enum _OuttakeClawServoState implements Positionable {
         CLOSED(0.9f),
-        OPEN(0.13f);
+        OPEN(0.1f);
         private final float position;
 
         _OuttakeClawServoState(float position) {
@@ -287,105 +285,5 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         public float getPosition() {
             return position;
         }
-    }
-
-    public Action PitchAction(_PitchServoState state) {
-        return new Action(){
-            private boolean initialize = false;
-            @Override
-            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                if (!initialize){
-                    update(state);
-                    initialize = true;
-                }
-                return false;
-            }
-        };
-    }
-
-    public Action ClawAction(_OuttakeClawServoState state) {
-        return new Action(){
-            private boolean initialize = false;
-            @Override
-            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                if (!initialize){
-                    update(state);
-                    initialize = true;
-                }
-                return false;
-            }
-        };
-    }
-
-    public Action TiltAction(_OuttakeTiltServoState state) {
-        return new Action(){
-            private boolean initialize = false;
-            @Override
-            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                if (!initialize){
-                    update(state);
-                    initialize = true;
-                }
-                return false;
-            }
-        };
-    }
-
-    public Action YawAction(_OuttakeYawServoState state) {
-        return new Action(){
-            private boolean initialize = false;
-            @Override
-            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                if (!initialize){
-                    update(state);
-                    initialize = true;
-                }
-                return false;
-            }
-        };
-    }
-
-    public Action LoopLift(){
-        return new Action(){
-            @Override
-            public boolean run(@NonNull TelemetryPacket telemetryPacket){
-                if (isAutoLoop) {
-                    loop();
-                }
-                else{ return false;}
-
-                return true;
-            }
-        };
-    }
-
-    public Action SetLift(int position){
-        return new Action(){
-
-            private boolean initialized = false;
-            @Override
-            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                if (!initialized){
-                    targetPosition = position;
-                    initialized = true;
-                }
-                return false;
-
-            }
-        };
-    }
-
-    public Action StopLift() {
-        return new Action(){
-            private boolean initialize = false;
-            @Override
-            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                if (!initialize){
-                    isAutoLoop = false;
-                    initialize = true;
-                }
-                return false;
-            }
-        };
     }
 }

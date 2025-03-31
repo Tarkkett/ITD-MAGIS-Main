@@ -1,12 +1,6 @@
 package org.firstinspires.ftc.teamcode.managers;
-
-import androidx.annotation.NonNull;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.Action;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drivers.C_PID;
 import org.firstinspires.ftc.teamcode.util.GamepadPlus;
@@ -92,82 +86,28 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     }
 
     public void update(_SlideState targetState) {
-        switch (targetState){
-            case EXTENDED:
-                targetPosition = (int) _SlideState.EXTENDED.getPosition();
-                break;
-            case TRANSFER:
-                targetPosition = (int) _SlideState.TRANSFER.getPosition();
-                break;
-            case TRANSFER_WAIT:
-                targetPosition = (int) _SlideState.TRANSFER_WAIT.getPosition();
-                break;
-            case RETRACTED:
-                targetPosition = (int) _SlideState.RETRACTED.getPosition();
-                break;
-        }
+        targetPosition = (int) targetState.getPosition();
     }
 
     public void update(_ClawState targetState) {
-        switch (targetState){
-            case CLOSED:
-                hardwareManager.intakeGripSrv.setPosition(_ClawState.CLOSED.getPosition());
-                break;
-            case OPEN:
-                hardwareManager.intakeGripSrv.setPosition(_ClawState.OPEN.getPosition());
-                break;
-        }
+        hardwareManager.intakeGripSrv.setPosition(targetState.getPosition());
     }
 
     public void update(_TiltServoState targetState){
-        switch (targetState){
-            case TRANSFER:
-                hardwareManager.intakeTiltSrv.setPosition(_TiltServoState.TRANSFER.getPosition());
-                break;
-            case LOWERED:
-                hardwareManager.intakeTiltSrv.setPosition(_TiltServoState.LOWERED.getPosition());
-                break;
-            case AIMING:
-                hardwareManager.intakeTiltSrv.setPosition(_TiltServoState.AIMING.getPosition());
-                break;
-            case PACKED:
-                hardwareManager.intakeTiltSrv.setPosition(_TiltServoState.PACKED.getPosition());
-                break;
-            case CLEARED:
-                hardwareManager.intakeTiltSrv.setPosition(_TiltServoState.CLEARED.getPosition());
-                break;
-            case AIMING_UPPER:
-                hardwareManager.intakeTiltSrv.setPosition(_TiltServoState.AIMING_UPPER.getPosition());
-                break;
+        hardwareManager.intakeTiltSrv.setPosition(targetState.getPosition());
+    }
 
-        }
+    public void update(_PitchServoState targetState){
+        hardwareManager.intakePitchSrv.setPosition(targetState.getPosition());
     }
 
     public void update(_YawServoState targetState, double i){
-        switch (targetState){
-            case TRANSFER:
-                hardwareManager.intakeYawSrv.setPosition(_YawServoState.TRANSFER.getPosition());
-                break;
-            case PICKUP_DEFAULT:
-                hardwareManager.intakeYawSrv.setPosition(_YawServoState.PICKUP_DEFAULT.getPosition());
-                break;
-            case AUTO_1:
-                hardwareManager.intakeYawSrv.setPosition(_YawServoState.AUTO_1.getPosition());
-                break;
-            case AUTO_2:
-                hardwareManager.intakeYawSrv.setPosition(_YawServoState.AUTO_2.getPosition());
-                break;
-            case AUTO_3:
-                hardwareManager.intakeYawSrv.setPosition(_YawServoState.AUTO_3.getPosition());
-                break;
-            case HOME:
-                hardwareManager.intakeYawSrv.setPosition(_YawServoState.HOME.getPosition());
-                break;
-            case MANUAL:
-                double currentPos = hardwareManager.intakeYawSrv.getPosition();
-                hardwareManager.intakeYawSrv.setPosition(currentPos + i);
-                break;
-
+        if (targetState == _YawServoState.MANUAL){
+            double currentPos = hardwareManager.intakeYawSrv.getPosition();
+            hardwareManager.intakeYawSrv.setPosition(currentPos + i);
+        }
+        else {
+            hardwareManager.intakeYawSrv.setPosition(targetState.getPosition());
         }
     }
 
@@ -207,8 +147,8 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
         }
     }
     public enum _ClawState implements Positionable {
-        OPEN(0.1f),
-        CLOSED(0.8f);
+        OPEN(0.88f),
+        CLOSED(0.55f);
 
         private final float position;
 
@@ -222,12 +162,11 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
         }
     }
     public enum _TiltServoState implements Positionable{
-        TRANSFER(0.33f),
-        LOWERED (0.965f),
-        AIMING(0.87f),
-        PACKED(0.3f),
-        CLEARED(0.5f),
-        AIMING_UPPER(0.8f);
+        TRANSFER(0.5f),
+        LOWERED (0f),
+        AIMING(0.1f),
+        PACKED(0.7f),
+        VERTICAL(0.5f);
 
         private final float position;
 
@@ -241,15 +180,34 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
         }
 
     }
+
+    public enum _PitchServoState implements Positionable{
+        TRANSFER(0.3f),
+        LOWERED (0.18f),
+        AIMING(0.1f),
+        PACKED(0.3f);
+        private final float position;
+
+        _PitchServoState(float position) {
+            this.position = position;
+        }
+
+        @Override
+        public float getPosition() {
+            return position;
+        }
+
+    }
+
     public enum _YawServoState implements Positionable{
-        TRANSFER(0.34f),
+        TRANSFER(0.32f),
         PICKUP_DEFAULT(0.85f),
         //Increment for manual
         MANUAL(0.1f),
         AUTO_1(0.6f),
         AUTO_2(0.7f),
         AUTO_3(0.74f),
-        HOME(0.3f);
+        HOME(0.75f);
 
         private final float position;
 
@@ -270,89 +228,5 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
         TRANSFER,
         CALIBRATION,
         HOME
-    }
-
-    public Action LoopLift(){
-        return new Action(){
-            @Override
-            public boolean run(@NonNull TelemetryPacket telemetryPacket){
-                if (isAutoLoop) {
-                    loop();
-                }
-                else{ return false;}
-
-                return true;
-            }
-        };
-    }
-
-    public Action DriveLift(int position){
-        return new Action(){
-
-            private boolean initialized = false;
-            @Override
-            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                if (!initialized){
-                    targetPosition = position;
-                    initialized = true;
-                }
-                return false;
-
-            }
-        };
-    }
-
-    public Action StopLift() {
-        return new Action(){
-            private boolean initialize = false;
-            @Override
-            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                if (!initialize){
-                    isAutoLoop = false;
-                    initialize = true;
-                }
-                return false;
-            }
-        };
-    }
-
-    public Action TiltAction(_TiltServoState state) {
-        return new Action(){
-            private boolean initialize = false;
-            @Override
-            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                if (!initialize){
-                    update(state);
-                    initialize = true;
-                }
-                return false;
-            }
-        };
-    }
-    public Action YawAction(_YawServoState state) {
-        return new Action(){
-            private boolean initialize = false;
-            @Override
-            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                if (!initialize){
-                    update(state, 0);
-                    initialize = true;
-                }
-                return false;
-            }
-        };
-    }
-    public Action GripAction(_ClawState state) {
-        return new Action(){
-            private boolean initialize = false;
-            @Override
-            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                if (!initialize){
-                    update(state);
-                    initialize = true;
-                }
-                return false;
-            }
-        };
     }
 }

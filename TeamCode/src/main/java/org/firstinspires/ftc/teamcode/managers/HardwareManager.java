@@ -2,11 +2,13 @@ package org.firstinspires.ftc.teamcode.managers;
 
 import android.graphics.Color;
 
+import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -40,6 +42,7 @@ public class HardwareManager{
 
     public Servo intakeGripSrv;
     public Servo intakeTiltSrv;
+    public Servo intakePitchSrv;
     public Servo intakeYawSrv;
 
     public Servo outtakeArmTiltSrvLeft;
@@ -47,6 +50,8 @@ public class HardwareManager{
     public Servo outtakeDepositorPitchSrv;
     public Servo outtakeDepositorYawSrv;
     public Servo outtakeDepositorClawSrv;
+
+    public DigitalChannel outtakeProximitySensor;
 
     public static int IMU_DATA_SAMPLING_RATE = 10;
 
@@ -79,9 +84,12 @@ public class HardwareManager{
 
         intake = this.hmap.get(DcMotorEx.class, "intakeMotor");
 
+        outtakeProximitySensor = this.hmap.get(DigitalChannel.class, "outtakeProximitySensor");
+
         intakeGripSrv = this.hmap.get(Servo.class, "intakeClawServo");
         intakeTiltSrv = this.hmap.get(Servo.class, "intakeTiltServo");
         intakeYawSrv = this.hmap.get(Servo.class, "intakeYawServo");
+        intakePitchSrv = this.hmap.get(Servo.class, "intakePitchServo");
 
         outtakeArmTiltSrvLeft = this.hmap.get(Servo.class, "outtakeTiltLeftServo");
         outtakeArmTiltSrvRight = this.hmap.get(Servo.class, "outtakeTiltRightServo");
@@ -113,6 +121,8 @@ public class HardwareManager{
         liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         outtakeArmTiltSrvLeft.setDirection(Servo.Direction.REVERSE);
+
+        outtakeProximitySensor.setMode(DigitalChannel.Mode.INPUT);
 
 //        if (!isAuto) {pinpointDriver.resetPosAndIMU();}
 

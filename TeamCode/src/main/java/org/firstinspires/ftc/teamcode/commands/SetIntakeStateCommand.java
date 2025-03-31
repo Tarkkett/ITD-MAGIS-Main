@@ -6,6 +6,7 @@ import com.arcrobotics.ftclib.command.WaitCommand;
 
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.AdjustYawServoCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeGripStateCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakePitchServoCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeSlidePositionCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeTiltServoPosCommand;
 import org.firstinspires.ftc.teamcode.commands.selectors.IntakePositionSelector;
@@ -14,7 +15,6 @@ import org.firstinspires.ftc.teamcode.opMode.StateMachine;
 import org.firstinspires.ftc.teamcode.util.GamepadPlus;
 
 public class SetIntakeStateCommand extends SequentialCommandGroup {
-
 
     public SetIntakeStateCommand(IntakeManager._IntakeState targetState, IntakeManager manager, StateMachine states, GamepadPlus gamepad_driver, GamepadPlus gamepad_codriver) {
 
@@ -28,8 +28,9 @@ public class SetIntakeStateCommand extends SequentialCommandGroup {
                                 new SetIntakeGripStateCommand(manager, IntakeManager._ClawState.OPEN),
                                 new SequentialCommandGroup(
                                         new WaitCommand(300),
-                                        new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.AIMING)
-                                )
+                                        new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.AIMING),
+                                        new SetIntakePitchServoCommand(manager, IntakeManager._PitchServoState.AIMING)
+                                        )
 
                         ),
                         new IntakePositionSelector(manager, gamepad_driver, gamepad_codriver).interruptOn(() -> states.robotState == StateMachine._RobotState.DEPOSIT)
@@ -39,6 +40,7 @@ public class SetIntakeStateCommand extends SequentialCommandGroup {
                 if (states.robotState == StateMachine._RobotState.DEPOSIT){
                     addCommands(
                             new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.PACKED),
+                            new SetIntakePitchServoCommand(manager, IntakeManager._PitchServoState.PACKED),
                             new SetIntakeGripStateCommand(manager, IntakeManager._ClawState.OPEN),
                             new AdjustYawServoCommand(manager, IntakeManager._YawServoState.HOME),
                             new WaitCommand(500),
@@ -51,6 +53,7 @@ public class SetIntakeStateCommand extends SequentialCommandGroup {
                             new AdjustYawServoCommand(manager, IntakeManager._YawServoState.HOME),
                             new WaitCommand(400),
                             new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.PACKED),
+                            new SetIntakePitchServoCommand(manager, IntakeManager._PitchServoState.PACKED),
                             new SetIntakeGripStateCommand(manager, IntakeManager._ClawState.OPEN)
                     );
                 }

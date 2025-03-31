@@ -6,6 +6,7 @@ import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
+import com.arcrobotics.ftclib.command.WaitUntilCommand;
 
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.MoveLiftCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetLiftPositionCommand;
@@ -69,7 +70,9 @@ public class DepositPositionSelector extends CommandBase {
                                     new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.PICKUP),
                                     new SetLiftPositionCommand(manager, OuttakeManager._LiftState.ZERO),
                                     new SetOuttakePitchServoCommand(manager, OuttakeManager._PitchServoState.PICKUP),
-                                    new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.OPEN)
+                                    new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.OPEN),
+                                    new WaitUntilCommand(() -> !manager.isInProximity()).interruptOn(() -> gamepad_codriver.gamepad.dpad_left),
+                                    new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.CLOSED)
                             )
                     );
                 }
@@ -113,6 +116,8 @@ public class DepositPositionSelector extends CommandBase {
                 );
 
             }
+
+
 
             else if (gamepad_codriver.gamepad.share) {
                 if (manager.canHang()){

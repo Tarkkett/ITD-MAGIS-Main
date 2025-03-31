@@ -31,6 +31,7 @@ public class HardwareTestManager{
     public static float intakeTiltServoPos = 0.25f;
     public static float intakeClawServoPos = 0.5f;
     public static float intakeYawServoPos = 0.36f;
+    public static float intakePitchServoPos = 0.7f;
 
     //?Outtake servos
     public static float outtakeClawServoPos = 1.0f;
@@ -63,6 +64,7 @@ public class HardwareTestManager{
         hardware.intakeTiltSrv.setPosition(intakeTiltServoPos);
         hardware.intakeGripSrv.setPosition(intakeClawServoPos);
         hardware.intakeYawSrv.setPosition(intakeYawServoPos);
+        hardware.intakePitchSrv.setPosition(intakePitchServoPos);
 
         intake.targetPosition = intakeTargetPos;
 
