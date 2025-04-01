@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.managers;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.drivers.C_MotionProfile;
 import org.firstinspires.ftc.teamcode.util.PID_PARAMS;
 import org.firstinspires.ftc.teamcode.drivers.C_PID;
 
@@ -20,6 +21,8 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
 
     private static final int MIN_THRESHOLD =0;
     private static final int MAX_THRESHOLD =2200;
+    private static final int MAX_CHANGE_PER_CYCLE = 10;
+    private static final double SMOOTHING_FACTOR = 0.4;
     public boolean selectingProcess = false;
 
     HardwareManager hardwareManager;
@@ -31,6 +34,8 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     //!Default PID parameters
     public PID_PARAMS params = new PID_PARAMS(0.012,0,0.0003, 5);
     C_PID controller = new C_PID(params);
+
+    C_MotionProfile motionProfile = new C_MotionProfile(1.0, 0.5, 0.5);
 
     protected int targetPosition;
     protected int encoderPos;
@@ -47,8 +52,8 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         return canPickup;
     }
 
-
     protected  _LiftMode mode;
+
 
     public OuttakeManager(HardwareManager hardwareManager, Telemetry telemetry, IntakeManager intakeManager){
 
@@ -66,10 +71,21 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         double power = controller.update(targetPosition, encoderPos);
 
         if (mode == _LiftMode.AUTO) {
+
+//            if (!motionProfile.isComplete()) {
+//                power = motionProfile.update();
+//            } else {
+//                power = controller.update(targetPosition, encoderPos);
+//            }
+
             updateLiftMotors(power);
         }
-
         updateTelemetry();
+    }
+
+    public void setLiftTarget(int target) {
+        targetPosition = target;
+        motionProfile.setTargetPosition(target);
     }
 
     private int calculateEncoderAverage() {
@@ -101,9 +117,6 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         } else return _OuttakeState.IDLE;
     }
 
-    /**
-     * @return isGRIP
-     */
     public boolean isClosed() {
         if (hardwareManager.outtakeDepositorClawSrv.getPosition() > _OuttakeClawServoState.CLOSED.getPosition() - 0.05 &&
                 hardwareManager.outtakeDepositorClawSrv.getPosition() < _OuttakeClawServoState.CLOSED.getPosition() + 0.05){
@@ -114,7 +127,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
 
     public void update(_LiftState targetState, int... position) {
         if (targetState != null) {
-            targetPosition = (int) targetState.getPosition();
+            setLiftTarget((int)targetState.getPosition());
         }
         else {
             this.targetPosition = position[0];
@@ -143,9 +156,6 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     public int GetLiftCurrentPos(){
         return encoderPos;
     }
-
-    private static final int MAX_CHANGE_PER_CYCLE = 10;
-    private static final double SMOOTHING_FACTOR = 0.4;
 
     public void lowerLiftPosition(int i) {
         int desiredPos = encoderPos + i;
@@ -190,14 +200,9 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         TRANSFER    (120),
         CLEARED(400),
         CLEARED_ALL(800),
-        HOME        (50),
         HIGH_BUCKET (2420),
-        HIGH_CHAMBER_LOWER(700),
         HANG_READY(2220),
         ZERO(0),
-        HIGH_CHAMBER_AUTO(1360),
-        HIGH_CHAMBER_REVERSED(1900),
-        HIGH_CHAMBER_LOWER_REVERSED(1430),
         HANG_DOWN(1500);
 
         private final float position;

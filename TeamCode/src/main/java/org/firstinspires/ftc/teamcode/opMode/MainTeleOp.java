@@ -6,10 +6,12 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.commands.low_level.ResetHeadingCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.SetRobotState;
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.ToggleIntakeTiltCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakePitchServoCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.ToggleOuttakeClawCommand;
+import org.firstinspires.ftc.teamcode.drivers.C_LoadingBar;
 import org.firstinspires.ftc.teamcode.managers.DriveManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 
@@ -48,7 +50,7 @@ public class MainTeleOp extends OpModeTemplate {
         //* Reset IMU
         gamepad_driver.getGamepadButton(gamepad_driver.options)
             .whenPressed(
-                    new InstantCommand(() -> hardwareManager.pinpointDriver.resetPosAndIMU()));
+                    new ResetHeadingCommand(hardwareManager, driveManager));
 
         //* Switch to CALIBRATION mode
         gamepad_codriver.getGamepadButton(gamepad_codriver.options)
@@ -62,14 +64,17 @@ public class MainTeleOp extends OpModeTemplate {
         //* Toggle intake tilt servo
         gamepad_driver.getGamepadButton(GamepadKeys.Button.X)
                 .whenPressed(new ToggleIntakeTiltCommand(intakeManager, outtakeManager, gamepad_driver));
+
+        progress(45);
     }
 
     @Override
     public void start(){
         CommandScheduler.getInstance().cancelAll();
+        hardwareManager.clearCache();
         CommandScheduler.getInstance().schedule(new SequentialCommandGroup(
+                new ResetHeadingCommand(hardwareManager, driveManager),
                 new SetRobotState(stateMachine, StateMachine._RobotState.HOME),
-//                new InstantCommand(() -> hardwareManager.pinpointDriver.resetPosAndIMU()),
                 new InstantCommand(() -> driveManager.Unlock())
         ));
     }

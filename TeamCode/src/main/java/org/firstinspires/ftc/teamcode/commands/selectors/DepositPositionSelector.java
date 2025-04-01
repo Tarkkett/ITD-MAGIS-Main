@@ -38,14 +38,10 @@ public class DepositPositionSelector extends CommandBase {
     }
 
     @Override
-    public void initialize(){
-        manager.selectingProcess = true;
-    }
+    public void initialize(){}
 
     @Override
     public void execute(){
-
-        if (manager.selectingProcess){
 
             //* Go to depositing position
             if (gamepad_codriver.gamepad.circle){
@@ -127,7 +123,7 @@ public class DepositPositionSelector extends CommandBase {
                 }
                 else gamepad_codriver.rumble(200);
             }
-        }
+
     }
 
     @Override

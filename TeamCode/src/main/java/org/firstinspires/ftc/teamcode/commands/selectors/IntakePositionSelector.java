@@ -17,12 +17,9 @@ import org.firstinspires.ftc.teamcode.util.GamepadPlus;
 @Config
 public class IntakePositionSelector extends CommandBase {
 
-    private static final int DISTANCE = 5;
     IntakeManager manager;
     GamepadPlus gamepad_driver;
     GamepadPlus gamepad_codriver;
-
-    private boolean isSelected = false;
 
     public static double shiftAngleCustom = 0;
 
@@ -33,23 +30,12 @@ public class IntakePositionSelector extends CommandBase {
     }
 
     @Override
-    public void initialize() {
-        manager.selectingProcess = true;
-    }
+    public void initialize() {}
 
     @Override
     public void execute() {
 
-        if (manager.selectingProcess) {
-            if (gamepad_codriver.isDown(gamepad_driver.dpad_Up)) {
-                CommandScheduler.getInstance().schedule(
-                        new MoveIntakeSomeBit(manager, DISTANCE)
-                );
-            } else if (gamepad_codriver.isDown(gamepad_driver.dpad_Down)) {
-                CommandScheduler.getInstance().schedule(
-                        new MoveIntakeSomeBit(manager, -DISTANCE)
-                );
-            } else if (gamepad_codriver.leftTrigger() > 0.2) {
+            if (gamepad_codriver.leftTrigger() > 0.2) {
                 CommandScheduler.getInstance().schedule(
                         new SequentialCommandGroup(
                                 new SetIntakeGripStateCommand(manager, IntakeManager._ClawState.CLOSED),
@@ -82,7 +68,8 @@ public class IntakePositionSelector extends CommandBase {
                         new SequentialCommandGroup(
                                 new SetIntakeSlidePositionCommand(manager, IntakeManager._SlideState.EXTENDED),
                                 new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.AIMING),
-                                new SetIntakePitchServoCommand(manager, IntakeManager._PitchServoState.AIMING)
+                                new SetIntakePitchServoCommand(manager, IntakeManager._PitchServoState.AIMING),
+                                new SetIntakeGripStateCommand(manager, IntakeManager._ClawState.OPEN)
                         )
 
                 );
@@ -98,7 +85,7 @@ public class IntakePositionSelector extends CommandBase {
                 );
             }
             ControlYawManually(gamepad_codriver.getLeftY(), gamepad_codriver.getLeftX());
-        }
+
 
     }
 

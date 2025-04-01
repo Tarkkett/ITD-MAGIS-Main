@@ -122,11 +122,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     }
 
     public void controlYawAngle(double yawServoAngle) {
-        if (selectingProcess) {
-            telemetry.addData("Yaw servo", yawServoAngle);
-            telemetry.update();
-            hardwareManager.intakeYawSrv.setPosition(yawServoAngle);
-        }
+        hardwareManager.intakeYawSrv.setPosition(yawServoAngle);
     }
 
     public enum _SlideState implements Positionable {

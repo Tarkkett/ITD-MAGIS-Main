@@ -41,6 +41,7 @@ public class MovementControlRunnable implements Runnable {
 
             hardwareManager.pinpointDriver.update(GoBildaPinpointDriver.readData.ONLY_UPDATE_HEADING);
 
+//            currentHeading = hardwareManager.pinpointDriver.getHeading();
             currentHeading = hardwareManager.pinpointDriver.getPosition().getHeading(AngleUnit.RADIANS);
 
             driveManager.drive(new Vector2d(x, y), rx, multiplier, currentHeading);

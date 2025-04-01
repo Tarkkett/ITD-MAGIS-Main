@@ -23,9 +23,13 @@ public class DriveManager implements Manager<DriveManager._DriveState> {
 
     private Thread movementControlThread;
     private MovementControlRunnable movementControlRunnable;
-    public static double P_Heading = 0.0;
+    public static double P_Heading = -1.6;
     public static double I_Heading = 0.0;
-    public static double D_Heading = 0.0;
+    public static double D_Heading = -0.1;
+
+    private double targetHeading = 0;
+    private double currentHeading = 0;
+    private boolean holdingHeading = false;
 
     public DriveManager(HardwareManager hardwareManager, Telemetry telemetry, GamepadPlus gamepadDriver, OuttakeManager outtakeManager) {
         this.hardwareManager = hardwareManager;
@@ -49,9 +53,6 @@ public class DriveManager implements Manager<DriveManager._DriveState> {
         return managerState;
     }
 
-    private double targetHeading = 0;
-    private boolean holdingHeading = false;
-
     private double wrapAngle(double angle) {
         while (angle > Math.PI) angle -= 2 * Math.PI;
         while (angle < -Math.PI) angle += 2 * Math.PI;
@@ -60,18 +61,23 @@ public class DriveManager implements Manager<DriveManager._DriveState> {
 
     public void drive(Vector2d movementVector, double rotationInput, double powerMultiplier, double currentHeading) {
 
-        currentHeading = wrapAngle(currentHeading);
+        this.currentHeading = currentHeading;
+
+        this.currentHeading = wrapAngle(currentHeading);
 
         headingController.tune(P_Heading, I_Heading, D_Heading);
+
         FtcDashboard dashboard = FtcDashboard.getInstance();
         Telemetry telemetry = dashboard.getTelemetry();
+
+        double movementMagnitude = movementVector.magnitude();
 
         telemetry.addData("CurrentRotation", currentHeading);
 
         double cosHeading = Math.cos(-currentHeading);
         double sinHeading = Math.sin(-currentHeading);
 
-        if (Math.abs(rotationInput) > 0.1) {
+        if (Math.abs(rotationInput) > 0.05) {
             targetHeading = currentHeading;
             holdingHeading = false;
         } else if (!holdingHeading) {
@@ -83,7 +89,14 @@ public class DriveManager implements Manager<DriveManager._DriveState> {
         telemetry.addData("IsHoldingHeading? ", holdingHeading);
 
         double headingError = wrapAngle(targetHeading - currentHeading);
-        double headingCorrection = holdingHeading ? headingController.update(headingError, 0) : 0;
+        double headingCorrection = 0;
+
+        if (holdingHeading) {
+            if (movementMagnitude > 0.1) {
+                double adaptiveGain = Math.min(1.0, Math.abs(headingError) / Math.toRadians(10)); // Scale correction
+                headingCorrection = headingController.update(headingError, 0) * adaptiveGain;
+            }
+        }
 
         double adjustedX = movementVector.getX() * cosHeading - movementVector.getY() * sinHeading;
         double adjustedY = movementVector.getX() * sinHeading + movementVector.getY() * cosHeading;
@@ -142,6 +155,11 @@ public class DriveManager implements Manager<DriveManager._DriveState> {
                 Thread.currentThread().interrupt();
             }
         }
+    }
+
+    public void resetHeading() {
+        currentHeading = 0;
+        targetHeading = 0;
     }
 
     public enum _DriveState {

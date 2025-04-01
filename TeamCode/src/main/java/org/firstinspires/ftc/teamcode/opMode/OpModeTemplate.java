@@ -4,6 +4,7 @@ import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.commands.low_level.SetServosToDefaultsCommand;
+import org.firstinspires.ftc.teamcode.drivers.C_LoadingBar;
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.managers.DriveManager;
 import org.firstinspires.ftc.teamcode.managers.HardwareManager;
@@ -12,6 +13,9 @@ import org.firstinspires.ftc.teamcode.managers.testing.HardwareTestManager;
 import org.firstinspires.ftc.teamcode.util.GamepadPlus;
 
 public abstract class OpModeTemplate extends OpMode {
+
+    private C_LoadingBar loadingBar;
+    private int progress = 0;
 
     protected boolean teamSelected = false;
     protected boolean sideSelected = false;
@@ -37,6 +41,12 @@ public abstract class OpModeTemplate extends OpMode {
 
     protected void initSystems(boolean isAuto){
 
+        if (loadingBar == null) {
+            loadingBar = new C_LoadingBar(telemetry);
+        }
+
+        progress(10);
+
         this.isAuto = isAuto;
 
         hardwareManager = new HardwareManager(hardwareMap, isAuto);
@@ -44,6 +54,8 @@ public abstract class OpModeTemplate extends OpMode {
 
         outtakeManager = new OuttakeManager(hardwareManager, telemetry, intakeManager);
         intakeManager = new IntakeManager(hardwareManager, telemetry, gamepad_driver, gamepad_codriver);
+
+        progress(15);
 
         if (!isAuto) {
             gamepad_driver = new GamepadPlus(gamepad1);
@@ -58,62 +70,75 @@ public abstract class OpModeTemplate extends OpMode {
         }
         if (isAuto) SetSystemDefaults();
 
+        progress(17);
+
+    }
+
+    public void progress(int i) {
+        progress += i;
     }
 
     protected void SetSystemDefaults() {
         CommandScheduler.getInstance().schedule(
                 new SetServosToDefaultsCommand(outtakeManager, intakeManager, hardwareManager)
         );
-        CommandScheduler.getInstance().run();
     }
 
     @Override
     public void init_loop() {
+
+        if (progress <= 100){
+            loadingBar.updateProgress(progress);
+        } else { loadingBar.complete(); }
+
         CommandScheduler.getInstance().run();
-        PromptUserForAllianceSelection();
-        if (isAuto) PromptUserForSideSelection();
+
+        handleTeamSelection();
+        if (isAuto) handleSideSelection();
+
+        telemetry.addData("Alliance Info", "Team: " + team.name() + ", Side: " + side.name());
+        telemetry.update();
     }
 
-    private void PromptUserForSideSelection() {
+    private void handleSideSelection() {
         if (sideSelected){
             telemetry.clearAll();
-            telemetry.addData("Side selected", side.name());
         }
         else {
             telemetry.addLine("▲ for LEFT, ⵝ for RIGHT;");
-
             if (gamepad1.triangle){
-                side = Side.LEFT;
-                sideSelected = true;
+                selectSide(Side.LEFT);
             }
             else if (gamepad1.cross) {
-                side = Side.RIGHT;
-                sideSelected = true;
+                selectSide(Side.RIGHT);
             }
         }
     }
 
-    private void PromptUserForAllianceSelection() {
-        if(teamSelected){
+    private void handleTeamSelection() {
+        if (teamSelected) {
             telemetry.clearAll();
-            telemetry.addData("Team selected", team.name());
-        }
-        else{
+        } else {
             telemetry.addLine("■ for BLUE, ● for RED;");
-
-            if (gamepad1.square){
-                team = Alliance.BLUE;
-                hardwareManager.setIndicatorLEDs(0xFF0000FF);
-                teamSelected = true;
-            }
-            else if (gamepad1.circle) {
-                team = Alliance.RED;
-                hardwareManager.setIndicatorLEDs(0xFFFF0000);
-                teamSelected = true;
+            if (gamepad1.square) {
+                selectTeam(Alliance.BLUE, 0xFF0000FF);
+            } else if (gamepad1.circle) {
+                selectTeam(Alliance.RED, 0xFFFF0000);
             }
         }
     }
 
+    private void selectTeam(Alliance team, int ledColor) {
+        this.team = team;
+        hardwareManager.setIndicatorLEDs(ledColor);
+        teamSelected = true;
+        progress(13);
+    }
+    private void selectSide(Side side) {
+        this.side = side;
+        sideSelected = true;
+        progress(13);
+    }
 
     public enum Alliance {
         RED,
@@ -130,6 +155,7 @@ public abstract class OpModeTemplate extends OpMode {
     //! Stop OpMode procedure
     @Override
     public void stop() {
+        hardwareManager.stopDriveMotors();
         CommandScheduler.getInstance().reset();
         driveManager.stopMovementControlThread();
     }
