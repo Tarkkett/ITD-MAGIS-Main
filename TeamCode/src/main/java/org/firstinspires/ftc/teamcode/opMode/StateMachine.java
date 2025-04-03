@@ -53,7 +53,6 @@ public class StateMachine implements State<StateMachine._RobotState> {
             case DEPOSIT:
                 if (robotState != _RobotState.DEPOSIT){
                     robotState = _RobotState.DEPOSIT;
-                    intakeManager.selectingProcess = false;
                     CommandScheduler.getInstance().schedule(
                             new ParallelCommandGroup(
                                     new SetIntakeStateCommand(IntakeManager._IntakeState.HOME, intakeManager, this, gamepad_driver, gamepad_codriver),
@@ -67,7 +66,6 @@ public class StateMachine implements State<StateMachine._RobotState> {
             case INTAKE:
                 if (robotState != _RobotState.INTAKE) {
                     robotState = _RobotState.INTAKE;
-                    outtakeManager.selectingProcess = false;
                     CommandScheduler.getInstance().schedule(
                             new ParallelCommandGroup(
                                     new SetOuttakeStateCommand(OuttakeManager._OuttakeState.HOME, outtakeManager, gamepad_driver, gamepad_codriver, driveManager, hw, this),
@@ -81,8 +79,6 @@ public class StateMachine implements State<StateMachine._RobotState> {
             case TRANSFER:
                 if (robotState == _RobotState.INTAKE) {
                     robotState = _RobotState.TRANSFER;
-                    intakeManager.selectingProcess = false;
-                    outtakeManager.selectingProcess = false;
                     CommandScheduler.getInstance().schedule(
                             new TransferCommand(intakeManager, outtakeManager)
                     );

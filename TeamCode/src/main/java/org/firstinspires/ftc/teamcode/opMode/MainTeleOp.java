@@ -18,48 +18,42 @@ import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 @TeleOp(name = "Main TeleOp", group = "OpMode")
 public class MainTeleOp extends OpModeTemplate {
 
-    //! "Better Comments" plugin is advised
+    private long lastLoopTime = System.nanoTime();
+
     @Override
     public void init() {
-
         initSystems(false);
-
         telemetry.setAutoClear(true);
 
         //* Toggle drivetrain lock
         gamepad_driver.getGamepadButton(gamepad_driver.share)
-            .toggleWhenActive(
-                new InstantCommand(() -> stateMachine.SetDrivetrainState(DriveManager._DriveState.LOCKED)),
-                new InstantCommand(() -> stateMachine.SetDrivetrainState(DriveManager._DriveState.UNLOCKED)));
+                .toggleWhenActive(
+                        new InstantCommand(() -> stateMachine.SetDrivetrainState(DriveManager._DriveState.LOCKED)),
+                        new InstantCommand(() -> stateMachine.SetDrivetrainState(DriveManager._DriveState.UNLOCKED)));
 
         //* Enable intake settings
         gamepad_codriver.getGamepadButton(gamepad_codriver.leftBumper)
-            .whenPressed(
-                    new SetRobotState(stateMachine, StateMachine._RobotState.INTAKE));
+                .whenPressed(new SetRobotState(stateMachine, StateMachine._RobotState.INTAKE));
 
         //* Transfer Sequence
         gamepad_codriver.getGamepadButton(gamepad_codriver.dpad_Right)
-                .whenPressed(
-                        new SetRobotState(stateMachine, StateMachine._RobotState.TRANSFER));
+                .whenPressed(new SetRobotState(stateMachine, StateMachine._RobotState.TRANSFER));
 
         //* Go to deposit settings
         gamepad_codriver.getGamepadButton(gamepad_codriver.rightBumper)
-            .whenPressed(
-                    new SetRobotState(stateMachine, StateMachine._RobotState.DEPOSIT));
+                .whenPressed(new SetRobotState(stateMachine, StateMachine._RobotState.DEPOSIT));
 
         //* Reset IMU
         gamepad_driver.getGamepadButton(gamepad_driver.options)
-            .whenPressed(
-                    new ResetHeadingCommand(hardwareManager, driveManager));
+                .whenPressed(new ResetHeadingCommand(hardwareManager, driveManager));
 
         //* Switch to CALIBRATION mode
         gamepad_codriver.getGamepadButton(gamepad_codriver.options)
-                .whenPressed(
-                        new SetRobotState(stateMachine, StateMachine._RobotState.CALIBRATION));
+                .whenPressed(new SetRobotState(stateMachine, StateMachine._RobotState.CALIBRATION));
 
         //* Toggle outtake claw
         gamepad_codriver.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
-            .whenPressed(new ToggleOuttakeClawCommand(outtakeManager, gamepad_codriver));
+                .whenPressed(new ToggleOuttakeClawCommand(outtakeManager, gamepad_codriver));
 
         //* Toggle intake tilt servo
         gamepad_driver.getGamepadButton(GamepadKeys.Button.X)
@@ -69,9 +63,9 @@ public class MainTeleOp extends OpModeTemplate {
     }
 
     @Override
-    public void start(){
+    public void start() {
+        telemetry.clearAll();
         CommandScheduler.getInstance().cancelAll();
-        hardwareManager.clearCache();
         CommandScheduler.getInstance().schedule(new SequentialCommandGroup(
                 new ResetHeadingCommand(hardwareManager, driveManager),
                 new SetRobotState(stateMachine, StateMachine._RobotState.HOME),
@@ -81,9 +75,18 @@ public class MainTeleOp extends OpModeTemplate {
 
     @Override
     public void loop() {
+        long startTime = System.nanoTime();
+
         CommandScheduler.getInstance().run();
         intakeManager.loop();
         outtakeManager.loop();
         stateMachine.loop();
+
+        long endTime = System.nanoTime();
+        long loopDuration = (endTime - startTime) / 1_000_000;
+        telemetry.addData("Loop Time (ms)", loopDuration);
+        telemetry.update();
+
     }
+
 }

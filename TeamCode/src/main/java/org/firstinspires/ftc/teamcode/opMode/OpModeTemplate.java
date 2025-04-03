@@ -35,8 +35,6 @@ public abstract class OpModeTemplate extends OpMode {
 
     protected HardwareTestManager testManager;
 
-    //Zero point
-
     protected boolean isAuto = false;
 
     protected void initSystems(boolean isAuto){
@@ -67,6 +65,7 @@ public abstract class OpModeTemplate extends OpMode {
 
             stateMachine = new StateMachine(outtakeManager, intakeManager, driveManager, telemetry, gamepad_driver, gamepad_codriver, hardwareManager, testManager);
 
+            progress(13);
         }
         if (isAuto) SetSystemDefaults();
 
@@ -82,6 +81,7 @@ public abstract class OpModeTemplate extends OpMode {
         CommandScheduler.getInstance().schedule(
                 new SetServosToDefaultsCommand(outtakeManager, intakeManager, hardwareManager)
         );
+        progress(13);
     }
 
     @Override
@@ -132,12 +132,9 @@ public abstract class OpModeTemplate extends OpMode {
         this.team = team;
         hardwareManager.setIndicatorLEDs(ledColor);
         teamSelected = true;
-        progress(13);
     }
     private void selectSide(Side side) {
         this.side = side;
-        sideSelected = true;
-        progress(13);
     }
 
     public enum Alliance {
@@ -155,7 +152,6 @@ public abstract class OpModeTemplate extends OpMode {
     //! Stop OpMode procedure
     @Override
     public void stop() {
-        hardwareManager.stopDriveMotors();
         CommandScheduler.getInstance().reset();
         driveManager.stopMovementControlThread();
     }

@@ -26,11 +26,11 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     }
 
     private static final int MIN_SLIDE_RETRACT = 0;
-    private static final int MAX_SLIDE_EXTEND = 650;
+    private static final int MAX_SLIDE_EXTEND = 750;
 
     private final HardwareManager hardwareManager;
-    public boolean selectingProcess = false;
     private Telemetry telemetry;
+
     private GamepadPlus gamepad_driver;
     private GamepadPlus gamepad_codriver;
 
@@ -38,8 +38,6 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     public int encoderPos = 0;
 
     public _IntakeState managerState = _IntakeState.HOME;
-
-    private boolean isAutoLoop = true;
 
     public PID_PARAMS params = new PID_PARAMS(0.01, 0.002, 0.0004, 5);
     C_PID controller = new C_PID(params);
@@ -74,7 +72,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
 
     @Override
     public _IntakeState GetManagerState() {
-        if (selectingProcess && encoderPos > 150 && managerState == _IntakeState.INTAKE){
+        if (encoderPos > 150 && managerState == _IntakeState.INTAKE){
             return _IntakeState.INTAKE;
         }
         if (managerState == _IntakeState.HOME && encoderPos < 150){
@@ -126,9 +124,9 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     }
 
     public enum _SlideState implements Positionable {
-        EXTENDED    (550),
+        EXTENDED    (570),
         TRANSFER    (170),
-        RETRACTED   (10),
+        RETRACTED   (50),
         TRANSFER_WAIT(300);
 
         private final float position;
@@ -200,9 +198,6 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
         PICKUP_DEFAULT(0.85f),
         //Increment for manual
         MANUAL(0.1f),
-        AUTO_1(0.6f),
-        AUTO_2(0.7f),
-        AUTO_3(0.74f),
         HOME(0.75f);
 
         private final float position;

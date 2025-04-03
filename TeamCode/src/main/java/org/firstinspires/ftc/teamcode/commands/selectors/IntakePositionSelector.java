@@ -6,8 +6,7 @@ import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 
-import org.firstinspires.ftc.teamcode.commands.low_level.intake.MoveIntakeSomeBit;
-import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeGripStateCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeClawStateCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakePitchServoCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeSlidePositionCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeTiltServoPosCommand;
@@ -30,15 +29,12 @@ public class IntakePositionSelector extends CommandBase {
     }
 
     @Override
-    public void initialize() {}
-
-    @Override
     public void execute() {
 
             if (gamepad_codriver.leftTrigger() > 0.2) {
                 CommandScheduler.getInstance().schedule(
                         new SequentialCommandGroup(
-                                new SetIntakeGripStateCommand(manager, IntakeManager._ClawState.CLOSED),
+                                new SetIntakeClawStateCommand(manager, IntakeManager._ClawState.CLOSED),
                                 new WaitCommand(400),
                                 new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.VERTICAL),
                                 new WaitCommand(400),
@@ -49,7 +45,7 @@ public class IntakePositionSelector extends CommandBase {
             } else if (gamepad_codriver.isDown(gamepad_driver.triangle)) {
                 CommandScheduler.getInstance().schedule(
                         new SequentialCommandGroup(
-                                new SetIntakeGripStateCommand(manager, IntakeManager._ClawState.OPEN),
+                                new SetIntakeClawStateCommand(manager, IntakeManager._ClawState.OPEN),
                                 new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.AIMING),
                                 new SetIntakePitchServoCommand(manager, IntakeManager._PitchServoState.AIMING)
                         )
@@ -58,6 +54,8 @@ public class IntakePositionSelector extends CommandBase {
             } else if (gamepad_codriver.isDown(gamepad_driver.cross)) {
                 CommandScheduler.getInstance().schedule(
                         new SequentialCommandGroup(
+                                new SetIntakeClawStateCommand(manager, IntakeManager._ClawState.OPEN),
+                                new WaitCommand(200),
                                 new SetIntakeSlidePositionCommand(manager, IntakeManager._SlideState.RETRACTED)
                         )
 
@@ -68,8 +66,7 @@ public class IntakePositionSelector extends CommandBase {
                         new SequentialCommandGroup(
                                 new SetIntakeSlidePositionCommand(manager, IntakeManager._SlideState.EXTENDED),
                                 new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.AIMING),
-                                new SetIntakePitchServoCommand(manager, IntakeManager._PitchServoState.AIMING),
-                                new SetIntakeGripStateCommand(manager, IntakeManager._ClawState.OPEN)
+                                new SetIntakePitchServoCommand(manager, IntakeManager._PitchServoState.AIMING)
                         )
 
                 );
@@ -77,14 +74,14 @@ public class IntakePositionSelector extends CommandBase {
             else if (gamepad_codriver.rightTrigger() > 0.2) {
                 CommandScheduler.getInstance().schedule(
                         new SequentialCommandGroup(
-                                new SetIntakeGripStateCommand(manager, IntakeManager._ClawState.OPEN),
+                                new SetIntakeClawStateCommand(manager, IntakeManager._ClawState.OPEN),
                                 new WaitCommand(100),
                                 new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.LOWERED),
                                 new SetIntakePitchServoCommand(manager, IntakeManager._PitchServoState.LOWERED)
                         )
                 );
             }
-            ControlYawManually(gamepad_codriver.getLeftY(), gamepad_codriver.getLeftX());
+            ControlYawManually(gamepad_codriver.getRightY(), gamepad_codriver.getRightX());
 
 
     }

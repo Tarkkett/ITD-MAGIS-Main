@@ -23,7 +23,6 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     private static final int MAX_THRESHOLD =2200;
     private static final int MAX_CHANGE_PER_CYCLE = 10;
     private static final double SMOOTHING_FACTOR = 0.4;
-    public boolean selectingProcess = false;
 
     HardwareManager hardwareManager;
     IntakeManager intakeManager;
@@ -31,11 +30,8 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
 
     public OuttakeManager._OuttakeState managerState;
 
-    //!Default PID parameters
     public PID_PARAMS params = new PID_PARAMS(0.012,0,0.0003, 5);
     C_PID controller = new C_PID(params);
-
-    C_MotionProfile motionProfile = new C_MotionProfile(1.0, 0.5, 0.5);
 
     protected int targetPosition;
     protected int encoderPos;
@@ -85,7 +81,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
 
     public void setLiftTarget(int target) {
         targetPosition = target;
-        motionProfile.setTargetPosition(target);
+//        motionProfile.setTargetPosition(target);
     }
 
     private int calculateEncoderAverage() {
@@ -108,7 +104,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
 
     @Override
     public _OuttakeState GetManagerState() {
-        if (managerState == _OuttakeState.DEPOSIT && selectingProcess && encoderPos > 150){
+        if (managerState == _OuttakeState.DEPOSIT && encoderPos > 150){
             return _OuttakeState.DEPOSIT;
         } else if (managerState == _OuttakeState.HOME && encoderPos < 150){
             return _OuttakeState.HOME;
@@ -127,7 +123,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
 
     public void update(_LiftState targetState, int... position) {
         if (targetState != null) {
-            setLiftTarget((int)targetState.getPosition());
+            targetPosition = (int) targetState.getPosition();
         }
         else {
             this.targetPosition = position[0];
