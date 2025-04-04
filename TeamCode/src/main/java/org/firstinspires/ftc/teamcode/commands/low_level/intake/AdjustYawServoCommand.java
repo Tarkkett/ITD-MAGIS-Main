@@ -6,6 +6,6 @@ import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 
 public class AdjustYawServoCommand extends InstantCommand {
     public AdjustYawServoCommand(IntakeManager manager, IntakeManager._YawServoState state) {
-        super(() -> manager.update(state, 0));
+        super(() -> manager.update(state));
     }
 }

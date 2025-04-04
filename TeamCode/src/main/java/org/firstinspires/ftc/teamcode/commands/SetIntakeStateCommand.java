@@ -11,12 +11,13 @@ import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeSlidePo
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeTiltServoPosCommand;
 import org.firstinspires.ftc.teamcode.commands.selectors.IntakePositionSelector;
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
+import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 import org.firstinspires.ftc.teamcode.opMode.StateMachine;
 import org.firstinspires.ftc.teamcode.util.GamepadPlus;
 
 public class SetIntakeStateCommand extends SequentialCommandGroup {
 
-    public SetIntakeStateCommand(IntakeManager._IntakeState targetState, IntakeManager manager, StateMachine states, GamepadPlus gamepad_driver, GamepadPlus gamepad_codriver) {
+    public SetIntakeStateCommand(IntakeManager._IntakeState targetState, IntakeManager manager, OuttakeManager outtakeManager, StateMachine states, GamepadPlus gamepad_driver, GamepadPlus gamepad_codriver) {
 
         manager.managerState = targetState;
 
@@ -33,7 +34,7 @@ public class SetIntakeStateCommand extends SequentialCommandGroup {
                                 )
 
                         ),
-                        new IntakePositionSelector(manager, gamepad_driver, gamepad_codriver).interruptOn(() -> states.robotState == StateMachine._RobotState.DEPOSIT)
+                        new IntakePositionSelector(manager, outtakeManager, gamepad_driver, gamepad_codriver).interruptOn(() -> states.robotState == StateMachine._RobotState.DEPOSIT)
                 );
                 break;
             case HOME:

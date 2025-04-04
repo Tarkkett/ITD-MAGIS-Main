@@ -29,12 +29,12 @@ public class HardwareTestManager{
 
     //?Intake servos
     public static float intakeTiltServoPos = 0.25f;
-    public static float intakeClawServoPos = 0.5f;
+    public static float intakeClawServoPos = 0.7f;
     public static float intakeYawServoPos = 0.36f;
     public static float intakePitchServoPos = 0.5f;
 
     //?Outtake servos
-    public static float outtakeClawServoPos = 1.0f;
+    public static float outtakeClawServoPos = 0.7f;
     public static float outtakeTiltServoPos = 0.65f;
     public static float outtakePitchServoPos = 0.5f;
     public static float outtakeYawServoPos = 0.13f;

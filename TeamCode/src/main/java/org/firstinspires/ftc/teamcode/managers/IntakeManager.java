@@ -21,6 +21,13 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
         else return _SlideState.EXTENDED;
     }
 
+    public _YawMode GetYawMode() {
+        return yawMode;
+    }
+    public void SetYawMode(_YawMode mode) {
+        yawMode = mode;
+    }
+
     public interface Positionable {
         float getPosition();
     }
@@ -38,6 +45,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     public int encoderPos = 0;
 
     public _IntakeState managerState = _IntakeState.HOME;
+    private _YawMode yawMode = _YawMode.MANUAL;
 
     public PID_PARAMS params = new PID_PARAMS(0.01, 0.002, 0.0004, 5);
     C_PID controller = new C_PID(params);
@@ -69,7 +77,6 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
         hardwareManager.intake.setPower(power);
     }
 
-
     @Override
     public _IntakeState GetManagerState() {
         if (encoderPos > 150 && managerState == _IntakeState.INTAKE){
@@ -99,12 +106,8 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
         hardwareManager.intakePitchSrv.setPosition(targetState.getPosition());
     }
 
-    public void update(_YawServoState targetState, double i){
-        if (targetState == _YawServoState.MANUAL){
-            double currentPos = hardwareManager.intakeYawSrv.getPosition();
-            hardwareManager.intakeYawSrv.setPosition(currentPos + i);
-        }
-        else {
+    public void update(_YawServoState targetState){
+        if (GetYawMode() == _YawMode.AUTO) {
             hardwareManager.intakeYawSrv.setPosition(targetState.getPosition());
         }
     }
@@ -120,14 +123,16 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     }
 
     public void controlYawAngle(double yawServoAngle) {
-        hardwareManager.intakeYawSrv.setPosition(yawServoAngle);
+        if (GetYawMode() == _YawMode.MANUAL) {
+            hardwareManager.intakeYawSrv.setPosition(yawServoAngle);
+        }
     }
 
     public enum _SlideState implements Positionable {
-        EXTENDED    (570),
-        TRANSFER    (170),
+        EXTENDED    (650),
+        TRANSFER    (380),
         RETRACTED   (50),
-        TRANSFER_WAIT(300);
+        TRANSFER_WAIT(580);
 
         private final float position;
 
@@ -156,11 +161,11 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
         }
     }
     public enum _TiltServoState implements Positionable{
-        TRANSFER(0.5f),
+        TRANSFER(0.45f),
         LOWERED (0f),
         AIMING(0.1f),
         PACKED(0.7f),
-        VERTICAL(0.5f);
+        VERTICAL(0.3f);
 
         private final float position;
 
@@ -176,7 +181,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     }
 
     public enum _PitchServoState implements Positionable{
-        TRANSFER(0.3f),
+        TRANSFER(0.84f),
         LOWERED (0.18f),
         AIMING(0.1f),
         PACKED(0.3f);
@@ -194,10 +199,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     }
 
     public enum _YawServoState implements Positionable{
-        TRANSFER(0.32f),
-        PICKUP_DEFAULT(0.85f),
-        //Increment for manual
-        MANUAL(0.1f),
+        TRANSFER(0.36f),
         HOME(0.75f);
 
         private final float position;
@@ -211,6 +213,11 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
             return position;
         }
 
+    }
+
+    public enum _YawMode{
+        MANUAL,
+        AUTO
     }
 
     public enum _IntakeState{

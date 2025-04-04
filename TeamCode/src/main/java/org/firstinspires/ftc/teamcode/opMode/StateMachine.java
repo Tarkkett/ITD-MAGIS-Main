@@ -55,7 +55,7 @@ public class StateMachine implements State<StateMachine._RobotState> {
                     robotState = _RobotState.DEPOSIT;
                     CommandScheduler.getInstance().schedule(
                             new ParallelCommandGroup(
-                                    new SetIntakeStateCommand(IntakeManager._IntakeState.HOME, intakeManager, this, gamepad_driver, gamepad_codriver),
+                                    new SetIntakeStateCommand(IntakeManager._IntakeState.HOME, intakeManager, outtakeManager, this, gamepad_driver, gamepad_codriver),
                                     new SetOuttakeStateCommand(OuttakeManager._OuttakeState.PICKUP, outtakeManager, gamepad_driver, gamepad_codriver, driveManager, hw, this)
                             )
                     );
@@ -69,7 +69,7 @@ public class StateMachine implements State<StateMachine._RobotState> {
                     CommandScheduler.getInstance().schedule(
                             new ParallelCommandGroup(
                                     new SetOuttakeStateCommand(OuttakeManager._OuttakeState.HOME, outtakeManager, gamepad_driver, gamepad_codriver, driveManager, hw, this),
-                                    new SetIntakeStateCommand(IntakeManager._IntakeState.INTAKE, intakeManager, this, gamepad_driver, gamepad_codriver)
+                                    new SetIntakeStateCommand(IntakeManager._IntakeState.INTAKE, intakeManager, outtakeManager, this, gamepad_driver, gamepad_codriver)
                             )
                     );
                 } else {
@@ -90,7 +90,7 @@ public class StateMachine implements State<StateMachine._RobotState> {
                 robotState = _RobotState.HOME;
                 CommandScheduler.getInstance().schedule(
                         new ParallelCommandGroup(
-                                new SetIntakeStateCommand(IntakeManager._IntakeState.HOME, intakeManager, this, gamepad_driver, gamepad_codriver),
+                                new SetIntakeStateCommand(IntakeManager._IntakeState.HOME, intakeManager, outtakeManager, this, gamepad_driver, gamepad_codriver),
                                 new SetOuttakeStateCommand(OuttakeManager._OuttakeState.HOME, outtakeManager, gamepad_driver, gamepad_codriver, driveManager, hw, this)
                         )
                 );

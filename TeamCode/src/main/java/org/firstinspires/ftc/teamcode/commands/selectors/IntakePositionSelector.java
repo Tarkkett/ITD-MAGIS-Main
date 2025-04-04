@@ -6,26 +6,30 @@ import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 
+import org.firstinspires.ftc.teamcode.commands.TransferCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeClawStateCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakePitchServoCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeSlidePositionCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeTiltServoPosCommand;
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
+import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 import org.firstinspires.ftc.teamcode.util.GamepadPlus;
 
 @Config
 public class IntakePositionSelector extends CommandBase {
 
     IntakeManager manager;
+    OuttakeManager outtakeManager;
     GamepadPlus gamepad_driver;
     GamepadPlus gamepad_codriver;
 
     public static double shiftAngleCustom = 0;
 
-    public IntakePositionSelector(IntakeManager manager, GamepadPlus gamepad_driver, GamepadPlus gamepad_codriver) {
+    public IntakePositionSelector(IntakeManager manager, OuttakeManager outtakeManager, GamepadPlus gamepad_driver, GamepadPlus gamepad_codriver) {
         this.manager = manager;
         this.gamepad_driver = gamepad_driver;
         this.gamepad_codriver = gamepad_codriver;
+        this.outtakeManager = outtakeManager;
     }
 
     @Override
@@ -42,7 +46,7 @@ public class IntakePositionSelector extends CommandBase {
                         )
                 );
 
-            } else if (gamepad_codriver.isDown(gamepad_driver.triangle)) {
+            } else if (gamepad_codriver.isDown(gamepad_codriver.triangle)) {
                 CommandScheduler.getInstance().schedule(
                         new SequentialCommandGroup(
                                 new SetIntakeClawStateCommand(manager, IntakeManager._ClawState.OPEN),
@@ -51,7 +55,7 @@ public class IntakePositionSelector extends CommandBase {
                         )
 
                 );
-            } else if (gamepad_codriver.isDown(gamepad_driver.cross)) {
+            } else if (gamepad_codriver.isDown(gamepad_codriver.cross)) {
                 CommandScheduler.getInstance().schedule(
                         new SequentialCommandGroup(
                                 new SetIntakeClawStateCommand(manager, IntakeManager._ClawState.OPEN),
@@ -61,7 +65,7 @@ public class IntakePositionSelector extends CommandBase {
 
                 );
             }
-            else if (gamepad_codriver.isDown(gamepad_driver.circle)) {
+            else if (gamepad_codriver.isDown(gamepad_codriver.circle)) {
                 CommandScheduler.getInstance().schedule(
                         new SequentialCommandGroup(
                                 new SetIntakeSlidePositionCommand(manager, IntakeManager._SlideState.EXTENDED),
@@ -69,6 +73,13 @@ public class IntakePositionSelector extends CommandBase {
                                 new SetIntakePitchServoCommand(manager, IntakeManager._PitchServoState.AIMING)
                         )
 
+                );
+            }
+            else if (gamepad_codriver.isDown(gamepad_codriver.leftBumper)) {
+                CommandScheduler.getInstance().schedule(
+                        new SequentialCommandGroup(
+                                new TransferCommand(manager, outtakeManager)
+                        )
                 );
             }
             else if (gamepad_codriver.rightTrigger() > 0.2) {

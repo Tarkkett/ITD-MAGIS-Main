@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.managers;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.drivers.C_MotionProfile;
 import org.firstinspires.ftc.teamcode.util.PID_PARAMS;
 import org.firstinspires.ftc.teamcode.drivers.C_PID;
 
@@ -193,10 +192,10 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
 
     public enum _LiftState implements Positionable{
         HIGH_CHAMBER(750),
-        TRANSFER    (120),
+        TRANSFER    (0),
         CLEARED(400),
         CLEARED_ALL(800),
-        HIGH_BUCKET (2420),
+        HIGH_BASKET(2200),
         HANG_READY(2220),
         ZERO(0),
         HANG_DOWN(1500);
@@ -217,8 +216,8 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         HOME(0.24f),
         PICKUP(0.225f),
         DEPOSIT_SPECIMEN(0.73f),
-        DEPOSIT_SAMPLE(0.7f),
-        TRANSFER(0.24f),
+        DEPOSIT_SAMPLE(0.4f),
+        TRANSFER(0.12f),
         ZERO(0.0f),
         HANG(HOME.getPosition());
 
@@ -238,7 +237,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         DEPOSIT_SPECIMEN(0.97f),
         DEPOSIT_SAMPLE(0.8f),
         PICKUP(0.178f),
-        TRANSFER(0.0f),
+        TRANSFER(0.15f),
         ZERO(0.0f),
         HOME(0.28f),
         DEPOSIT_CLEARED(1.0f);
@@ -273,7 +272,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     //Relative to HOME position
     public enum _OuttakeYawServoState implements Positionable {
         HORIZONTAL_Pickup(0.13f),
-        VERTICAL     (0.48f),
+        VERTICAL     (0.49f),
         HORIZONTAL_Deposit(0.83f);
 
         private final float position;

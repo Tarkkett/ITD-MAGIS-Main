@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.commands;
 
+import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 
@@ -49,6 +50,7 @@ public class SetOuttakeStateCommand extends SequentialCommandGroup {
                             new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.OPEN),
                             new WaitCommand(1000),
                             new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.PICKUP),
+                            new InstantCommand(() -> manager.setCanPickup(false)),
                             new DepositPositionSelector(gamepad_driver, gamepad_codriver, manager, driveManager, hardwareManager).interruptOn(() -> stateMachine.robotState == StateMachine._RobotState.INTAKE)
                     );
                 }
@@ -62,6 +64,7 @@ public class SetOuttakeStateCommand extends SequentialCommandGroup {
                             new WaitCommand(1000),
                             new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.PICKUP),
                             new SetLiftPositionCommand(manager, OuttakeManager._LiftState.ZERO),
+                            new InstantCommand(() -> manager.setCanPickup(false)),
                             new DepositPositionSelector(gamepad_driver, gamepad_codriver, manager, driveManager, hardwareManager).interruptOn(() -> stateMachine.robotState == StateMachine._RobotState.INTAKE)
                     );
                 }
