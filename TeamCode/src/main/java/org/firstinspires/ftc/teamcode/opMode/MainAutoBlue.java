@@ -41,8 +41,8 @@ public class MainAutoBlue extends OpModeTemplate {
 
     private final Pose scorePose1 = new Pose(38.5, 66, Math.toRadians(0));
     private final Pose scorePose2 = new Pose(38.5, 69, Math.toRadians(0));
-    private final Pose scorePose3 = new Pose(38.5, 72, Math.toRadians(0));
-    private final Pose scorePose4 = new Pose(38.5, 75, Math.toRadians(0));
+    private final Pose scorePose3 = new Pose(38.5, 75, Math.toRadians(0));
+    private final Pose scorePose4 = new Pose(38.5, 72, Math.toRadians(0));
     private final Pose pickup1Pose = new Pose(60, 24, Math.toRadians(0));
     private final Pose push1Pose = new Pose(24, 24, Math.toRadians(0));
     private final Pose pickup2Pose = new Pose(60, 15, Math.toRadians(0));
@@ -170,7 +170,7 @@ public class MainAutoBlue extends OpModeTemplate {
                                 new SetOuttakeTiltServoCommand(outtakeManager, OuttakeManager._OuttakeTiltServoState.DEPOSIT_SPECIMEN),
                                 new SetOuttakePitchServoCommand(outtakeManager, OuttakeManager._PitchServoState.DEPOSIT_SPECIMEN),
                                 new SetOuttakeYawServoCommand(outtakeManager, OuttakeManager._OuttakeYawServoState.HORIZONTAL_Deposit),
-                                new WaitCommand(200),
+                                new WaitCommand(350),
                                 new InstantCommand(() -> follower.followPath(scorePreload)),
                                 new InstantCommand(() -> setPathState(1))
                         )

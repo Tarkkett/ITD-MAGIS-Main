@@ -198,7 +198,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         HIGH_BASKET(2200),
         HANG_READY(2220),
         ZERO(0),
-        HANG_DOWN(1500);
+        HANG_DOWN(1300);
 
         private final float position;
 
