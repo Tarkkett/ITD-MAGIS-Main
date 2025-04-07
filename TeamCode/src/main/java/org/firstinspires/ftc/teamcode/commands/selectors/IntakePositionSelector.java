@@ -36,65 +36,82 @@ public class IntakePositionSelector extends CommandBase {
     public void execute() {
 
             if (gamepad_codriver.leftTrigger() > 0.2) {
-                CommandScheduler.getInstance().schedule(
-                        new SequentialCommandGroup(
-                                new SetIntakeClawStateCommand(manager, IntakeManager._ClawState.CLOSED),
-                                new WaitCommand(400),
-                                new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.VERTICAL),
-                                new WaitCommand(400),
-                                new SetIntakeSlidePositionCommand(manager, IntakeManager._SlideState.RETRACTED)
-                        )
-                );
+                DoGrabSample();
 
             } else if (gamepad_codriver.isDown(gamepad_codriver.triangle)) {
-                CommandScheduler.getInstance().schedule(
-                        new SequentialCommandGroup(
-                                new SetIntakeClawStateCommand(manager, IntakeManager._ClawState.OPEN),
-                                new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.AIMING),
-                                new SetIntakePitchServoCommand(manager, IntakeManager._PitchServoState.AIMING)
-                        )
-
-                );
+                DoRetrySampleGrab();
             } else if (gamepad_codriver.isDown(gamepad_codriver.cross)) {
-                CommandScheduler.getInstance().schedule(
-                        new SequentialCommandGroup(
-                                new SetIntakeClawStateCommand(manager, IntakeManager._ClawState.OPEN),
-                                new WaitCommand(200),
-                                new SetIntakeSlidePositionCommand(manager, IntakeManager._SlideState.RETRACTED)
-                        )
-
-                );
-            }
-            else if (gamepad_codriver.isDown(gamepad_codriver.circle)) {
-                CommandScheduler.getInstance().schedule(
-                        new SequentialCommandGroup(
-                                new SetIntakeSlidePositionCommand(manager, IntakeManager._SlideState.EXTENDED),
-                                new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.AIMING),
-                                new SetIntakePitchServoCommand(manager, IntakeManager._PitchServoState.AIMING)
-                        )
-
-                );
-            }
-            else if (gamepad_codriver.isDown(gamepad_codriver.leftBumper)) {
-                CommandScheduler.getInstance().schedule(
-                        new SequentialCommandGroup(
-                                new TransferCommand(manager, outtakeManager)
-                        )
-                );
-            }
-            else if (gamepad_codriver.rightTrigger() > 0.2) {
-                CommandScheduler.getInstance().schedule(
-                        new SequentialCommandGroup(
-                                new SetIntakeClawStateCommand(manager, IntakeManager._ClawState.OPEN),
-                                new WaitCommand(100),
-                                new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.LOWERED),
-                                new SetIntakePitchServoCommand(manager, IntakeManager._PitchServoState.LOWERED)
-                        )
-                );
+                DoReleaseSample();
+            } else if (gamepad_codriver.isDown(gamepad_codriver.circle)) {
+                DoExtendAndAim();
+            } else if (gamepad_codriver.isDown(gamepad_codriver.leftBumper)) {
+                DoTransfer();
+            } else if (gamepad_codriver.rightTrigger() > 0.2) {
+                LowerClawIntoSample();
             }
             ControlYawManually(gamepad_codriver.getRightY(), gamepad_codriver.getRightX());
 
+    }
 
+    private void DoRetrySampleGrab() {
+        CommandScheduler.getInstance().schedule(
+                new SequentialCommandGroup(
+                        new SetIntakeClawStateCommand(manager, IntakeManager._ClawState.OPEN),
+                        new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.AIMING),
+                        new SetIntakePitchServoCommand(manager, IntakeManager._PitchServoState.AIMING)
+                )
+        );
+    }
+
+    private void DoGrabSample() {
+        CommandScheduler.getInstance().schedule(
+                new SequentialCommandGroup(
+                        new SetIntakeClawStateCommand(manager, IntakeManager._ClawState.CLOSED),
+                        new WaitCommand(400),
+                        new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.VERTICAL),
+                        new WaitCommand(400),
+                        new SetIntakeSlidePositionCommand(manager, IntakeManager._SlideState.RETRACTED)
+                )
+        );
+    }
+
+    private void DoReleaseSample() {
+        CommandScheduler.getInstance().schedule(
+                new SequentialCommandGroup(
+                        new SetIntakeClawStateCommand(manager, IntakeManager._ClawState.OPEN),
+                        new WaitCommand(200),
+                        new SetIntakeSlidePositionCommand(manager, IntakeManager._SlideState.RETRACTED)
+                )
+        );
+    }
+
+    private void DoExtendAndAim() {
+        CommandScheduler.getInstance().schedule(
+                new SequentialCommandGroup(
+                        new SetIntakeSlidePositionCommand(manager, IntakeManager._SlideState.EXTENDED),
+                        new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.AIMING),
+                        new SetIntakePitchServoCommand(manager, IntakeManager._PitchServoState.AIMING)
+                )
+        );
+    }
+
+    private void DoTransfer() {
+        CommandScheduler.getInstance().schedule(
+                new SequentialCommandGroup(
+                        new TransferCommand(manager, outtakeManager)
+                )
+        );
+    }
+
+    private void LowerClawIntoSample(){
+        CommandScheduler.getInstance().schedule(
+                new SequentialCommandGroup(
+                        new SetIntakeClawStateCommand(manager, IntakeManager._ClawState.OPEN),
+                        new WaitCommand(100),
+                        new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.LOWERED),
+                        new SetIntakePitchServoCommand(manager, IntakeManager._PitchServoState.LOWERED)
+                )
+        );
     }
 
     private void ControlYawManually(double rightX, double rightY) {
