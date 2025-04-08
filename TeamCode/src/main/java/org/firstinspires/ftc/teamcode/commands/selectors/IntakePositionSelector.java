@@ -5,6 +5,8 @@ import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
+import com.arcrobotics.ftclib.command.button.Button;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.teamcode.commands.TransferCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeClawStateCommand;
@@ -15,43 +17,66 @@ import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 import org.firstinspires.ftc.teamcode.util.GamepadPlus;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Config
 public class IntakePositionSelector extends CommandBase {
 
     IntakeManager manager;
     OuttakeManager outtakeManager;
-    GamepadPlus gamepad_driver;
     GamepadPlus gamepad_codriver;
+
+    private final Map<GamepadKeys.Button, Runnable> commandButtonBindings = new HashMap<>();
+    private final Map<GamepadKeys.Trigger, Runnable> commandTriggerBindings = new HashMap<>();
 
     public static double shiftAngleCustom = 0;
 
-    public IntakePositionSelector(IntakeManager manager, OuttakeManager outtakeManager, GamepadPlus gamepad_driver, GamepadPlus gamepad_codriver) {
+    public IntakePositionSelector(IntakeManager manager, OuttakeManager outtakeManager, GamepadPlus gamepad_codriver) {
         this.manager = manager;
-        this.gamepad_driver = gamepad_driver;
         this.gamepad_codriver = gamepad_codriver;
         this.outtakeManager = outtakeManager;
     }
 
     @Override
+    public void initialize() {
+        commandTriggerBindings.put(GamepadKeys.Trigger.LEFT_TRIGGER, this::DoGrabSample);
+        commandTriggerBindings.put(GamepadKeys.Trigger.RIGHT_TRIGGER, this::LowerClawIntoSample);
+        commandButtonBindings.put(GamepadKeys.Button.Y, this::DoRetrySampleGrab);
+        commandButtonBindings.put(GamepadKeys.Button.A, this::DoReleaseSample);
+        commandButtonBindings.put(GamepadKeys.Button.B, this::DoExtendAndAim);
+        commandButtonBindings.put(GamepadKeys.Button.LEFT_BUMPER, this::DoTransfer);
+    }
+
+    @Override
     public void execute() {
 
-            if (gamepad_codriver.leftTrigger() > 0.2) {
-                DoGrabSample();
+        for (Map.Entry<GamepadKeys.Trigger, Runnable> entry : commandTriggerBindings.entrySet()) {
+            GamepadKeys.Trigger trigger = entry.getKey();
+            Runnable action = entry.getValue();
 
-            } else if (gamepad_codriver.isDown(gamepad_codriver.triangle)) {
-                DoRetrySampleGrab();
-            } else if (gamepad_codriver.isDown(gamepad_codriver.cross)) {
-                DoReleaseSample();
-            } else if (gamepad_codriver.isDown(gamepad_codriver.circle)) {
-                DoExtendAndAim();
-            } else if (gamepad_codriver.isDown(gamepad_codriver.leftBumper)) {
-                DoTransfer();
-            } else if (gamepad_codriver.rightTrigger() > 0.2) {
-                LowerClawIntoSample();
+            double value = 0.0;
+            if (trigger == GamepadKeys.Trigger.LEFT_TRIGGER) {
+                value = gamepad_codriver.leftTrigger();
+            } else if (trigger == GamepadKeys.Trigger.RIGHT_TRIGGER) {
+                value = gamepad_codriver.rightTrigger();
             }
-            ControlYawManually(gamepad_codriver.getRightY(), gamepad_codriver.getRightX());
 
+            if (value > 0.2) {
+                action.run();
+            }
+        }
+
+        for (Map.Entry<GamepadKeys.Button, Runnable> entry : commandButtonBindings.entrySet()) {
+            if (gamepad_codriver.isDown(entry.getKey())) {
+                entry.getValue().run();
+            }
+        }
+
+        ControlYawManually(gamepad_codriver.getRightY(), gamepad_codriver.getRightX());
     }
+
+
 
     private void DoRetrySampleGrab() {
         CommandScheduler.getInstance().schedule(

@@ -50,7 +50,7 @@ public class MainAutoBlue extends OpModeTemplate {
     private final Pose pickup3Pose = new Pose(61, 6.4, Math.toRadians(0));
     private final Pose push3Pose = new Pose(20.5, 6.4, Math.toRadians(0));
 
-    private final Pose grabPreloadPose = new Pose(7.6, 22, Math.toRadians(0));
+    private final Pose grabPreloadPose = new Pose(7.6, 18, Math.toRadians(0));
 
     private final Pose parkPose = new Pose(20.5, 70, Math.toRadians(0));
 
@@ -163,14 +163,13 @@ public class MainAutoBlue extends OpModeTemplate {
     public void autonomousPathUpdate() {
         switch (pathState) {
             case 0:
-
                 CommandScheduler.getInstance().schedule(
                         new SequentialCommandGroup(
                                 new SetLiftPositionCommand(outtakeManager, OuttakeManager._LiftState.HIGH_CHAMBER),
                                 new SetOuttakeTiltServoCommand(outtakeManager, OuttakeManager._OuttakeTiltServoState.DEPOSIT_SPECIMEN),
                                 new SetOuttakePitchServoCommand(outtakeManager, OuttakeManager._PitchServoState.DEPOSIT_SPECIMEN),
                                 new SetOuttakeYawServoCommand(outtakeManager, OuttakeManager._OuttakeYawServoState.HORIZONTAL_Deposit),
-                                new WaitCommand(350),
+                                new WaitCommand(300),
                                 new InstantCommand(() -> follower.followPath(scorePreload)),
                                 new InstantCommand(() -> setPathState(1))
                         )
@@ -178,7 +177,6 @@ public class MainAutoBlue extends OpModeTemplate {
 
                 break;
             case 1:
-
                 if(!follower.isBusy()) {
                     CommandScheduler.getInstance().schedule(
                             new SetOuttakeClawStateCommand(outtakeManager, OuttakeManager._OuttakeClawServoState.OPEN),

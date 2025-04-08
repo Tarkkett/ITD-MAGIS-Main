@@ -7,6 +7,7 @@ import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.MoveLiftCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetLiftPositionCommand;
@@ -19,11 +20,18 @@ import org.firstinspires.ftc.teamcode.managers.HardwareManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 import org.firstinspires.ftc.teamcode.util.GamepadPlus;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class DepositPositionSelector extends CommandBase {
 
+    private static final int LIFT_MANUAL_TICKS = 50;
     GamepadPlus gamepad_driver;
     GamepadPlus gamepad_codriver;
     OuttakeManager manager;
+
+    private final Map<GamepadKeys.Button, Runnable> commandButtonBindings = new HashMap<>();
+    private final Map<GamepadKeys.Trigger, Runnable> commandTriggerBindings = new HashMap<>();
 
     DriveManager driveManager;
     HardwareManager hw;
@@ -37,38 +45,25 @@ public class DepositPositionSelector extends CommandBase {
     }
 
     @Override
+    public void initialize(){
+        commandButtonBindings.put(GamepadKeys.Button.DPAD_UP, () -> CommandScheduler.getInstance().schedule(new MoveLiftCommand(manager, LIFT_MANUAL_TICKS)));
+        commandButtonBindings.put(GamepadKeys.Button.DPAD_UP, () -> CommandScheduler.getInstance().schedule(new MoveLiftCommand(manager, -LIFT_MANUAL_TICKS)));
+        commandButtonBindings.put(GamepadKeys.Button.Y, this::goToSampleDepositPosition);
+        commandButtonBindings.put(GamepadKeys.Button.A, this::releaseScoredSpecimen);
+        commandButtonBindings.put(GamepadKeys.Button.X, this::goToSpecimenPickupPosition);
+        commandButtonBindings.put(GamepadKeys.Button.B, this::goToSpecimenDepositPosition);
+        commandButtonBindings.put(GamepadKeys.Button.START, this::goToHangPosition);
+        commandButtonBindings.put(GamepadKeys.Button.BACK, this::goToHangPrePosition);
+    }
+
+    @Override
     public void execute(){
 
-            if (gamepad_codriver.isDown(gamepad_codriver.circle)){
-                goToSpecimenDepositPosition();
+        for (Map.Entry<GamepadKeys.Button, Runnable> entry : commandButtonBindings.entrySet()) {
+            if (gamepad_codriver.isDown(entry.getKey())) {
+                entry.getValue().run();
             }
-
-            else if (gamepad_codriver.isDown(gamepad_codriver.square)){
-                goToSpecimenPickupPosition();
-            }
-
-            else if (gamepad_codriver.leftTrigger() > 0.7 && gamepad_codriver.rightTrigger() > 0.7) {
-                goToHangPrePosition();
-            }
-
-            else if (gamepad_codriver.isDown(gamepad_codriver.triangle)){
-                goToSampleDepositPosition();
-            }
-
-            else if (gamepad_codriver.isDown(gamepad_codriver.cross)) {
-                releaseScoredSpecimen();
-            }
-
-            else if (gamepad_codriver.isDown(gamepad_codriver.share)) {
-                goToHangPosition();
-            }
-
-            else if (gamepad_codriver.gamepad.dpad_up){
-                CommandScheduler.getInstance().schedule(new MoveLiftCommand(manager, 50));
-            }
-            else if (gamepad_codriver.gamepad.dpad_down){
-                CommandScheduler.getInstance().schedule(new MoveLiftCommand(manager, -50));
-            }
+        }
     }
 
     private void goToSampleDepositPosition() {
