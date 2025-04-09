@@ -75,6 +75,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
 
             updateLiftMotors(power);
         }
+
         updateTelemetry();
     }
 

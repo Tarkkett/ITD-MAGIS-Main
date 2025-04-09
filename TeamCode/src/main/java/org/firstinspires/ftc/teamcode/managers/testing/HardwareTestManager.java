@@ -62,7 +62,7 @@ public class HardwareTestManager{
         //? Intake
 
         hardware.intakeTiltSrv.setPosition(intakeTiltServoPos);
-        hardware.intakeGripSrv.setPosition(intakeClawServoPos);
+        hardware.intakeClawSrv.setPosition(intakeClawServoPos);
         hardware.intakeYawSrv.setPosition(intakeYawServoPos);
         hardware.intakePitchSrv.setPosition(intakePitchServoPos);
 

@@ -9,11 +9,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.commands.low_level.ResetHeadingCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.SetRobotState;
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.ToggleIntakeTiltCommand;
-import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakePitchServoCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.ToggleOuttakeClawCommand;
-import org.firstinspires.ftc.teamcode.drivers.C_LoadingBar;
 import org.firstinspires.ftc.teamcode.managers.DriveManager;
-import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 
 @TeleOp(name = "Main TeleOp", group = "OpMode")
 public class MainTeleOp extends OpModeTemplate {

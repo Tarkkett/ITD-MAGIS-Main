@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.managers;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.arcrobotics.ftclib.geometry.Vector2d;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;

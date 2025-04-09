@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.managers;
 
 import android.graphics.Color;
 
-import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -20,8 +19,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import dev.frozenmilk.dairy.cachinghardware.CachingDcMotorEx;
+import dev.frozenmilk.dairy.cachinghardware.CachingServo;
+
 public class HardwareManager{
 
+    private static final double MOTOR_CACHING_TOLERANCE = 0.005;
+    private static final double SERVO_CACHING_TOLERANCE = 0.001;
     private static HardwareManager instance;
     List<LynxModule> hubs;
     Collection<Blinker.Step> blinks;
@@ -30,26 +34,26 @@ public class HardwareManager{
 
     public GoBildaPinpointDriver pinpointDriver;
 
-    DcMotorEx frontLeft;
-    DcMotorEx frontRight;
-    DcMotorEx backLeft;
-    DcMotorEx backRight;
+    CachingDcMotorEx frontLeft;
+    CachingDcMotorEx frontRight;
+    CachingDcMotorEx backLeft;
+    CachingDcMotorEx backRight;
 
-    public DcMotorEx liftRight;
-    public DcMotorEx liftLeft;
+    CachingDcMotorEx liftRight;
+    CachingDcMotorEx liftLeft;
 
     DcMotorEx intake;
 
-    public Servo intakeGripSrv;
-    public Servo intakeTiltSrv;
-    public Servo intakePitchSrv;
-    public Servo intakeYawSrv;
+    public CachingServo intakeClawSrv;
+    public CachingServo intakeTiltSrv;
+    public CachingServo intakePitchSrv;
+    public CachingServo intakeYawSrv;
 
-    public Servo outtakeArmTiltSrvLeft;
-    public Servo outtakeArmTiltSrvRight;
-    public Servo outtakeDepositorPitchSrv;
-    public Servo outtakeDepositorYawSrv;
-    public Servo outtakeDepositorClawSrv;
+    public CachingServo outtakeArmTiltSrvLeft;
+    public CachingServo outtakeArmTiltSrvRight;
+    public CachingServo outtakeDepositorPitchSrv;
+    public CachingServo outtakeDepositorYawSrv;
+    public CachingServo outtakeDepositorClawSrv;
 
     public DigitalChannel outtakeProximitySensor;
 
@@ -74,28 +78,28 @@ public class HardwareManager{
 
         hubs = this.hmap.getAll(LynxModule.class);
 
-        frontLeft = this.hmap.get(DcMotorEx.class, "frontLeft");
-        frontRight = this.hmap.get(DcMotorEx.class, "frontRight");
-        backLeft = this.hmap.get(DcMotorEx.class, "backLeft");
-        backRight = this.hmap.get(DcMotorEx.class, "backRight");
+        frontLeft = new CachingDcMotorEx(this.hmap.get(DcMotorEx.class, "frontLeft"));
+        frontRight = new CachingDcMotorEx(this.hmap.get(DcMotorEx.class, "frontRight"));
+        backLeft = new CachingDcMotorEx(this.hmap.get(DcMotorEx.class, "backLeft"));
+        backRight = new CachingDcMotorEx(this.hmap.get(DcMotorEx.class, "backRight"));
 
-        liftLeft = this.hmap.get(DcMotorEx.class, "liftLeft");
-        liftRight = this.hmap.get(DcMotorEx.class, "liftRight");
+        liftLeft = new CachingDcMotorEx(this.hmap.get(DcMotorEx.class, "liftLeft"));
+        liftRight = new CachingDcMotorEx(this.hmap.get(DcMotorEx.class, "liftRight"));
 
         intake = this.hmap.get(DcMotorEx.class, "intakeMotor");
 
         outtakeProximitySensor = this.hmap.get(DigitalChannel.class, "outtakeProximitySensor");
 
-        intakeGripSrv = this.hmap.get(Servo.class, "intakeClawServo");
-        intakeTiltSrv = this.hmap.get(Servo.class, "intakeTiltServo");
-        intakeYawSrv = this.hmap.get(Servo.class, "intakeYawServo");
-        intakePitchSrv = this.hmap.get(Servo.class, "intakePitchServo");
+        intakeClawSrv = new CachingServo(this.hmap.get(Servo.class, "intakeClawServo"));
+        intakeTiltSrv = new CachingServo(this.hmap.get(Servo.class, "intakeTiltServo"));
+        intakeYawSrv = new CachingServo(this.hmap.get(Servo.class, "intakeYawServo"));
+        intakePitchSrv = new CachingServo(this.hmap.get(Servo.class, "intakePitchServo"));
 
-        outtakeArmTiltSrvLeft = this.hmap.get(Servo.class, "outtakeTiltLeftServo");
-        outtakeArmTiltSrvRight = this.hmap.get(Servo.class, "outtakeTiltRightServo");
-        outtakeDepositorPitchSrv = this.hmap.get(Servo.class, "outtakeDepositorPitchServo");
-        outtakeDepositorYawSrv = this.hmap.get(Servo.class, "outtakeDepositorYawServo");
-        outtakeDepositorClawSrv = this.hmap.get(Servo.class, "outtakeDepositorClawServo");
+        outtakeArmTiltSrvLeft = new CachingServo(this.hmap.get(Servo.class, "outtakeTiltLeftServo"));
+        outtakeArmTiltSrvRight = new CachingServo(this.hmap.get(Servo.class, "outtakeTiltRightServo"));
+        outtakeDepositorPitchSrv = new CachingServo(this.hmap.get(Servo.class, "outtakeDepositorPitchServo"));
+        outtakeDepositorYawSrv = new CachingServo(this.hmap.get(Servo.class, "outtakeDepositorYawServo"));
+        outtakeDepositorClawSrv = new CachingServo(this.hmap.get(Servo.class, "outtakeDepositorClawServo"));
 
         if (!isAuto) {pinpointDriver = this.hmap.get(GoBildaPinpointDriver.class, "pinpoint");}
 
@@ -129,8 +133,27 @@ public class HardwareManager{
         //?========================QUALITY FUNCTIONS===============================//
 
         setupBulkReading();
+        setHardwareCachingTolerance();
         blink();
 
+    }
+
+    private void setHardwareCachingTolerance() {
+        intakePitchSrv.setCachingTolerance(SERVO_CACHING_TOLERANCE);
+        intakeYawSrv.setCachingTolerance(SERVO_CACHING_TOLERANCE);
+        intakeTiltSrv.setCachingTolerance(SERVO_CACHING_TOLERANCE);
+        intakeClawSrv.setCachingTolerance(SERVO_CACHING_TOLERANCE);
+
+        outtakeArmTiltSrvLeft.setCachingTolerance(SERVO_CACHING_TOLERANCE);
+        outtakeArmTiltSrvRight.setCachingTolerance(SERVO_CACHING_TOLERANCE);
+        outtakeDepositorPitchSrv.setCachingTolerance(SERVO_CACHING_TOLERANCE);
+        outtakeDepositorYawSrv.setCachingTolerance(SERVO_CACHING_TOLERANCE);
+        outtakeDepositorClawSrv.setCachingTolerance(SERVO_CACHING_TOLERANCE);
+
+        frontLeft.setCachingTolerance(MOTOR_CACHING_TOLERANCE);
+        backLeft.setCachingTolerance(MOTOR_CACHING_TOLERANCE);
+        frontRight.setCachingTolerance(MOTOR_CACHING_TOLERANCE);
+        backRight.setCachingTolerance(MOTOR_CACHING_TOLERANCE);
     }
 
     private void setupBulkReading() {

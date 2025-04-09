@@ -122,8 +122,6 @@ public class StateMachine implements State<StateMachine._RobotState> {
             telemetry.addData("Outtake feels like:", outtakeState);
             telemetry.addData("Drivetrain feels like:", driveState);
             telemetry.addData("Robot feels like:", GetSystemState());
-            telemetry.addData("Lift left current pos", hw.liftLeft.getCurrentPosition());
-            telemetry.addData("Lift right current pos", hw.liftRight.getCurrentPosition());
             telemetry.addData("Lift target pos", outtakeManager.GetLiftTargetPos());
             telemetry.update();
 

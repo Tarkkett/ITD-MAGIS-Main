@@ -95,7 +95,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     }
 
     public void update(_ClawState targetState) {
-        hardwareManager.intakeGripSrv.setPosition(targetState.getPosition());
+        hardwareManager.intakeClawSrv.setPosition(targetState.getPosition());
     }
 
     public void update(_TiltServoState targetState){
