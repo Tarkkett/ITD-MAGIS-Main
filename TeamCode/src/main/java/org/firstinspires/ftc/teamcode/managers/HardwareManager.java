@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.configuration.ServoHubConfiguration;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drivers.GoBildaPinpointDriver;
@@ -38,6 +39,8 @@ public class HardwareManager{
     public CachingDcMotorEx frontRight;
     public CachingDcMotorEx backLeft;
     public CachingDcMotorEx backRight;
+
+    ServoHubConfiguration config;
 
     CachingDcMotorEx liftRight;
     CachingDcMotorEx liftLeft;
@@ -116,7 +119,7 @@ public class HardwareManager{
         intake.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         intake.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        liftRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        liftRight.setDirection(DcMotorSimple.Direction.FORWARD);
         liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

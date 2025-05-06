@@ -79,6 +79,7 @@ public class MotorDirectionTuner extends OpModeTemplate {
             hardwareManager.backLeft.setPower(MOTOR_POWER);
             telemetry.addLine("Running Motor: Rear Left");
         } else {
+            hardwareManager.stopDriveMotors();
             telemetry.addLine("Running Motor: None");
         }
 

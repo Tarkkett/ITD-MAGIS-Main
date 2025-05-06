@@ -21,14 +21,13 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     }
 
     private static final int MIN_THRESHOLD =0;
-    private static final int MAX_THRESHOLD =2200;
+    private static final int MAX_THRESHOLD =2500;
     private static final int MAX_CHANGE_PER_CYCLE = 10;
     private static final double SMOOTHING_FACTOR = 0.4;
 
     HardwareManager hardwareManager;
     IntakeManager intakeManager;
     Telemetry telemetry;
-    private StateMachine stateMachine;
 
     public OuttakeManager._OuttakeState managerState;
 
@@ -58,7 +57,6 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         this.hardwareManager = hardwareManager;
         this.telemetry = telemetry;
         this.intakeManager = intakeManager;
-        this.stateMachine = stateMachine;
 
         mode = _LiftMode.AUTO;
     }
@@ -78,9 +76,6 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
 //            }
 
             updateLiftMotors(power);
-        }
-        if (stateMachine.GetSystemState() == StateMachine._RobotState.CALIBRATION){
-            updateTelemetry();
         }
     }
 
@@ -202,9 +197,9 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         CLEARED(400),
         CLEARED_ALL(800),
         HIGH_BASKET(2200),
-        HANG_READY(2220),
+        HANG_READY(2600),
         ZERO(0),
-        HANG_DOWN(1300);
+        HANG_DOWN(1700);
 
         private final float position;
 
@@ -240,7 +235,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     }
 
     public enum _OuttakeTiltServoState implements Positionable {
-        DEPOSIT_SPECIMEN(0.97f),
+        DEPOSIT_SPECIMEN(1f),
         DEPOSIT_SAMPLE(0.8f),
         PICKUP(0.178f),
         TRANSFER(0.15f),

@@ -34,12 +34,10 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     }
 
     private static final int MIN_SLIDE_RETRACT = 0;
-    private static final int MAX_SLIDE_EXTEND = 750;
+    private static final int MAX_SLIDE_EXTEND = 1150;
 
     private final HardwareManager hardwareManager;
     private Telemetry telemetry;
-
-    private StateMachine stateMachine;
 
     private GamepadPlus gamepad_driver;
     private GamepadPlus gamepad_codriver;
@@ -58,7 +56,6 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
         this.telemetry = telemetry;
         this.hardwareManager = hardwareManager;
         this.gamepad_codriver = gamepadCodriver;
-        this.stateMachine = stateMachine;
     }
 
     private void updateTelemetry() {
@@ -74,10 +71,6 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
         controller.tune(params);
 
         encoderPos = hardwareManager.intake.getCurrentPosition();
-
-        if (stateMachine.GetSystemState() == StateMachine._RobotState.CALIBRATION){
-            updateTelemetry();
-        }
 
         double power = controller.update(targetPosition, encoderPos);
         hardwareManager.intake.setPower(power);
@@ -168,9 +161,9 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     }
     public enum _TiltServoState implements Positionable{
         TRANSFER(0.45f),
-        LOWERED (0f),
-        AIMING(0.1f),
-        PACKED(0.7f),
+        LOWERED (0.7f),
+        AIMING(0.6f),
+        PACKED(0.04f),
         VERTICAL(0.3f);
 
         private final float position;

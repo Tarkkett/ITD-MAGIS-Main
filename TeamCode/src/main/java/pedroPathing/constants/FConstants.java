@@ -10,10 +10,14 @@ public class FConstants {
     static {
         FollowerConstants.localizers = Localizers.PINPOINT;
 
-        FollowerConstants.leftFrontMotorName = "backRight";
-        FollowerConstants.leftRearMotorName = "frontRight";
-        FollowerConstants.rightFrontMotorName = "backLeft";
-        FollowerConstants.rightRearMotorName = "frontLeft";
+//        FollowerConstants.leftFrontMotorName = "backRight";
+//        FollowerConstants.leftRearMotorName = "frontRight";
+//        FollowerConstants.rightFrontMotorName = "backLeft";
+//        FollowerConstants.rightRearMotorName = "frontLeft";
+        FollowerConstants.leftFrontMotorName = "frontLeft";
+        FollowerConstants.leftRearMotorName = "backLeft";
+        FollowerConstants.rightFrontMotorName = "frontRight";
+        FollowerConstants.rightRearMotorName = "backRight";
 
         FollowerConstants.leftFrontMotorDirection = DcMotorSimple.Direction.REVERSE;
         FollowerConstants.leftRearMotorDirection = DcMotorSimple.Direction.REVERSE;
