@@ -3,6 +3,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drivers.C_PID;
+import org.firstinspires.ftc.teamcode.opMode.StateMachine;
 import org.firstinspires.ftc.teamcode.util.GamepadPlus;
 import org.firstinspires.ftc.teamcode.util.PID_PARAMS;
 
@@ -38,6 +39,8 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     private final HardwareManager hardwareManager;
     private Telemetry telemetry;
 
+    private StateMachine stateMachine;
+
     private GamepadPlus gamepad_driver;
     private GamepadPlus gamepad_codriver;
 
@@ -50,14 +53,17 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     public PID_PARAMS params = new PID_PARAMS(0.01, 0.002, 0.0004, 5);
     C_PID controller = new C_PID(params);
 
-    public IntakeManager(HardwareManager hardwareManager, Telemetry telemetry, GamepadPlus gamepadDriver, GamepadPlus gamepadCodriver) {
+    public IntakeManager(HardwareManager hardwareManager, Telemetry telemetry, GamepadPlus gamepadDriver, GamepadPlus gamepadCodriver, StateMachine stateMachine) {
         this.gamepad_driver = gamepadDriver;
         this.telemetry = telemetry;
         this.hardwareManager = hardwareManager;
         this.gamepad_codriver = gamepadCodriver;
+        this.stateMachine = stateMachine;
     }
 
     private void updateTelemetry() {
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        telemetry = dashboard.getTelemetry();
         telemetry.addData("CurrentPos", encoderPos);
         telemetry.addData("TargetPos", targetPosition);
         telemetry.update();
@@ -67,11 +73,11 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     public void loop() {
         controller.tune(params);
 
-        FtcDashboard dashboard = FtcDashboard.getInstance();
-        telemetry = dashboard.getTelemetry();
         encoderPos = hardwareManager.intake.getCurrentPosition();
 
-        updateTelemetry();
+        if (stateMachine.GetSystemState() == StateMachine._RobotState.CALIBRATION){
+            updateTelemetry();
+        }
 
         double power = controller.update(targetPosition, encoderPos);
         hardwareManager.intake.setPower(power);

@@ -34,10 +34,10 @@ public class HardwareManager{
 
     public GoBildaPinpointDriver pinpointDriver;
 
-    CachingDcMotorEx frontLeft;
-    CachingDcMotorEx frontRight;
-    CachingDcMotorEx backLeft;
-    CachingDcMotorEx backRight;
+    public CachingDcMotorEx frontLeft;
+    public CachingDcMotorEx frontRight;
+    public CachingDcMotorEx backLeft;
+    public CachingDcMotorEx backRight;
 
     CachingDcMotorEx liftRight;
     CachingDcMotorEx liftLeft;

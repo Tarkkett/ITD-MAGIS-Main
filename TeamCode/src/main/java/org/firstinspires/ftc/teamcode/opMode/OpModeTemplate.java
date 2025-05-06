@@ -50,8 +50,8 @@ public abstract class OpModeTemplate extends OpMode {
         hardwareManager = new HardwareManager(hardwareMap, isAuto);
         hardwareManager.InitHw(isAuto);
 
-        outtakeManager = new OuttakeManager(hardwareManager, telemetry, intakeManager);
-        intakeManager = new IntakeManager(hardwareManager, telemetry, gamepad_driver, gamepad_codriver);
+        outtakeManager = new OuttakeManager(hardwareManager, telemetry, intakeManager, stateMachine);
+        intakeManager = new IntakeManager(hardwareManager, telemetry, gamepad_driver, gamepad_codriver, stateMachine);
 
         progress(15);
 

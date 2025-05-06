@@ -2,7 +2,9 @@ package org.firstinspires.ftc.teamcode.managers;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.opMode.StateMachine;
 import org.firstinspires.ftc.teamcode.util.PID_PARAMS;
 import org.firstinspires.ftc.teamcode.drivers.C_PID;
 
@@ -26,6 +28,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     HardwareManager hardwareManager;
     IntakeManager intakeManager;
     Telemetry telemetry;
+    private StateMachine stateMachine;
 
     public OuttakeManager._OuttakeState managerState;
 
@@ -50,11 +53,12 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     protected  _LiftMode mode;
 
 
-    public OuttakeManager(HardwareManager hardwareManager, Telemetry telemetry, IntakeManager intakeManager){
+    public OuttakeManager(HardwareManager hardwareManager, Telemetry telemetry, IntakeManager intakeManager, StateMachine stateMachine){
 
         this.hardwareManager = hardwareManager;
         this.telemetry = telemetry;
         this.intakeManager = intakeManager;
+        this.stateMachine = stateMachine;
 
         mode = _LiftMode.AUTO;
     }
@@ -75,8 +79,9 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
 
             updateLiftMotors(power);
         }
-
-        updateTelemetry();
+        if (stateMachine.GetSystemState() == StateMachine._RobotState.CALIBRATION){
+            updateTelemetry();
+        }
     }
 
     public void setLiftTarget(int target) {
