@@ -43,7 +43,7 @@ public class MovementControlRunnable implements Runnable {
 
             currentHeading = hardwareManager.pinpointDriver.getPosition().getHeading(AngleUnit.RADIANS);
 
-            driveManager.drive(new Vector2d(x, y), rx, multiplier, currentHeading);
+            driveManager.drive(new Vector2d(x, y), -rx, multiplier, currentHeading);
         }
     }
 
@@ -62,7 +62,7 @@ public class MovementControlRunnable implements Runnable {
         }
 //        if (gamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > TRIGGER_MARGIN){
         else if (gamepad.isDown(GamepadKeys.Button.RIGHT_BUMPER)) {
-            return 0.5;
+            return 0.435;
         }
         return 1.0;
     }

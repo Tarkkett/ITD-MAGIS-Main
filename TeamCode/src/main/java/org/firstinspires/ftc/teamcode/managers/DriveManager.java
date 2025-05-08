@@ -60,60 +60,19 @@ public class DriveManager implements Manager<DriveManager._DriveState> {
 
     public void drive(Vector2d movementVector, double rotationInput, double powerMultiplier, double currentHeading) {
 
-        this.currentHeading = currentHeading;
-
-        this.currentHeading = wrapAngle(currentHeading);
-
-        headingController.tune(P_Heading, I_Heading, D_Heading);
-
-        FtcDashboard dashboard = FtcDashboard.getInstance();
-        Telemetry telemetry = dashboard.getTelemetry();
-
-        double movementMagnitude = movementVector.magnitude();
-
-        telemetry.addData("CurrentRotation", currentHeading);
-
         double cosHeading = Math.cos(-currentHeading);
         double sinHeading = Math.sin(-currentHeading);
-
-        if (Math.abs(rotationInput) > 0.05) {
-            targetHeading = currentHeading;
-            holdingHeading = false;
-        } else if (!holdingHeading) {
-            holdingHeading = true;
-        }
-
-        targetHeading = wrapAngle(targetHeading);
-
-        telemetry.addData("IsHoldingHeading? ", holdingHeading);
-
-        double headingError = wrapAngle(targetHeading - currentHeading);
-        double headingCorrection = 0;
-
-        if (holdingHeading) {
-            if (movementMagnitude > 0.1) {
-                double adaptiveGain = Math.min(1.0, Math.abs(headingError) / Math.toRadians(10)); // Scale correction
-                headingCorrection = headingController.update(headingError, 0) * adaptiveGain;
-            }
-        }
 
         double adjustedX = movementVector.getX() * cosHeading - movementVector.getY() * sinHeading;
         double adjustedY = movementVector.getX() * sinHeading + movementVector.getY() * cosHeading;
 
         adjustedX *= 1.1;
 
-        telemetry.addData("TargetRotation", targetHeading);
-
-        double correctedRotation = rotationInput + headingCorrection;
-
-        telemetry.addData("CorrectedRot", correctedRotation);
-        telemetry.update();
-
-        double maxMagnitude = Math.max(Math.abs(adjustedY) + Math.abs(adjustedX) + Math.abs(correctedRotation), 1);
-        double frontLeftPower = (adjustedY + adjustedX + correctedRotation) / maxMagnitude;
-        double backLeftPower = (adjustedY - adjustedX + correctedRotation) / maxMagnitude;
-        double frontRightPower = (adjustedY - adjustedX - correctedRotation) / maxMagnitude;
-        double backRightPower = (adjustedY + adjustedX - correctedRotation) / maxMagnitude;
+        double maxMagnitude = Math.max(Math.abs(adjustedY) + Math.abs(adjustedX) + Math.abs(rotationInput), 1);
+        double frontLeftPower = (adjustedY + adjustedX + rotationInput) / maxMagnitude;
+        double backLeftPower = (adjustedY - adjustedX + rotationInput) / maxMagnitude;
+        double frontRightPower = (adjustedY - adjustedX - rotationInput) / maxMagnitude;
+        double backRightPower = (adjustedY + adjustedX - rotationInput) / maxMagnitude;
 
         if (managerState == _DriveState.UNLOCKED) {
             hardwareManager.frontLeft.setPower(frontLeftPower * powerMultiplier);
@@ -126,6 +85,73 @@ public class DriveManager implements Manager<DriveManager._DriveState> {
                 gamepadDriver.rumble(100);
             }
         }
+
+//        this.currentHeading = currentHeading;
+//
+//        this.currentHeading = wrapAngle(currentHeading);
+//
+//        headingController.tune(P_Heading, I_Heading, D_Heading);
+//
+//        FtcDashboard dashboard = FtcDashboard.getInstance();
+//        Telemetry telemetry = dashboard.getTelemetry();
+//
+//        double movementMagnitude = movementVector.magnitude();
+//
+//        telemetry.addData("CurrentRotation", currentHeading);
+//
+//        double cosHeading = Math.cos(-currentHeading);
+//        double sinHeading = Math.sin(-currentHeading);
+//
+//        if (Math.abs(rotationInput) > 0.05) {
+//            targetHeading = currentHeading;
+//            holdingHeading = false;
+//        } else if (!holdingHeading) {
+//            holdingHeading = true;
+//        }
+//
+//        targetHeading = wrapAngle(targetHeading);
+//
+//        telemetry.addData("IsHoldingHeading? ", holdingHeading);
+//
+//        double headingError = wrapAngle(targetHeading - currentHeading);
+//        double headingCorrection = 0;
+//
+//        if (holdingHeading) {
+//            if (movementMagnitude > 0.1) {
+//                double adaptiveGain = Math.min(1.0, Math.abs(headingError) / Math.toRadians(10)); // Scale correction
+//                headingCorrection = headingController.update(headingError, 0) * adaptiveGain;
+//            }
+//        }
+//
+//        double adjustedX = movementVector.getX() * cosHeading - movementVector.getY() * sinHeading;
+//        double adjustedY = movementVector.getX() * sinHeading + movementVector.getY() * cosHeading;
+//
+//        adjustedX *= 1.1;
+//
+//        telemetry.addData("TargetRotation", targetHeading);
+//
+//        double correctedRotation = rotationInput + headingCorrection;
+//
+//        telemetry.addData("CorrectedRot", correctedRotation);
+//        telemetry.update();
+//
+//        double maxMagnitude = Math.max(Math.abs(adjustedY) + Math.abs(adjustedX) + Math.abs(correctedRotation), 1);
+//        double frontLeftPower = (adjustedY + adjustedX + correctedRotation) / maxMagnitude;
+//        double backLeftPower = (adjustedY - adjustedX + correctedRotation) / maxMagnitude;
+//        double frontRightPower = (adjustedY - adjustedX - correctedRotation) / maxMagnitude;
+//        double backRightPower = (adjustedY + adjustedX - correctedRotation) / maxMagnitude;
+//
+//        if (managerState == _DriveState.UNLOCKED) {
+//            hardwareManager.frontLeft.setPower(frontLeftPower * powerMultiplier);
+//            hardwareManager.backLeft.setPower(backLeftPower * powerMultiplier);
+//            hardwareManager.frontRight.setPower(frontRightPower * powerMultiplier);
+//            hardwareManager.backRight.setPower(backRightPower * powerMultiplier);
+//        }
+//        else {
+//            if (gamepadDriver.driveInput()) {
+//                gamepadDriver.rumble(100);
+//            }
+//        }
     }
 
 

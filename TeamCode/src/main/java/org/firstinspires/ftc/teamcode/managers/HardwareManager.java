@@ -40,12 +40,12 @@ public class HardwareManager{
     public CachingDcMotorEx backLeft;
     public CachingDcMotorEx backRight;
 
-    ServoHubConfiguration config;
+    ServoHubConfiguration SRVHubConfig;
 
     CachingDcMotorEx liftRight;
     CachingDcMotorEx liftLeft;
 
-    DcMotorEx intake;
+    CachingDcMotorEx intake;
 
     public CachingServo intakeClawSrv;
     public CachingServo intakeTiltSrv;
@@ -89,7 +89,7 @@ public class HardwareManager{
         liftLeft = new CachingDcMotorEx(this.hmap.get(DcMotorEx.class, "liftLeft"));
         liftRight = new CachingDcMotorEx(this.hmap.get(DcMotorEx.class, "liftRight"));
 
-        intake = this.hmap.get(DcMotorEx.class, "intakeMotor");
+        intake = new CachingDcMotorEx(this.hmap.get(DcMotorEx.class, "intakeMotor"));
 
         outtakeProximitySensor = this.hmap.get(DigitalChannel.class, "outtakeProximitySensor");
 
@@ -108,8 +108,10 @@ public class HardwareManager{
 
         //?===========================CONFIGURATION================================//
 
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        SRVHubConfig = new ServoHubConfiguration();
+
+        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
