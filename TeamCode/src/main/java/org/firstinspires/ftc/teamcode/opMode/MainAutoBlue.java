@@ -41,11 +41,13 @@ public class MainAutoBlue extends OpModeTemplate {
     private final Pose scorePose2 = new Pose(37.5, 69, Math.toRadians(0));
     private final Pose scorePose3 = new Pose(37.5, 75, Math.toRadians(0));
     private final Pose scorePose4 = new Pose(37.5, 72, Math.toRadians(0));
+
     private final Pose pickup1Pose = new Pose(60, 24, Math.toRadians(0));
-    private final Pose push1Pose = new Pose(24, 24, Math.toRadians(0));
     private final Pose pickup2Pose = new Pose(60, 15, Math.toRadians(0));
-    private final Pose push2Pose = new Pose(24, 15, Math.toRadians(0));
     private final Pose pickup3Pose = new Pose(61, 6.4, Math.toRadians(0));
+
+    private final Pose push1Pose = new Pose(24, 24, Math.toRadians(0));
+    private final Pose push2Pose = new Pose(24, 15, Math.toRadians(0));
     private final Pose push3Pose = new Pose(24, 6.4, Math.toRadians(0));
 
     private final Pose grab1Pose = new Pose(7.4, 29, Math.toRadians(0));
@@ -55,7 +57,7 @@ public class MainAutoBlue extends OpModeTemplate {
 
     private final Pose parkPose = new Pose(7, 29, Math.toRadians(0));
 
-    private PathChain scorePreload, score1, backFromChamber, grabPreload, grab1, score2, score3, score4, park, grab2, grab3;
+    private PathChain scorePreload, score1, backFromChamber, grab1, score2, score3, score4, park, grab2, grab3;
 
     public void buildPaths() {
 

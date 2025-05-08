@@ -6,6 +6,7 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.commands.EnableAutoDepositCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.ResetHeadingCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.SetRobotState;
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.ToggleIntakeTiltCommand;
@@ -55,6 +56,9 @@ public class MainTeleOp extends OpModeTemplate {
         //* Toggle intake tilt servo
         gamepad_driver.getGamepadButton(GamepadKeys.Button.X)
                 .whenPressed(new ToggleIntakeTiltCommand(intakeManager, outtakeManager, gamepad_driver));
+        //* Engage auto deposit
+        gamepad_driver.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
+                .whenPressed(new EnableAutoDepositCommand(driveManager, outtakeManager));
 
         progress(45);
     }
