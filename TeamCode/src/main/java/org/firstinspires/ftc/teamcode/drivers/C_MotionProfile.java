@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.drivers;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+@Deprecated
 public class C_MotionProfile {
 
     private final double maxVelocity;

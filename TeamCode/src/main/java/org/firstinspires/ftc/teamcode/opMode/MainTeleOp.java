@@ -16,8 +16,6 @@ import org.firstinspires.ftc.teamcode.managers.DriveManager;
 @TeleOp(name = "Main TeleOp", group = "OpMode")
 public class MainTeleOp extends OpModeTemplate {
 
-    private long lastLoopTime = System.nanoTime();
-
     @Override
     public void init() {
         initSystems(false);
@@ -44,10 +42,6 @@ public class MainTeleOp extends OpModeTemplate {
         //* Reset IMU
         gamepad_driver.getGamepadButton(gamepad_driver.options)
                 .whenPressed(new ResetHeadingCommand(hardwareManager, driveManager));
-
-        //* Switch to CALIBRATION mode
-        gamepad_codriver.getGamepadButton(gamepad_codriver.options)
-                .whenPressed(new SetRobotState(stateMachine, StateMachine._RobotState.CALIBRATION));
 
         //* Toggle outtake claw
         gamepad_codriver.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)

@@ -133,8 +133,6 @@ public class HardwareManager{
 
         outtakeProximitySensor.setMode(DigitalChannel.Mode.INPUT);
 
-//        if (!isAuto) {pinpointDriver.resetPosAndIMU();}
-
         //?========================QUALITY FUNCTIONS===============================//
 
         setupBulkReading();
@@ -167,7 +165,7 @@ public class HardwareManager{
         }
     }
 
-    @SuppressWarnings("unused")
+    @Deprecated
     public void clearCache(){
         for(LynxModule hub : hubs){
             hub.clearBulkCache();
@@ -198,6 +196,8 @@ public class HardwareManager{
     }
 
     public void stopDriveMotors() {
+
+        //I do this because Pedro sets ZPB to FLOAT
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -212,21 +212,5 @@ public class HardwareManager{
     public void setOuttakeArmTiltServos(float pos){
         outtakeArmTiltSrvLeft.setPosition(pos);
         outtakeArmTiltSrvRight.setPosition(pos);
-    }
-
-    public void MotorsFullThrottleForOneSec(DriveManager driveManager) {
-        ElapsedTime timer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
-
-        driveManager.Lock();
-
-        while(timer.milliseconds() <= 30){
-            frontLeft.setPower(1);
-            frontRight.setPower(1);
-            backLeft.setPower(1);
-            backRight.setPower(1);
-        }
-
-        driveManager.Unlock();
-
     }
 }

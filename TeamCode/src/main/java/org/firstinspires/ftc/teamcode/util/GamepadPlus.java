@@ -40,6 +40,11 @@ public class GamepadPlus extends GamepadEx {
         return super.gamepad.right_trigger;
     }
 
+    public void Warn(){
+        super.gamepad.rumble(400);
+        super.gamepad.setLedColor(255, 0, 0, 2000);
+    }
+
     public boolean driveInput() {
         return (getRightX() > 0.1 || getRightX() < -0.1 || getRightY() > 0.1 || getRightY() < -0.1);
     }

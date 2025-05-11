@@ -17,9 +17,9 @@ import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeYawSe
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 
+@Deprecated
 public class TransferCommand extends SequentialCommandGroup {
     public TransferCommand(IntakeManager intake, OuttakeManager outtake){
-
 
         intake.managerState = IntakeManager._IntakeState.TRANSFER;
         outtake.managerState = OuttakeManager._OuttakeState.TRANSFER;
@@ -46,7 +46,6 @@ public class TransferCommand extends SequentialCommandGroup {
                 new WaitCommand(200),
                 new SetIntakeTiltServoPosCommand(intake, IntakeManager._TiltServoState.AIMING),
                 new InstantCommand(() -> intake.SetYawMode(IntakeManager._YawMode.MANUAL))
-
 
                 //!Finish
         );

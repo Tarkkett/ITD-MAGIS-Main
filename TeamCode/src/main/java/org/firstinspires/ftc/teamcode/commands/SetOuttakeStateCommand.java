@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.util.GamepadPlus;
 
 public class SetOuttakeStateCommand extends SequentialCommandGroup {
 
-    public SetOuttakeStateCommand(OuttakeManager._OuttakeState targetState, OuttakeManager manager, GamepadPlus gamepad_driver, GamepadPlus gamepad_codriver, DriveManager driveManager, HardwareManager hardwareManager, StateMachine stateMachine) {
+    public SetOuttakeStateCommand(OuttakeManager._OuttakeState targetState, OuttakeManager manager, GamepadPlus gamepad_driver, GamepadPlus gamepad_codriver, DriveManager driveManager, HardwareManager hardwareManager, StateMachine stateMachine, IntakeManager intake) {
 
         manager.managerState = targetState;
 
@@ -41,7 +41,7 @@ public class SetOuttakeStateCommand extends SequentialCommandGroup {
                 );
                 break;
             case PICKUP:
-                if (stateMachine.GetIntakeSlidesState() == IntakeManager._SlideState.EXTENDED) {
+                if (intake.GetSlideState() == IntakeManager._SlideState.EXTENDED) {
                     addCommands(
                             new SetOuttakeYawServoCommand(manager, OuttakeManager._OuttakeYawServoState.HORIZONTAL_Pickup),
                             new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.HOME),

@@ -149,7 +149,7 @@ public class IntakePositionSelector extends CommandBase {
 
     @Override
     public void end(boolean interrupted){
-        gamepad_codriver.rumble(200);
+        gamepad_codriver.Warn();
     }
 
 }

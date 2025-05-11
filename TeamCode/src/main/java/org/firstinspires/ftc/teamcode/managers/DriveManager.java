@@ -82,10 +82,11 @@ public class DriveManager implements Manager<DriveManager._DriveState> {
         }
         else {
             if (gamepadDriver.driveInput()) {
-                gamepadDriver.rumble(100);
+                gamepadDriver.Warn();
             }
         }
 
+//! Heading auto correction - disabled for competition. After ESD robot starts spinning until reconnect.
 //        this.currentHeading = currentHeading;
 //
 //        this.currentHeading = wrapAngle(currentHeading);
@@ -149,7 +150,7 @@ public class DriveManager implements Manager<DriveManager._DriveState> {
 //        }
 //        else {
 //            if (gamepadDriver.driveInput()) {
-//                gamepadDriver.rumble(100);
+//                gamepadDriver.Warn();
 //            }
 //        }
     }
@@ -158,13 +159,13 @@ public class DriveManager implements Manager<DriveManager._DriveState> {
     public void Lock() {
         managerState = _DriveState.LOCKED;
         hardwareManager.stopDriveMotors();
-        gamepadDriver.setLedColor(1.0d, 0, 0, 100000);
+        gamepadDriver.setLedColor(1.0d, 0, 0, 1000);
     }
 
     public void Unlock(){
         managerState = _DriveState.UNLOCKED;
         hardwareManager.stopDriveMotors();
-        gamepadDriver.setLedColor(0, 1.0d, 0, 100000);
+        gamepadDriver.setLedColor(0, 1.0d, 0, 1000);
     }
 
     public void stopMovementControlThread() {

@@ -13,9 +13,9 @@ This repository is a **FORK** of the public **FTC SDK** for the **INTO THE DEEP*
 ### Subsystems
 The `teamcode` directory is organized around the **command-based model**, with specific **subsystems**( or `managers` as I call them) for each part of the robot:
 - **Drivetrain** - Manages all drive motors and movement algorithms, including odometry and trajectory following.
-- **Intake** - Controls the robot's intake system, with positional controls for `TiltServo`, `BroomServo`. Used for picking up game elements.
-- **Outtake** - Manages the opening and closing of the `SpecimentGrabberServo`, as well as positional controls for the `BucketServo`.
-- **Ascent** - Used for control of the `LegMotor` and variuos Ascent sequances.
+- **Intake** - Controls the robot's intake system, with positional controls for `TiltServo`, `PitchServo`, `ClawServo` and `YawServo`. Used for picking up game elements.
+- **Outtake** - Manages the opening and closing of the `DepositorClawServo`, as well as positional controls for the `PitchServo`, `YawServo` and `TiltServo`.
+- ~~**Ascent** - Used for control of the `LegMotor` and variuos Ascent sequances. ~~
   
 ### Autonomous and Teleop Modes
 - **Autonomous**: Pre-defined routines to perform tasks at the start of the game utilizing motion planning.
