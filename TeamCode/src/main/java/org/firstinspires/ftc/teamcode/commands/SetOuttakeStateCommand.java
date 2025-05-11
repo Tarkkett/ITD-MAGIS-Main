@@ -30,7 +30,7 @@ public class SetOuttakeStateCommand extends SequentialCommandGroup {
                     new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.DEPOSIT_SPECIMEN),
                     new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.CLOSED),
                     new SetOuttakeYawServoCommand(manager, OuttakeManager._OuttakeYawServoState.HORIZONTAL_Deposit),
-                    new SetLiftPositionCommand(manager, OuttakeManager._LiftState.CLEARED)
+                    new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HOME)
                 );
                 break;
             case TRANSFER:

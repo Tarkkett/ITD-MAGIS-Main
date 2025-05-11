@@ -58,7 +58,7 @@ public class MainTeleOp extends OpModeTemplate {
                 .whenPressed(new ToggleIntakeTiltCommand(intakeManager, outtakeManager, gamepad_driver));
         //* Engage auto deposit
         gamepad_driver.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
-                .whenPressed(new EnableAutoDepositCommand(driveManager, outtakeManager));
+                .whenPressed(new EnableAutoDepositCommand(driveManager, outtakeManager, hardwareMap, gamepad_driver));
 
         progress(45);
     }

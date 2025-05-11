@@ -6,6 +6,7 @@ import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.localization.Pose;
 import com.pedropathing.pathgen.BezierCurve;
@@ -13,6 +14,7 @@ import com.pedropathing.pathgen.BezierLine;
 import com.pedropathing.pathgen.PathChain;
 import com.pedropathing.pathgen.Point;
 import com.pedropathing.util.Timer;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetLiftPositionCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeClawStateCommand;
@@ -21,51 +23,59 @@ import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeTiltS
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeYawServoCommand;
 import org.firstinspires.ftc.teamcode.managers.DriveManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
+import org.firstinspires.ftc.teamcode.util.GamepadPlus;
+
+import pedroPathing.constants.FConstants;
+import pedroPathing.constants.LConstants;
 
 public class EnableAutoDepositCommand extends CommandBase {
 
     private DriveManager driveManager;
     private OuttakeManager outtakeManager;
+    private HardwareMap hmap;
 
     private Follower follower;
     private int pathState;
     private Timer pathTimer;
 
-    private final Pose startPose = new Pose(7.4, 63, Math.toRadians(0));
+    GamepadPlus gamepadDriver;
+
+    private final Pose startPose = new Pose(7.4, 29, Math.toRadians(0)); // Grab 1
 
     private final Pose[] scorePoses = {
-            new Pose(7.4, 63, Math.toRadians(0)),
-            new Pose(8.0, 62, Math.toRadians(5)),
-            new Pose(9.1, 61, Math.toRadians(10)),
-            new Pose(10.3, 60, Math.toRadians(15)),
-            new Pose(11.2, 59, Math.toRadians(20)),
-            new Pose(12.0, 58, Math.toRadians(25)),
-            new Pose(13.1, 57, Math.toRadians(30)),
-            new Pose(14.0, 56, Math.toRadians(35)),
-            new Pose(15.2, 55, Math.toRadians(40)),
-            new Pose(16.0, 54, Math.toRadians(45))
+            new Pose(37.5, 66, Math.toRadians(0)), //* Score 1
+            new Pose(37.5, 66, Math.toRadians(0)), //* Score 2
+            new Pose(37.5, 66, Math.toRadians(0)), //* Score 3
+            new Pose(37.5, 66, Math.toRadians(0)), //* Score 4
+            new Pose(37.5, 66, Math.toRadians(0)), //* Score 5
+            new Pose(37.5, 66, Math.toRadians(0)), //* Score 6
+            new Pose(37.5, 66, Math.toRadians(0)), //* Score 7
+            new Pose(37.5, 66, Math.toRadians(0)), //* Score 8
+            new Pose(37.5, 66, Math.toRadians(0)), //* Score 9
+            new Pose(37.5, 66, Math.toRadians(0)) //* Score 10
     };
 
     private final Pose[] grabPoses = {
-            new Pose(17.0, 53, Math.toRadians(50)),
-            new Pose(18.0, 52, Math.toRadians(55)),
-            new Pose(19.0, 51, Math.toRadians(60)),
-            new Pose(20.0, 50, Math.toRadians(65)),
-            new Pose(21.0, 49, Math.toRadians(70)),
-            new Pose(22.0, 48, Math.toRadians(75)),
-            new Pose(23.0, 47, Math.toRadians(80)),
-            new Pose(24.0, 46, Math.toRadians(85)),
-            new Pose(25.0, 45, Math.toRadians(90)),
-            new Pose(26.0, 44, Math.toRadians(95))
+            new Pose(7.4, 29, Math.toRadians(0)), // Grab 2
+            new Pose(7.4, 29, Math.toRadians(0)), // Grab 3
+            new Pose(7.4, 29, Math.toRadians(0)), // Grab 4
+            new Pose(7.4, 29, Math.toRadians(0)), // Grab 5
+            new Pose(7.4, 29, Math.toRadians(0)), // Grab 6
+            new Pose(7.4, 29, Math.toRadians(0)), // Grab 7
+            new Pose(7.4, 29, Math.toRadians(0)), // Grab 8
+            new Pose(7.4, 29, Math.toRadians(0)), // Grab 9
+            new Pose(7.4, 29, Math.toRadians(0)), // Grab 10
+            new Pose(7.4, 29, Math.toRadians(0)), // Grab 1?
     };
-
 
     private PathChain[] scorePaths = new PathChain[10];
     private PathChain[] grabPaths = new PathChain[10];
 
-    public EnableAutoDepositCommand(DriveManager driveManager, OuttakeManager outtakeManager) {
+    public EnableAutoDepositCommand(DriveManager driveManager, OuttakeManager outtakeManager, HardwareMap hardwareMap, GamepadPlus gamepadDriver) {
         this.outtakeManager = outtakeManager;
         this.driveManager = driveManager;
+        this.hmap = hardwareMap;
+        this.gamepadDriver = gamepadDriver;
 
     }
 
@@ -73,6 +83,10 @@ public class EnableAutoDepositCommand extends CommandBase {
     public void initialize(){
         driveManager.Lock();
         pathTimer = new Timer();
+
+        follower = new Follower(hmap, FConstants.class, LConstants.class);
+        follower.setStartingPose(startPose);
+
         buildPaths();
     }
 
@@ -131,7 +145,12 @@ public class EnableAutoDepositCommand extends CommandBase {
     public void PathUpdate() {
         switch (pathState){
             case 0:
-                CommandScheduler.getInstance().schedule(createDepositSequence(0, 1));
+                CommandScheduler.getInstance().schedule(
+                        new SequentialCommandGroup(
+                                new WaitCommand(500),
+                                createDepositSequence(0, 1)
+                        )
+                );
                 break;
             case 1:
                 if (!follower.isBusy()) {
@@ -139,7 +158,9 @@ public class EnableAutoDepositCommand extends CommandBase {
                 }
                 break;
             case 2:
-                CommandScheduler.getInstance().schedule(createDepositSequence(1, 3));
+                if (!follower.isBusy()) {
+                    CommandScheduler.getInstance().schedule(createDepositSequence(1, 3));
+                }
                 break;
             case 3:
                 if (!follower.isBusy()) {
@@ -158,5 +179,11 @@ public class EnableAutoDepositCommand extends CommandBase {
     public void execute(){
         follower.update();
         PathUpdate();
+
+        if (gamepadDriver.isDown(GamepadKeys.Button.DPAD_LEFT)) {
+            follower.breakFollowing();
+            driveManager.Unlock();
+            gamepadDriver.rumble(500);
+        }
     }
 }

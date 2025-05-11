@@ -194,13 +194,13 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     public enum _LiftState implements Positionable{
         HIGH_CHAMBER(750),
         TRANSFER    (0),
-        CLEARED(400),
+        CLEARED(580),
         CLEARED_ALL(800),
         HIGH_BASKET(2200),
         HANG_READY(2600),
         ZERO(0),
-        HANG_DOWN(1700);
-
+        HANG_DOWN(1700),
+        HOME(400);
         private final float position;
 
         _LiftState(float position) {
@@ -215,7 +215,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
 
     public enum _PitchServoState implements Positionable {
         HOME(0.24f),
-        PICKUP(0.17f),
+        PICKUP(0.16f),
         DEPOSIT_SPECIMEN(0.73f),
         DEPOSIT_SAMPLE(0.4f),
         TRANSFER(0.12f),

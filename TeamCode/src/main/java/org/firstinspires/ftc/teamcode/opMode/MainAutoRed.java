@@ -23,8 +23,8 @@ import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 import pedroPathing.constants.FConstants;
 import pedroPathing.constants.LConstants;
 
-@Autonomous(name = "Main Auto Blue", group = "..OpMode", preselectTeleOp = "Main TeleOp")
-public class MainAutoBlue extends OpModeTemplate {
+@Autonomous(name = "Main Auto Red", group = "..OpMode", preselectTeleOp = "Main TeleOp")
+public class MainAutoRed extends OpModeTemplate {
 
     private Follower follower;
     private Timer pathTimer, opmodeTimer;
@@ -33,13 +33,13 @@ public class MainAutoBlue extends OpModeTemplate {
 
     private final Pose startPose = new Pose(8, 63, Math.toRadians(0));
 
-    private final Pose scorePosePreload = new Pose(41, 63, Math.toRadians(0));
+    private final Pose scorePosePreload = new Pose(40, 63, Math.toRadians(0));
     private final Pose backFromChamberPose = new Pose(30, 42, Math.toRadians(0));
 
-    private final Pose scorePose1 = new Pose(39.5, 72, Math.toRadians(0));
-    private final Pose scorePose2 = new Pose(39.5, 72, Math.toRadians(0));
-    private final Pose scorePose3 = new Pose(39.8, 79, Math.toRadians(0));
-    private final Pose scorePose4 = new Pose(39.8, 72, Math.toRadians(0));
+    private final Pose scorePose1 = new Pose(37.5, 66, Math.toRadians(0));
+    private final Pose scorePose2 = new Pose(37.5, 69, Math.toRadians(0));
+    private final Pose scorePose3 = new Pose(37.5, 72, Math.toRadians(0));
+    private final Pose scorePose4 = new Pose(37.5, 75, Math.toRadians(0));
 
     private final Pose pickup1Pose = new Pose(60, 24, Math.toRadians(0));
     private final Pose pickup2Pose = new Pose(60, 15, Math.toRadians(0));
@@ -50,9 +50,9 @@ public class MainAutoBlue extends OpModeTemplate {
     private final Pose push3Pose = new Pose(24, 6.4, Math.toRadians(0));
 
     private final Pose grab1Pose = new Pose(7.4, 29, Math.toRadians(0));
-    private final Pose grab2Pose = new Pose(7.5, 29, Math.toRadians(0));
-    private final Pose grab3Pose = new Pose(7.3, 29, Math.toRadians(0));
-    private final Pose grab4Pose = new Pose(7.3, 29, Math.toRadians(0));
+    private final Pose grab2Pose = new Pose(7.3, 29, Math.toRadians(0));
+    private final Pose grab3Pose = new Pose(7.1, 29, Math.toRadians(0));
+    private final Pose grab4Pose = new Pose(6.8, 29, Math.toRadians(0));
 
     private final Pose parkPose = new Pose(7, 29, Math.toRadians(0));
 

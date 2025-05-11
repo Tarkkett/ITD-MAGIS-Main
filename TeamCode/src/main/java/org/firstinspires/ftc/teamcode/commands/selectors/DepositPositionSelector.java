@@ -87,9 +87,7 @@ public class DepositPositionSelector extends CommandBase {
                             new WaitCommand(300),
                             new SetLiftPositionCommand(manager, OuttakeManager._LiftState.ZERO),
                             new SetOuttakePitchServoCommand(manager, OuttakeManager._PitchServoState.PICKUP),
-                            new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.OPEN),
-                            new WaitUntilCommand(() -> !manager.isInProximity()).interruptOn(() -> gamepad_codriver.gamepad.dpad_left),
-                            new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.CLOSED)
+                            new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.OPEN)
                     )
             );
         }
@@ -97,8 +95,9 @@ public class DepositPositionSelector extends CommandBase {
 
     private void goToSpecimenDepositPosition() {
         CommandScheduler.getInstance().schedule(
-                new ParallelCommandGroup(
+                new SequentialCommandGroup(
                         new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.CLOSED),
+                        new WaitCommand(240),
                         new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HIGH_CHAMBER),
                         new SetOuttakeYawServoCommand(manager, OuttakeManager._OuttakeYawServoState.HORIZONTAL_Deposit),
                         new SetOuttakePitchServoCommand(manager, OuttakeManager._PitchServoState.DEPOSIT_SPECIMEN),
@@ -133,6 +132,7 @@ public class DepositPositionSelector extends CommandBase {
         CommandScheduler.getInstance().schedule(
                 new SequentialCommandGroup(
                         new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.OPEN),
+                        new SetLiftPositionCommand(manager, OuttakeManager._LiftState.CLEARED),
                         new WaitCommand(200),
                         new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.DEPOSIT_CLEARED),
                         new WaitCommand(150),
