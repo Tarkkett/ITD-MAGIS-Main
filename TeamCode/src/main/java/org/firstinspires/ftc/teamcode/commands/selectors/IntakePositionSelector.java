@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeClawSta
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakePitchServoCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeSlidePositionCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeTiltServoPosCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeYawServoCommand;
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 import org.firstinspires.ftc.teamcode.util.GamepadPlus;
@@ -92,7 +93,8 @@ public class IntakePositionSelector extends CommandBase {
                 new SequentialCommandGroup(
                         new SetIntakeClawStateCommand(manager, IntakeManager._ClawState.CLOSED),
                         new WaitCommand(400),
-                        new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.VERTICAL),
+                        new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.AIMING),
+                        new SetIntakePitchServoCommand(manager, IntakeManager._PitchServoState.VERTICAL),
                         new WaitCommand(400),
                         new SetIntakeSlidePositionCommand(manager, IntakeManager._SlideState.RETRACTED)
                 )
@@ -114,7 +116,8 @@ public class IntakePositionSelector extends CommandBase {
                 new SequentialCommandGroup(
                         new SetIntakeSlidePositionCommand(manager, IntakeManager._SlideState.EXTENDED),
                         new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.AIMING),
-                        new SetIntakePitchServoCommand(manager, IntakeManager._PitchServoState.AIMING)
+                        new SetIntakePitchServoCommand(manager, IntakeManager._PitchServoState.AIMING),
+                        new SetIntakeYawServoCommand(manager, IntakeManager._YawServoState.AIMING)
                 )
         );
     }
@@ -133,7 +136,8 @@ public class IntakePositionSelector extends CommandBase {
                         new SetIntakeClawStateCommand(manager, IntakeManager._ClawState.OPEN),
                         new WaitCommand(100),
                         new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.LOWERED),
-                        new SetIntakePitchServoCommand(manager, IntakeManager._PitchServoState.LOWERED)
+                        new SetIntakePitchServoCommand(manager, IntakeManager._PitchServoState.LOWERED),
+                        new SetIntakeYawServoCommand(manager, IntakeManager._YawServoState.LOWERED)
                 )
         );
     }
@@ -144,7 +148,11 @@ public class IntakePositionSelector extends CommandBase {
         double shiftAngle = yawServoAngle+ Math.toRadians(shiftAngleCustom);
         double wrapped_angle = Math.atan2(Math.sin(shiftAngle), Math.cos(shiftAngle));
         double normalized_angle = (wrapped_angle + Math.PI) / (2 * Math.PI);
-        manager.controlYawAngle(normalized_angle);
+        if (manager.yawState == IntakeManager._YawServoState.LOWERED){
+            manager.controlYawAngle(normalized_angle + 0.1);
+        }
+        else {manager.controlYawAngle(normalized_angle);}
+
     }
 
     @Override

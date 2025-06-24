@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeClawSta
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakePitchServoCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeSlidePositionCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeTiltServoPosCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeYawServoCommand;
 import org.firstinspires.ftc.teamcode.commands.selectors.IntakePositionSelector;
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
@@ -30,7 +31,8 @@ public class SetIntakeStateCommand extends SequentialCommandGroup {
                                 new SequentialCommandGroup(
                                         new WaitCommand(300),
                                         new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.AIMING),
-                                        new SetIntakePitchServoCommand(manager, IntakeManager._PitchServoState.AIMING)
+                                        new SetIntakePitchServoCommand(manager, IntakeManager._PitchServoState.AIMING),
+                                        new SetIntakeYawServoCommand(manager, IntakeManager._YawServoState.AIMING)
                                 )
 
                         ),

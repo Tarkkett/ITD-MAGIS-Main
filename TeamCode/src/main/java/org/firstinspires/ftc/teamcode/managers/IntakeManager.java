@@ -36,6 +36,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     private static final int MIN_SLIDE_RETRACT = 0;
     private static final int MAX_SLIDE_EXTEND = 1150;
 
+    public _YawServoState yawState;
     private final HardwareManager hardwareManager;
     private Telemetry telemetry;
 
@@ -106,6 +107,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     }
 
     public void update(_YawServoState targetState){
+        yawState = targetState;
         if (GetYawMode() == _YawMode.AUTO) {
             hardwareManager.intakeYawSrv.setPosition(targetState.getPosition());
         }
@@ -161,9 +163,9 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     }
     public enum _TiltServoState implements Positionable{
         TRANSFER(0.45f),
-        LOWERED (0.7f),
-        AIMING(0.54f),
-        PACKED(0.04f),
+        LOWERED (0.4f),
+        AIMING(0.6f),
+        PACKED(1f),
         VERTICAL(0.3f);
 
         private final float position;
@@ -181,9 +183,10 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
 
     public enum _PitchServoState implements Positionable{
         TRANSFER(0.84f),
-        LOWERED (0.14f),
-        AIMING(0.1f),
-        PACKED(0.45f);
+        VERTICAL(0.4f),
+        LOWERED (0.7f),
+        AIMING(0.8f),
+        PACKED(0.1f);
         private final float position;
 
         _PitchServoState(float position) {
@@ -199,7 +202,9 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
 
     public enum _YawServoState implements Positionable{
         TRANSFER(0.36f),
-        HOME(0.75f);
+        AIMING(0.65f),
+        LOWERED(0.78f),
+        HOME(0.65f);
 
         private final float position;
 
