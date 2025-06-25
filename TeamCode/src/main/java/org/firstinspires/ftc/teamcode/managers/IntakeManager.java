@@ -148,7 +148,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     }
     public enum _ClawState implements Positionable {
         OPEN(0.88f),
-        CLOSED(0.55f);
+        CLOSED(0.45f);
 
         private final float position;
 
@@ -164,7 +164,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     public enum _TiltServoState implements Positionable{
         TRANSFER(0.45f),
         LOWERED (0.4f),
-        AIMING(0.6f),
+        AIMING(0.7f),
         PACKED(1f),
         VERTICAL(0.3f);
 

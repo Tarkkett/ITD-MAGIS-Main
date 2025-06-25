@@ -30,7 +30,7 @@ public class IntakePositionSelector extends CommandBase {
     private final Map<GamepadKeys.Button, Runnable> commandButtonBindings = new HashMap<>();
     private final Map<GamepadKeys.Trigger, Runnable> commandTriggerBindings = new HashMap<>();
 
-    public static double shiftAngleCustom = 0;
+    public static double shiftAngleCustom = 45; //* Degrees
 
     public IntakePositionSelector(IntakeManager manager, OuttakeManager outtakeManager, GamepadPlus gamepad_codriver) {
         this.manager = manager;
@@ -73,7 +73,7 @@ public class IntakePositionSelector extends CommandBase {
             }
         }
 
-        ControlYawManually(gamepad_codriver.getRightY(), gamepad_codriver.getRightX());
+        ControlYawManually(-gamepad_codriver.getLeftY(), gamepad_codriver.getLeftX());
     }
 
 
@@ -81,9 +81,10 @@ public class IntakePositionSelector extends CommandBase {
     private void DoRetrySampleGrab() {
         CommandScheduler.getInstance().schedule(
                 new SequentialCommandGroup(
-                        new SetIntakeClawStateCommand(manager, IntakeManager._ClawState.OPEN),
+                        new SetIntakeClawStateCommand(manager, IntakeManager._ClawState.CLOSED),
                         new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.AIMING),
-                        new SetIntakePitchServoCommand(manager, IntakeManager._PitchServoState.AIMING)
+                        new SetIntakePitchServoCommand(manager, IntakeManager._PitchServoState.AIMING),
+                        new SetIntakeSlidePositionCommand(manager, IntakeManager._SlideState.EXTENDED)
                 )
         );
     }
@@ -117,7 +118,8 @@ public class IntakePositionSelector extends CommandBase {
                         new SetIntakeSlidePositionCommand(manager, IntakeManager._SlideState.EXTENDED),
                         new SetIntakeTiltServoPosCommand(manager, IntakeManager._TiltServoState.AIMING),
                         new SetIntakePitchServoCommand(manager, IntakeManager._PitchServoState.AIMING),
-                        new SetIntakeYawServoCommand(manager, IntakeManager._YawServoState.AIMING)
+                        new SetIntakeYawServoCommand(manager, IntakeManager._YawServoState.AIMING),
+                        new SetIntakeClawStateCommand(manager, IntakeManager._ClawState.OPEN)
                 )
         );
     }
@@ -149,7 +151,7 @@ public class IntakePositionSelector extends CommandBase {
         double wrapped_angle = Math.atan2(Math.sin(shiftAngle), Math.cos(shiftAngle));
         double normalized_angle = (wrapped_angle + Math.PI) / (2 * Math.PI);
         if (manager.yawState == IntakeManager._YawServoState.LOWERED){
-            manager.controlYawAngle(normalized_angle + 0.1);
+            manager.controlYawAngle(normalized_angle + 0.1); //* Differential offset
         }
         else {manager.controlYawAngle(normalized_angle);}
 
