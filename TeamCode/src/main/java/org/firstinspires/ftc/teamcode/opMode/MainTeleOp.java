@@ -31,10 +31,6 @@ public class MainTeleOp extends OpModeTemplate {
         gamepad_codriver.getGamepadButton(gamepad_codriver.leftBumper)
                 .whenPressed(new SetRobotState(stateMachine, StateMachine._RobotState.INTAKE));
 
-        //* Transfer Sequence
-        gamepad_codriver.getGamepadButton(gamepad_codriver.dpad_Right)
-                .whenPressed(new SetRobotState(stateMachine, StateMachine._RobotState.TRANSFER));
-
         //* Go to deposit settings
         gamepad_codriver.getGamepadButton(gamepad_codriver.rightBumper)
                 .whenPressed(new SetRobotState(stateMachine, StateMachine._RobotState.DEPOSIT));

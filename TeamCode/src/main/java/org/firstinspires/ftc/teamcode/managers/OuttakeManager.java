@@ -68,20 +68,8 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         double power = controller.update(targetPosition, encoderPos);
 
         if (mode == _LiftMode.AUTO) {
-
-//            if (!motionProfile.isComplete()) {
-//                power = motionProfile.update();
-//            } else {
-//                power = controller.update(targetPosition, encoderPos);
-//            }
-
             updateLiftMotors(power);
         }
-    }
-
-    public void setLiftTarget(int target) {
-        targetPosition = target;
-//        motionProfile.setTargetPosition(target);
     }
 
     private int calculateEncoderAverage() {
@@ -218,7 +206,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         PICKUP(0.16f),
         DEPOSIT_SPECIMEN(0.73f),
         DEPOSIT_SAMPLE(0.4f),
-        TRANSFER(0.12f),
+        TRANSFER(0.25f),
         ZERO(0.0f),
         HANG(HOME.getPosition());
 
@@ -239,7 +227,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
         DEPOSIT_SAMPLE(0.8f),
         PICKUP(0.178f),
         PICKUP_TELEOP(0.188f),
-        TRANSFER(0.15f),
+        TRANSFER(0.178f),
         ZERO(0.0f),
         HOME(0.28f),
         DEPOSIT_CLEARED(1.0f);
@@ -273,8 +261,8 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
 
     //Relative to HOME position
     public enum _OuttakeYawServoState implements Positionable {
-        HORIZONTAL_Pickup(0.13f),
-        VERTICAL     (0.49f),
+        HORIZONTAL_Pickup(0.13f), // Transfer
+        VERTICAL     (0.43f),
         HORIZONTAL_Deposit(0.83f);
 
         private final float position;

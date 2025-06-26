@@ -76,16 +76,6 @@ public class StateMachine implements State<StateMachine._RobotState> {
                     gamepad_codriver.Warn();
                 }
                 break;
-            case TRANSFER:
-                if (robotState == _RobotState.INTAKE) {
-                    robotState = _RobotState.TRANSFER;
-                    CommandScheduler.getInstance().schedule(
-                            new TransferCommand(intakeManager, outtakeManager)
-                    );
-                } else {
-                    gamepad_codriver.Warn();
-                }
-                break;
             case HOME:
                 robotState = _RobotState.HOME;
                 CommandScheduler.getInstance().schedule(

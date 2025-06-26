@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.commands.selectors;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
@@ -13,6 +14,11 @@ import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakePitchSe
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeSlidePositionCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeTiltServoPosCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.SetIntakeYawServoCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetLiftPositionCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeClawStateCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakePitchServoCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeTiltServoCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetOuttakeYawServoCommand;
 import org.firstinspires.ftc.teamcode.managers.IntakeManager;
 import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 import org.firstinspires.ftc.teamcode.util.GamepadPlus;
@@ -45,7 +51,9 @@ public class IntakePositionSelector extends CommandBase {
         commandButtonBindings.put(GamepadKeys.Button.Y, this::DoRetrySampleGrab);
         commandButtonBindings.put(GamepadKeys.Button.A, this::DoReleaseSample);
         commandButtonBindings.put(GamepadKeys.Button.B, this::DoExtendAndAim);
-        commandButtonBindings.put(GamepadKeys.Button.LEFT_BUMPER, this::DoTransfer);
+        commandButtonBindings.put(GamepadKeys.Button.START, this::DoTransfer);
+        commandButtonBindings.put(GamepadKeys.Button.DPAD_UP, this::ScoreSample);
+        commandButtonBindings.put(GamepadKeys.Button.DPAD_DOWN, this::HomeLift);
     }
 
     @Override
@@ -157,10 +165,33 @@ public class IntakePositionSelector extends CommandBase {
 
     }
 
+    private void ScoreSample(){
+        CommandScheduler.getInstance().schedule(
+                new SequentialCommandGroup(
+                        new SetOuttakeClawStateCommand(outtakeManager, OuttakeManager._OuttakeClawServoState.CLOSED),
+                        new SetLiftPositionCommand(outtakeManager, OuttakeManager._LiftState.HIGH_BASKET),
+                        new SetOuttakeTiltServoCommand(outtakeManager, OuttakeManager._OuttakeTiltServoState.DEPOSIT_SAMPLE),
+                        new SetOuttakePitchServoCommand(outtakeManager, OuttakeManager._PitchServoState.DEPOSIT_SAMPLE))
+        );
+    }
+
+    private void HomeLift(){
+        CommandScheduler.getInstance().schedule(
+                new SequentialCommandGroup(
+                        new SetOuttakeClawStateCommand(outtakeManager, OuttakeManager._OuttakeClawServoState.OPEN),
+                        new SetLiftPositionCommand(outtakeManager, OuttakeManager._LiftState.TRANSFER),
+                        new SetOuttakeTiltServoCommand(outtakeManager, OuttakeManager._OuttakeTiltServoState.TRANSFER),
+                        new SetOuttakePitchServoCommand(outtakeManager, OuttakeManager._PitchServoState.TRANSFER)),
+                new SetOuttakeYawServoCommand(outtakeManager, OuttakeManager._OuttakeYawServoState.HORIZONTAL_Pickup)
+        );
+    }
+
     @Override
     public void end(boolean interrupted){
         gamepad_codriver.Warn();
     }
+
+
 
 }
 

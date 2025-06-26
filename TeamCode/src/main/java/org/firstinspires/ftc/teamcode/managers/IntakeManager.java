@@ -131,7 +131,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
 
     public enum _SlideState implements Positionable {
         EXTENDED    (1000),
-        TRANSFER    (380),
+        TRANSFER    (200),
         RETRACTED   (0),
         TRANSFER_WAIT(580);
 
@@ -148,7 +148,8 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     }
     public enum _ClawState implements Positionable {
         OPEN(0.88f),
-        CLOSED(0.45f);
+        CLOSED(0.45f),
+        LOOSE(0.5f);
 
         private final float position;
 
@@ -162,12 +163,10 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
         }
     }
     public enum _TiltServoState implements Positionable{
-        TRANSFER(0.45f),
+        TRANSFER(0.9f),
         LOWERED (0.4f),
         AIMING(0.7f),
-        PACKED(1f),
-        VERTICAL(0.3f);
-
+        PACKED(1f);
         private final float position;
 
         _TiltServoState(float position) {
@@ -182,7 +181,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     }
 
     public enum _PitchServoState implements Positionable{
-        TRANSFER(0.84f),
+        TRANSFER(0.15f),
         VERTICAL(0.4f),
         LOWERED (0.7f),
         AIMING(0.8f),
@@ -201,10 +200,11 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     }
 
     public enum _YawServoState implements Positionable{
-        TRANSFER(0.36f),
+        TRANSFER(0.85f),
         AIMING(0.65f),
         LOWERED(0.78f),
-        HOME(0.65f);
+        HOME(0.65f),
+        TRANSFER_RAISED(0.65f);
 
         private final float position;
 

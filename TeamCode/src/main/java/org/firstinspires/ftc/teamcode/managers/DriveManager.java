@@ -39,7 +39,7 @@ public class DriveManager implements Manager<DriveManager._DriveState> {
     }
 
     private void configureDrive(OuttakeManager outtakeManager) {
-        movementControlRunnable = new MovementControlRunnable(telemetry, this, gamepadDriver, outtakeManager, hardwareManager);
+        movementControlRunnable = new MovementControlRunnable( this, gamepadDriver, outtakeManager, hardwareManager);
         movementControlThread = new Thread(movementControlRunnable);
         movementControlThread.start();
     }

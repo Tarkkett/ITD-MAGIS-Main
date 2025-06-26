@@ -16,14 +16,12 @@ public class MovementControlRunnable implements Runnable {
     private DriveManager driveManager;
     private OuttakeManager outtakeManager;
     private HardwareManager hardwareManager;
-    private Telemetry telemetry;
     private GamepadPlus gamepad;
     private volatile boolean running = true;
     private double currentHeading;
     private double TRIGGER_MARGIN = 0.1;
 
-    public MovementControlRunnable(Telemetry telemetry, DriveManager driveManager, GamepadPlus gamepad, OuttakeManager outtakeManager, HardwareManager hardwareManager) {
-        this.telemetry = telemetry;
+    public MovementControlRunnable(DriveManager driveManager, GamepadPlus gamepad, OuttakeManager outtakeManager, HardwareManager hardwareManager) {
         this.driveManager = driveManager;
         this.gamepad = gamepad;
         this.outtakeManager = outtakeManager;
@@ -33,6 +31,10 @@ public class MovementControlRunnable implements Runnable {
     @Override
     public void run() {
         while (running) {
+
+            if (gamepad.driveInput()){
+                gamepad.rumble(200);
+            }
 
             double y = gamepad.getLeftY();
             double x = gamepad.getLeftX();
