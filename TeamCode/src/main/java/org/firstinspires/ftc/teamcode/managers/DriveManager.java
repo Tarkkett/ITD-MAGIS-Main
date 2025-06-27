@@ -39,13 +39,18 @@ public class DriveManager implements Manager<DriveManager._DriveState> {
     }
 
     private void configureDrive(OuttakeManager outtakeManager) {
-        movementControlRunnable = new MovementControlRunnable( this, gamepadDriver, outtakeManager, hardwareManager);
+        movementControlRunnable = new MovementControlRunnable(telemetry, this, gamepadDriver, outtakeManager, hardwareManager);
         movementControlThread = new Thread(movementControlRunnable);
         movementControlThread.start();
     }
 
     @Override
-    public void loop() { /* Continue */ }
+    public void loop() {
+//        telemetry.addData("DriveManager Alive", movementControlThread != null && movementControlThread.isAlive());
+//        telemetry.addData("DriveManager State", managerState);
+//        telemetry.update();
+    }
+
 
     @Override
     public _DriveState GetManagerState() {

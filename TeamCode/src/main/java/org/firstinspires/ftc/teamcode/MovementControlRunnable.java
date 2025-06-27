@@ -18,36 +18,65 @@ public class MovementControlRunnable implements Runnable {
     private HardwareManager hardwareManager;
     private GamepadPlus gamepad;
     private volatile boolean running = true;
+    private Telemetry telemetry;
     private double currentHeading;
     private double TRIGGER_MARGIN = 0.1;
 
-    public MovementControlRunnable(DriveManager driveManager, GamepadPlus gamepad, OuttakeManager outtakeManager, HardwareManager hardwareManager) {
+    public MovementControlRunnable(Telemetry telemetry, DriveManager driveManager, GamepadPlus gamepad, OuttakeManager outtakeManager, HardwareManager hardwareManager) {
         this.driveManager = driveManager;
         this.gamepad = gamepad;
         this.outtakeManager = outtakeManager;
         this.hardwareManager = hardwareManager;
+        this.telemetry = telemetry;
     }
 
     @Override
     public void run() {
-        while (running) {
+        long lastPrint = System.currentTimeMillis();
 
-            if (gamepad.driveInput()){
-                gamepad.rumble(200);
+        try {
+            while (running) {
+                try {
+                    if (gamepad.driveInput()) {
+                        gamepad.rumble(200);
+                    }
+
+                    double y = gamepad.getLeftY();
+                    double x = gamepad.getLeftX();
+                    double rx = gamepad.getRightX();
+                    double multiplier = calculatePowerMultiplier();
+
+                    hardwareManager.pinpointDriver.update(GoBildaPinpointDriver.readData.ONLY_UPDATE_HEADING);
+                    currentHeading = hardwareManager.pinpointDriver.getPosition().getHeading(AngleUnit.RADIANS);
+
+                    driveManager.drive(new Vector2d(x, y), -rx, multiplier, currentHeading);
+
+                    // Debug heartbeat to telemetry
+                    if (System.currentTimeMillis() - lastPrint > 1000) {
+                        telemetry.addData("Drive Thread", "Alive at %d ms", System.currentTimeMillis());
+                        telemetry.addData("Heading (rad)", currentHeading);
+                        telemetry.update();
+                        lastPrint = System.currentTimeMillis();
+                    }
+
+                    Thread.sleep(10); // 100Hz loop
+
+                } catch (Exception e) {
+                    telemetry.addData("Drive Thread Error", e.getMessage());
+                    telemetry.update();
+                    e.printStackTrace();
+                    running = false;
+                }
             }
-
-            double y = gamepad.getLeftY();
-            double x = gamepad.getLeftX();
-            double rx = gamepad.getRightX();
-            double multiplier = calculatePowerMultiplier();
-
-            hardwareManager.pinpointDriver.update(GoBildaPinpointDriver.readData.ONLY_UPDATE_HEADING);
-
-            currentHeading = hardwareManager.pinpointDriver.getPosition().getHeading(AngleUnit.RADIANS);
-
-            driveManager.drive(new Vector2d(x, y), -rx, multiplier, currentHeading);
+        } finally {
+            hardwareManager.stopDriveMotors();
+            telemetry.addData("Drive Thread", "Exited safely");
+            telemetry.update();
         }
     }
+
+
+
 
     private double calculatePowerMultiplier() {
         //! If switching back to trigger, remember to use TRIGGER_MARGIN variable.

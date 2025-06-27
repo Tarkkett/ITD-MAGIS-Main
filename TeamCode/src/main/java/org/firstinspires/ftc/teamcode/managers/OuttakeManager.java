@@ -262,6 +262,7 @@ public class OuttakeManager implements Manager<OuttakeManager._OuttakeState> {
     //Relative to HOME position
     public enum _OuttakeYawServoState implements Positionable {
         HORIZONTAL_Pickup(0.13f), // Transfer
+        SAMPLE_Deposit(0f),
         VERTICAL     (0.43f),
         HORIZONTAL_Deposit(0.83f);
 

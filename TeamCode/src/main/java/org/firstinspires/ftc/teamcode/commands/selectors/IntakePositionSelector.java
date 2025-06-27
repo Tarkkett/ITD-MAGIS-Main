@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
@@ -51,7 +52,7 @@ public class IntakePositionSelector extends CommandBase {
         commandButtonBindings.put(GamepadKeys.Button.Y, this::DoRetrySampleGrab);
         commandButtonBindings.put(GamepadKeys.Button.A, this::DoReleaseSample);
         commandButtonBindings.put(GamepadKeys.Button.B, this::DoExtendAndAim);
-        commandButtonBindings.put(GamepadKeys.Button.START, this::DoTransfer);
+        commandButtonBindings.put(GamepadKeys.Button.LEFT_BUMPER, this::DoTransfer);
         commandButtonBindings.put(GamepadKeys.Button.DPAD_UP, this::ScoreSample);
         commandButtonBindings.put(GamepadKeys.Button.DPAD_DOWN, this::HomeLift);
     }
@@ -167,22 +168,23 @@ public class IntakePositionSelector extends CommandBase {
 
     private void ScoreSample(){
         CommandScheduler.getInstance().schedule(
-                new SequentialCommandGroup(
+                new ParallelCommandGroup(
                         new SetOuttakeClawStateCommand(outtakeManager, OuttakeManager._OuttakeClawServoState.CLOSED),
                         new SetLiftPositionCommand(outtakeManager, OuttakeManager._LiftState.HIGH_BASKET),
                         new SetOuttakeTiltServoCommand(outtakeManager, OuttakeManager._OuttakeTiltServoState.DEPOSIT_SAMPLE),
+                        new SetOuttakeYawServoCommand(outtakeManager, OuttakeManager._OuttakeYawServoState.SAMPLE_Deposit),
                         new SetOuttakePitchServoCommand(outtakeManager, OuttakeManager._PitchServoState.DEPOSIT_SAMPLE))
         );
     }
 
     private void HomeLift(){
         CommandScheduler.getInstance().schedule(
-                new SequentialCommandGroup(
+                new ParallelCommandGroup(
                         new SetOuttakeClawStateCommand(outtakeManager, OuttakeManager._OuttakeClawServoState.OPEN),
                         new SetLiftPositionCommand(outtakeManager, OuttakeManager._LiftState.TRANSFER),
                         new SetOuttakeTiltServoCommand(outtakeManager, OuttakeManager._OuttakeTiltServoState.TRANSFER),
-                        new SetOuttakePitchServoCommand(outtakeManager, OuttakeManager._PitchServoState.TRANSFER)),
-                new SetOuttakeYawServoCommand(outtakeManager, OuttakeManager._OuttakeYawServoState.HORIZONTAL_Pickup)
+                        new SetOuttakePitchServoCommand(outtakeManager, OuttakeManager._PitchServoState.TRANSFER),
+                        new SetOuttakeYawServoCommand(outtakeManager, OuttakeManager._OuttakeYawServoState.HORIZONTAL_Pickup))
         );
     }
 

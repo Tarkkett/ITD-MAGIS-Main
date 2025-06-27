@@ -28,11 +28,11 @@ public class MainTeleOp extends OpModeTemplate {
                         new InstantCommand(() -> stateMachine.SetDrivetrainState(DriveManager._DriveState.UNLOCKED)));
 
         //* Enable intake settings
-        gamepad_codriver.getGamepadButton(gamepad_codriver.leftBumper)
+        gamepad_codriver.getGamepadButton(gamepad_codriver.share)
                 .whenPressed(new SetRobotState(stateMachine, StateMachine._RobotState.INTAKE));
 
         //* Go to deposit settings
-        gamepad_codriver.getGamepadButton(gamepad_codriver.rightBumper)
+        gamepad_codriver.getGamepadButton(gamepad_codriver.options)
                 .whenPressed(new SetRobotState(stateMachine, StateMachine._RobotState.DEPOSIT));
 
         //* Reset IMU
@@ -42,13 +42,6 @@ public class MainTeleOp extends OpModeTemplate {
         //* Toggle outtake claw
         gamepad_codriver.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
                 .whenPressed(new ToggleOuttakeClawCommand(outtakeManager, gamepad_codriver));
-
-        //* Toggle intake tilt servo
-        gamepad_driver.getGamepadButton(GamepadKeys.Button.X)
-                .whenPressed(new ToggleIntakeTiltCommand(intakeManager, outtakeManager, gamepad_driver));
-        //* Engage auto deposit
-        gamepad_driver.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
-                .whenPressed(new EnableAutoDepositCommand(driveManager, outtakeManager, hardwareMap, gamepad_driver));
 
         progress(45);
     }
@@ -72,11 +65,12 @@ public class MainTeleOp extends OpModeTemplate {
         intakeManager.loop();
         outtakeManager.loop();
         stateMachine.loop();
+        driveManager.loop();
 
         long endTime = System.nanoTime();
         long loopDuration = (endTime - startTime) / 1_000_000;
-        telemetry.addData("Loop Time (ms)", loopDuration);
-        telemetry.update();
+//        telemetry.addData("Loop Time (ms)", loopDuration);
+//        telemetry.update();
 
     }
 
