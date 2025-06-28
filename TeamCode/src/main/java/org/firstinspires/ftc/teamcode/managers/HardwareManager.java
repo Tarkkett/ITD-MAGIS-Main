@@ -3,16 +3,19 @@ package org.firstinspires.ftc.teamcode.managers;
 import android.graphics.Color;
 
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.configuration.ServoHubConfiguration;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.drivers.GoBildaPinpointDriver;
 
 import java.util.ArrayList;
@@ -28,12 +31,17 @@ public class HardwareManager{
     private static final double MOTOR_CACHING_TOLERANCE = 0.005;
     private static final double SERVO_CACHING_TOLERANCE = 0.001;
     private static HardwareManager instance;
+    IMU imu;
+    IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+            RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+            RevHubOrientationOnRobot.UsbFacingDirection.UP));
+
     List<LynxModule> hubs;
     Collection<Blinker.Step> blinks;
     Blinker.Step blinkBlue = new Blinker.Step();
     Blinker.Step blinkRed = new Blinker.Step();
 
-    public GoBildaPinpointDriver pinpointDriver;
+//    public GoBildaPinpointDriver pinpointDriver;
 
     public CachingDcMotorEx frontLeft;
     public CachingDcMotorEx frontRight;
@@ -81,6 +89,9 @@ public class HardwareManager{
 
         hubs = this.hmap.getAll(LynxModule.class);
 
+        imu = hmap.get(IMU.class, "imu");
+        imu.initialize(parameters);
+
         frontLeft = new CachingDcMotorEx(this.hmap.get(DcMotorEx.class, "frontLeft"));
         frontRight = new CachingDcMotorEx(this.hmap.get(DcMotorEx.class, "frontRight"));
         backLeft = new CachingDcMotorEx(this.hmap.get(DcMotorEx.class, "backLeft"));
@@ -104,7 +115,7 @@ public class HardwareManager{
         outtakeDepositorYawSrv = new CachingServo(this.hmap.get(Servo.class, "outtakeDepositorYawServo"));
         outtakeDepositorClawSrv = new CachingServo(this.hmap.get(Servo.class, "outtakeDepositorClawServo"));
 
-        if (!isAuto) {pinpointDriver = this.hmap.get(GoBildaPinpointDriver.class, "pinpoint");}
+//        if (!isAuto) {pinpointDriver = this.hmap.get(GoBildaPinpointDriver.class, "pinpoint");}
 
         //?===========================CONFIGURATION================================//
 
@@ -212,5 +223,16 @@ public class HardwareManager{
     public void setOuttakeArmTiltServos(float pos){
         outtakeArmTiltSrvLeft.setPosition(pos);
         outtakeArmTiltSrvRight.setPosition(pos);
+    }
+
+    public double GetRobotHeading() {
+        return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+    }
+
+    public void ResetPosAndIMU() {
+        imu.resetYaw();
+    }
+    public void ReInitialiseIMU() {
+        imu.initialize(parameters);
     }
 }

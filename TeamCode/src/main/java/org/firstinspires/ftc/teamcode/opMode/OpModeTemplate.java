@@ -59,7 +59,7 @@ public abstract class OpModeTemplate extends OpMode {
             gamepad_driver = new GamepadPlus(gamepad1);
             gamepad_codriver = new GamepadPlus(gamepad2);
 
-            driveManager = new DriveManager(hardwareManager, telemetry, gamepad_driver, outtakeManager);
+            driveManager = new DriveManager(hardwareManager, telemetry, gamepad_driver, outtakeManager, hardwareMap);
 
             testManager = new HardwareTestManager(hardwareManager, outtakeManager, intakeManager, driveManager, telemetry);
 

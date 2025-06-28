@@ -7,6 +7,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.commands.EnableAutoDepositCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.ReInitialiseIMU;
 import org.firstinspires.ftc.teamcode.commands.low_level.ResetHeadingCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.SetRobotState;
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.ToggleIntakeTiltCommand;
@@ -39,6 +40,9 @@ public class MainTeleOp extends OpModeTemplate {
         gamepad_driver.getGamepadButton(gamepad_driver.options)
                 .whenPressed(new ResetHeadingCommand(hardwareManager, driveManager));
 
+        gamepad_driver.getGamepadButton(gamepad_driver.dpad_Left)
+                .whenPressed(new ReInitialiseIMU(hardwareManager));
+
         //* Toggle outtake claw
         gamepad_codriver.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
                 .whenPressed(new ToggleOuttakeClawCommand(outtakeManager, gamepad_codriver));
@@ -69,9 +73,6 @@ public class MainTeleOp extends OpModeTemplate {
 
         long endTime = System.nanoTime();
         long loopDuration = (endTime - startTime) / 1_000_000;
-//        telemetry.addData("Loop Time (ms)", loopDuration);
-//        telemetry.update();
-
     }
 
 }

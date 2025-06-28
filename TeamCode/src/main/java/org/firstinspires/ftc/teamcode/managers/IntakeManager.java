@@ -149,7 +149,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     public enum _ClawState implements Positionable {
         OPEN(0.88f),
         CLOSED(0.45f),
-        LOOSE(0.5f);
+        LOOSE(0.54f);
 
         private final float position;
 

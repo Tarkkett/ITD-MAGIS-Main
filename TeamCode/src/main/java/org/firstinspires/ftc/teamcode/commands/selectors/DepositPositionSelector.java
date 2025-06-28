@@ -47,13 +47,13 @@ public class DepositPositionSelector extends CommandBase {
     @Override
     public void initialize(){
         commandButtonBindings.put(GamepadKeys.Button.DPAD_UP, () -> CommandScheduler.getInstance().schedule(new MoveLiftCommand(manager, LIFT_MANUAL_TICKS)));
-        commandButtonBindings.put(GamepadKeys.Button.DPAD_UP, () -> CommandScheduler.getInstance().schedule(new MoveLiftCommand(manager, -LIFT_MANUAL_TICKS)));
+        commandButtonBindings.put(GamepadKeys.Button.DPAD_DOWN, () -> CommandScheduler.getInstance().schedule(new MoveLiftCommand(manager, -LIFT_MANUAL_TICKS)));
         commandButtonBindings.put(GamepadKeys.Button.Y, this::goToSampleDepositPosition);
         commandButtonBindings.put(GamepadKeys.Button.A, this::releaseScoredSpecimen);
         commandButtonBindings.put(GamepadKeys.Button.X, this::goToSpecimenPickupPosition);
         commandButtonBindings.put(GamepadKeys.Button.B, this::goToSpecimenDepositPosition);
-        commandButtonBindings.put(GamepadKeys.Button.START, this::goToHangPosition);
-        commandButtonBindings.put(GamepadKeys.Button.BACK, this::goToHangPrePosition);
+        commandButtonBindings.put(GamepadKeys.Button.LEFT_BUMPER, this::goToHangPosition);
+        commandButtonBindings.put(GamepadKeys.Button.RIGHT_BUMPER, this::goToHangPrePosition);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class DepositPositionSelector extends CommandBase {
                             new SetLiftPositionCommand(manager, OuttakeManager._LiftState.HIGH_BASKET),
                             new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.DEPOSIT_SAMPLE),
                             new SetOuttakePitchServoCommand(manager, OuttakeManager._PitchServoState.DEPOSIT_SAMPLE)),
-                            new SetOuttakeYawServoCommand(manager, OuttakeManager._OuttakeYawServoState.VERTICAL),
+                            new SetOuttakeYawServoCommand(manager, OuttakeManager._OuttakeYawServoState.SAMPLE_Deposit),
                             new InstantCommand(() -> manager.setCanPickup(true))
             );
     }

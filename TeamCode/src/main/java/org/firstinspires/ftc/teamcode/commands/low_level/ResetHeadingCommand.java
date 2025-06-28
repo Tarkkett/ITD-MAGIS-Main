@@ -9,8 +9,8 @@ import org.firstinspires.ftc.teamcode.managers.HardwareManager;
 public class ResetHeadingCommand extends SequentialCommandGroup {
     public ResetHeadingCommand(HardwareManager hardwareManager, DriveManager driveManager) {
         addCommands(
-                new InstantCommand(() -> hardwareManager.pinpointDriver.resetPosAndIMU()),
-                new InstantCommand(() -> driveManager.resetHeading())
+                new InstantCommand(hardwareManager::ResetPosAndIMU),
+                new InstantCommand(driveManager::resetHeading)
         );
     }
 }

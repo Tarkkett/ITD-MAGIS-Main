@@ -3,11 +3,17 @@ package org.firstinspires.ftc.teamcode.managers;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.geometry.Vector2d;
+import com.pedropathing.follower.Follower;
+import com.pedropathing.localization.Pose;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.MovementControlRunnable;
 import org.firstinspires.ftc.teamcode.drivers.C_PID;
 import org.firstinspires.ftc.teamcode.util.GamepadPlus;
+
+import pedroPathing.constants.FConstants;
+import pedroPathing.constants.LConstants;
 
 @Config
 public class DriveManager implements Manager<DriveManager._DriveState> {
@@ -22,35 +28,35 @@ public class DriveManager implements Manager<DriveManager._DriveState> {
 
     private Thread movementControlThread;
     private MovementControlRunnable movementControlRunnable;
-    public static double P_Heading = -1.6;
-    public static double I_Heading = 0.0;
-    public static double D_Heading = -0.1;
+    Follower imuFollower;
 
     private double targetHeading = 0;
     private double currentHeading = 0;
     private boolean holdingHeading = false;
+    private HardwareMap hwmap;
 
-    public DriveManager(HardwareManager hardwareManager, Telemetry telemetry, GamepadPlus gamepadDriver, OuttakeManager outtakeManager) {
+    private final Pose startPose = new Pose(8, 63, Math.toRadians(0));
+
+    public DriveManager(HardwareManager hardwareManager, Telemetry telemetry, GamepadPlus gamepadDriver, OuttakeManager outtakeManager, HardwareMap hardwareMap) {
         this.hardwareManager = hardwareManager;
         this.telemetry = telemetry;
         this.gamepadDriver = gamepadDriver;
+        this.hwmap = hardwareMap;
+
+        imuFollower = new Follower(hwmap, FConstants.class, LConstants.class);
+        imuFollower.setStartingPose(startPose);
 
         configureDrive(outtakeManager);
     }
 
     private void configureDrive(OuttakeManager outtakeManager) {
-        movementControlRunnable = new MovementControlRunnable(telemetry, this, gamepadDriver, outtakeManager, hardwareManager);
+        movementControlRunnable = new MovementControlRunnable(telemetry, this, gamepadDriver, outtakeManager, imuFollower, hardwareManager);
         movementControlThread = new Thread(movementControlRunnable);
         movementControlThread.start();
     }
 
     @Override
-    public void loop() {
-//        telemetry.addData("DriveManager Alive", movementControlThread != null && movementControlThread.isAlive());
-//        telemetry.addData("DriveManager State", managerState);
-//        telemetry.update();
-    }
-
+    public void loop() { /* Continue */ }
 
     @Override
     public _DriveState GetManagerState() {

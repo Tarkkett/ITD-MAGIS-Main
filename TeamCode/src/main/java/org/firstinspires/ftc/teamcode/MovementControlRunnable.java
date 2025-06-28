@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.geometry.Vector2d;
+import com.pedropathing.follower.Follower;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -13,21 +14,25 @@ import org.firstinspires.ftc.teamcode.util.GamepadPlus;
 
 public class MovementControlRunnable implements Runnable {
 
+    private HardwareManager hardwareManager;
     private DriveManager driveManager;
     private OuttakeManager outtakeManager;
-    private HardwareManager hardwareManager;
     private GamepadPlus gamepad;
     private volatile boolean running = true;
     private Telemetry telemetry;
     private double currentHeading;
     private double TRIGGER_MARGIN = 0.1;
+    private Follower imuFollower;
 
-    public MovementControlRunnable(Telemetry telemetry, DriveManager driveManager, GamepadPlus gamepad, OuttakeManager outtakeManager, HardwareManager hardwareManager) {
+    public MovementControlRunnable(Telemetry telemetry, DriveManager driveManager, GamepadPlus gamepad, OuttakeManager outtakeManager, Follower imuFollower, HardwareManager hardwareManager) {
         this.driveManager = driveManager;
         this.gamepad = gamepad;
         this.outtakeManager = outtakeManager;
-        this.hardwareManager = hardwareManager;
+        this.imuFollower = imuFollower;
         this.telemetry = telemetry;
+        this.hardwareManager = hardwareManager;
+
+
     }
 
     @Override
@@ -37,39 +42,40 @@ public class MovementControlRunnable implements Runnable {
         try {
             while (running) {
                 try {
-                    if (gamepad.driveInput()) {
-                        gamepad.rumble(200);
-                    }
+
+//                    imuFollower.update();
 
                     double y = gamepad.getLeftY();
                     double x = gamepad.getLeftX();
                     double rx = gamepad.getRightX();
                     double multiplier = calculatePowerMultiplier();
 
-                    hardwareManager.pinpointDriver.update(GoBildaPinpointDriver.readData.ONLY_UPDATE_HEADING);
-                    currentHeading = hardwareManager.pinpointDriver.getPosition().getHeading(AngleUnit.RADIANS);
 
+//                    if (hardwareManager.pinpointDriver != null && hardwareManager.pinpointDriver.getPosition() != null) {
+//                        hardwareManager.pinpointDriver.update(GoBildaPinpointDriver.readData.ONLY_UPDATE_HEADING);
+//                        currentHeading = hardwareManager.pinpointDriver.getPosition().getHeading(AngleUnit.RADIANS);
+//                    }
+
+//                    currentHeading = imuFollower.getPose().getHeading();
+
+                    currentHeading = hardwareManager.GetRobotHeading();
                     driveManager.drive(new Vector2d(x, y), -rx, multiplier, currentHeading);
 
                     // Debug heartbeat to telemetry
                     if (System.currentTimeMillis() - lastPrint > 1000) {
-                        telemetry.addData("Drive Thread", "Alive at %d ms", System.currentTimeMillis());
+                        telemetry.addData("Drive Thread", "Alive at %d ms", System.currentTimeMillis() - lastPrint - 1000);
                         telemetry.addData("Heading (rad)", currentHeading);
                         telemetry.update();
                         lastPrint = System.currentTimeMillis();
                     }
 
-                    Thread.sleep(10); // 100Hz loop
-
                 } catch (Exception e) {
                     telemetry.addData("Drive Thread Error", e.getMessage());
                     telemetry.update();
-                    e.printStackTrace();
                     running = false;
                 }
             }
         } finally {
-            hardwareManager.stopDriveMotors();
             telemetry.addData("Drive Thread", "Exited safely");
             telemetry.update();
         }
