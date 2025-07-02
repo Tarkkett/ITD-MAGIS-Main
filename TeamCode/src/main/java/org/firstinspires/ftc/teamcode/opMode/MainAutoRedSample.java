@@ -38,8 +38,8 @@ public class MainAutoRedSample extends OpModeTemplate {
 
     private final Pose startPose = new Pose(8, 20, Math.toRadians(0));
 
-    private final Pose scorePosePreload = new Pose(10, 22, Math.toRadians(170));
-    private final Pose grab1Pose = new Pose(15, 23, Math.toRadians(180));
+    private final Pose scorePosePreload = new Pose(12, 22, Math.toRadians(145));
+    private final Pose grab1Pose = new Pose(13, 25, Math.toRadians(179));
     private final Pose grab2Pose = new Pose(7.3, 29, Math.toRadians(0));
     private final Pose grab3Pose = new Pose(7.1, 29, Math.toRadians(0));
     private final Pose grab4Pose = new Pose(6.8, 29, Math.toRadians(0));
@@ -58,6 +58,7 @@ public class MainAutoRedSample extends OpModeTemplate {
                                 new Point(scorePosePreload)
                         )
                 )
+                .setPathEndTimeoutConstraint(100)
                 .setConstantHeadingInterpolation(scorePosePreload.getHeading())
                 .build();
 
@@ -69,8 +70,9 @@ public class MainAutoRedSample extends OpModeTemplate {
                                 new Point(grab1Pose)
                         )
                 )
+                .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
+                .setPathEndTimeoutConstraint(100)
                 .setPathEndVelocityConstraint(0.02)
-                .setConstantHeadingInterpolation(grab1Pose.getHeading())
                 .build();
 
     }
@@ -84,7 +86,6 @@ public class MainAutoRedSample extends OpModeTemplate {
                                         new InstantCommand(() -> follower.followPath(scorePreload, true)),
                                         new InstantCommand(() -> setPathState(1))
                                 )
-
                         )
                 );
 
@@ -93,25 +94,31 @@ public class MainAutoRedSample extends OpModeTemplate {
                 if(!follower.isBusy()) {
                     CommandScheduler.getInstance().schedule(
                             new SequentialCommandGroup(
-                                    new SetOuttakeYawServoCommand(outtakeManager, OuttakeManager._OuttakeYawServoState.SAMPLE_Deposit),
-                                    new SetOuttakeTiltServoCommand(outtakeManager, OuttakeManager._OuttakeTiltServoState.DEPOSIT_SAMPLE),
-                                    new SetOuttakePitchServoCommand(outtakeManager, OuttakeManager._PitchServoState.DEPOSIT_SAMPLE),
-                                    new SetLiftPositionCommand(outtakeManager, OuttakeManager._LiftState.HIGH_BASKET),
-                                    new WaitCommand(1200),
-                                    new SetOuttakeClawStateCommand(outtakeManager, OuttakeManager._OuttakeClawServoState.OPEN),
-                                    new WaitCommand(150),
+//                                    new SetOuttakeYawServoCommand(outtakeManager, OuttakeManager._OuttakeYawServoState.SAMPLE_Deposit),
+//                                    new SetOuttakePitchServoCommand(outtakeManager, OuttakeManager._PitchServoState.DEPOSIT_SAMPLE),
+//                                    new SetLiftPositionCommand(outtakeManager, OuttakeManager._LiftState.HIGH_BASKET),
+//                                    new WaitCommand(1200),
+//                                    new SetOuttakeTiltServoCommand(outtakeManager, OuttakeManager._OuttakeTiltServoState.DEPOSIT_SAMPLE),
+//                                    new WaitCommand(800),
+//                                    new SetOuttakeClawStateCommand(outtakeManager, OuttakeManager._OuttakeClawServoState.OPEN),
+//                                    new WaitCommand(2000),
+//                                    new SetOuttakeTiltServoCommand(outtakeManager, OuttakeManager._OuttakeTiltServoState.TRANSFER),
+//                                    new WaitCommand(2000),
+//                                    new SetLiftPositionCommand(outtakeManager, OuttakeManager._LiftState.TRANSFER),
+                                    new WaitCommand(10000),
                                     new InstantCommand(() -> follower.followPath(grab1,true)),
-                                    new InstantCommand(() -> setPathState(2)),
-                                    new WaitCommand(500),
-                                    new SetOuttakePitchServoCommand(outtakeManager, OuttakeManager._PitchServoState.TRANSFER),
-                                    new SetLiftPositionCommand(outtakeManager, OuttakeManager._LiftState.TRANSFER),
-                                    new SetOuttakeTiltServoCommand(outtakeManager, OuttakeManager._OuttakeTiltServoState.TRANSFER),
-                                    new SetIntakeSlidePositionCommand(intakeManager, IntakeManager._SlideState.EXTENDED),
-                                    new SetIntakeYawServoCommand(intakeManager, IntakeManager._YawServoState.AIMING),
-                                    new SetIntakePitchServoCommand(intakeManager, IntakeManager._PitchServoState.AIMING),
-                                    new SetIntakeTiltServoPosCommand(intakeManager, IntakeManager._TiltServoState.AIMING)
+                                    new InstantCommand(() -> setPathState(2))
+//                                    new WaitCommand(2000),
+//                                    new SetOuttakePitchServoCommand(outtakeManager, OuttakeManager._PitchServoState.TRANSFER),
+//                                    new SetLiftPositionCommand(outtakeManager, OuttakeManager._LiftState.TRANSFER),
+//                                    new SetOuttakeTiltServoCommand(outtakeManager, OuttakeManager._OuttakeTiltServoState.TRANSFER),
+//                                    new SetIntakeSlidePositionCommand(intakeManager, IntakeManager._SlideState.EXTENDED),
+//                                    new SetIntakeYawServoCommand(intakeManager, IntakeManager._YawServoState.AIMING),
+//                                    new SetIntakePitchServoCommand(intakeManager, IntakeManager._PitchServoState.AIMING),
+//                                    new SetIntakeTiltServoPosCommand(intakeManager, IntakeManager._TiltServoState.AIMING)
                             )
                     );
+
                 }
                 break;
 
@@ -124,8 +131,6 @@ public class MainAutoRedSample extends OpModeTemplate {
                                 new InstantCommand(() -> setPathState(3))
                         )
                     );
-                    follower.followPath(score1,true);
-                    setPathState(2);
                 }
                 break;
         }
