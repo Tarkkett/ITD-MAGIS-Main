@@ -83,7 +83,7 @@ public class DepositPositionSelector extends CommandBase {
             CommandScheduler.getInstance().schedule(
                     new SequentialCommandGroup(
                             new SetOuttakeYawServoCommand(manager, OuttakeManager._OuttakeYawServoState.HORIZONTAL_Pickup),
-                            new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.PICKUP_TELEOP),
+                            new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.PICKUP),
                             new WaitCommand(300),
                             new SetLiftPositionCommand(manager, OuttakeManager._LiftState.ZERO),
                             new SetOuttakePitchServoCommand(manager, OuttakeManager._PitchServoState.PICKUP),
