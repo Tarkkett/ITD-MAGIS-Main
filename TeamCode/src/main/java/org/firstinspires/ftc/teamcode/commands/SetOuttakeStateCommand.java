@@ -49,7 +49,7 @@ public class SetOuttakeStateCommand extends SequentialCommandGroup {
                             new SetOuttakePitchServoCommand(manager, OuttakeManager._PitchServoState.PICKUP),
                             new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.OPEN),
                             new WaitCommand(1000),
-                            new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.PICKUP),
+                            new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.PICKUP_TELEOP),
                             new InstantCommand(() -> manager.setCanPickup(false)),
                             new DepositPositionSelector(gamepad_driver, gamepad_codriver, manager, driveManager, hardwareManager).interruptOn(() -> stateMachine.robotState == StateMachine._RobotState.INTAKE)
                     );
@@ -62,7 +62,7 @@ public class SetOuttakeStateCommand extends SequentialCommandGroup {
                             new SetOuttakePitchServoCommand(manager, OuttakeManager._PitchServoState.PICKUP),
                             new SetOuttakeClawStateCommand(manager, OuttakeManager._OuttakeClawServoState.OPEN),
                             new WaitCommand(1000),
-                            new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.PICKUP),
+                            new SetOuttakeTiltServoCommand(manager, OuttakeManager._OuttakeTiltServoState.PICKUP_TELEOP),
                             new SetLiftPositionCommand(manager, OuttakeManager._LiftState.ZERO),
                             new InstantCommand(() -> manager.setCanPickup(false)),
                             new DepositPositionSelector(gamepad_driver, gamepad_codriver, manager, driveManager, hardwareManager).interruptOn(() -> stateMachine.robotState == StateMachine._RobotState.INTAKE)

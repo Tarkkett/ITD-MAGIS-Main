@@ -11,8 +11,10 @@ import org.firstinspires.ftc.teamcode.commands.low_level.ReInitialiseIMU;
 import org.firstinspires.ftc.teamcode.commands.low_level.ResetHeadingCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.SetRobotState;
 import org.firstinspires.ftc.teamcode.commands.low_level.intake.ToggleIntakeTiltCommand;
+import org.firstinspires.ftc.teamcode.commands.low_level.outtake.SetLiftPositionCommand;
 import org.firstinspires.ftc.teamcode.commands.low_level.outtake.ToggleOuttakeClawCommand;
 import org.firstinspires.ftc.teamcode.managers.DriveManager;
+import org.firstinspires.ftc.teamcode.managers.OuttakeManager;
 
 @TeleOp(name = "Main TeleOp", group = "OpMode")
 public class MainTeleOp extends OpModeTemplate {
@@ -46,6 +48,9 @@ public class MainTeleOp extends OpModeTemplate {
         //* Toggle outtake claw
         gamepad_codriver.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
                 .whenPressed(new ToggleOuttakeClawCommand(outtakeManager, gamepad_codriver));
+
+        gamepad_driver.getGamepadButton(GamepadKeys.Button.A)
+                .whenPressed(new SetLiftPositionCommand(outtakeManager, OuttakeManager._LiftState.CLEARED));
 
         progress(45);
     }

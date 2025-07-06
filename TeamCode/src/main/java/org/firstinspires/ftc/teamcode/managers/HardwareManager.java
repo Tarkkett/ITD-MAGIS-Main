@@ -193,9 +193,9 @@ public class HardwareManager{
     public void blink() {
         blinks = new ArrayList<>();
 
-        blinkBlue.setColor(Color.BLUE);
+        blinkBlue.setColor(Color.YELLOW);
         blinkBlue.setDuration(1, TimeUnit.SECONDS);
-        blinkRed.setColor(Color.RED);
+        blinkRed.setColor(Color.MAGENTA);
         blinkRed.setDuration(1, TimeUnit.SECONDS);
 
         blinks.add(blinkBlue);

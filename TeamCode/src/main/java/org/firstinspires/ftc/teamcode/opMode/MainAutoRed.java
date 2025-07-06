@@ -33,13 +33,13 @@ public class MainAutoRed extends OpModeTemplate {
 
     private final Pose startPose = new Pose(8, 63, Math.toRadians(0));
 
-    private final Pose scorePosePreload = new Pose(40, 63, Math.toRadians(0));
+    private final Pose scorePosePreload = new Pose(39.6, 63, Math.toRadians(0));
     private final Pose backFromChamberPose = new Pose(30, 42, Math.toRadians(0));
 
-    private final Pose scorePose1 = new Pose(37.5, 66, Math.toRadians(0));
-    private final Pose scorePose2 = new Pose(37.5, 69, Math.toRadians(0));
+    private final Pose scorePose1 = new Pose(37.5, 70, Math.toRadians(0));
+    private final Pose scorePose2 = new Pose(37.5, 71, Math.toRadians(0));
     private final Pose scorePose3 = new Pose(37.5, 72, Math.toRadians(0));
-    private final Pose scorePose4 = new Pose(37.5, 75, Math.toRadians(0));
+    private final Pose scorePose4 = new Pose(38, 75, Math.toRadians(0));
 
     private final Pose pickup1Pose = new Pose(60, 24, Math.toRadians(0));
     private final Pose pickup2Pose = new Pose(60, 15, Math.toRadians(0));
@@ -190,6 +190,7 @@ public class MainAutoRed extends OpModeTemplate {
                 if(!follower.isBusy()) {
                     CommandScheduler.getInstance().schedule(
                             new SequentialCommandGroup(
+                                    new WaitCommand(550),
                                     new SetOuttakeClawStateCommand(outtakeManager, OuttakeManager._OuttakeClawServoState.CLOSED),
                                     new SequentialCommandGroup(
                                             new WaitCommand(150),
