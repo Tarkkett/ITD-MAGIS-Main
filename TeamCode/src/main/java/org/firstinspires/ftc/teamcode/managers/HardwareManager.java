@@ -28,6 +28,8 @@ import dev.frozenmilk.dairy.cachinghardware.CachingServo;
 
 public class HardwareManager{
 
+    //! Noticed pinpoint IMU disconnections during TeleOp. Switched to internal IMU.
+
     private static final double MOTOR_CACHING_TOLERANCE = 0.005;
     private static final double SERVO_CACHING_TOLERANCE = 0.001;
     private static HardwareManager instance;
@@ -40,8 +42,6 @@ public class HardwareManager{
     Collection<Blinker.Step> blinks;
     Blinker.Step blinkBlue = new Blinker.Step();
     Blinker.Step blinkRed = new Blinker.Step();
-
-//    public GoBildaPinpointDriver pinpointDriver;
 
     public CachingDcMotorEx frontLeft;
     public CachingDcMotorEx frontRight;
@@ -67,8 +67,6 @@ public class HardwareManager{
     public CachingServo outtakeDepositorClawSrv;
 
     public DigitalChannel outtakeProximitySensor;
-
-    public static int IMU_DATA_SAMPLING_RATE = 10;
 
     private final HardwareMap hmap;
 
@@ -114,8 +112,6 @@ public class HardwareManager{
         outtakeDepositorPitchSrv = new CachingServo(this.hmap.get(Servo.class, "outtakeDepositorPitchServo"));
         outtakeDepositorYawSrv = new CachingServo(this.hmap.get(Servo.class, "outtakeDepositorYawServo"));
         outtakeDepositorClawSrv = new CachingServo(this.hmap.get(Servo.class, "outtakeDepositorClawServo"));
-
-//        if (!isAuto) {pinpointDriver = this.hmap.get(GoBildaPinpointDriver.class, "pinpoint");}
 
         //?===========================CONFIGURATION================================//
 

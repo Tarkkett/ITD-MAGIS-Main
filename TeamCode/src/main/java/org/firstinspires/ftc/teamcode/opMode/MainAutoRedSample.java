@@ -29,6 +29,7 @@ import pedroPathing.constants.FConstants;
 import pedroPathing.constants.LConstants;
 
 @Autonomous(name = "Secondary Auto Red Sample", group = "..OpMode", preselectTeleOp = "Main TeleOp")
+@Deprecated
 public class MainAutoRedSample extends OpModeTemplate {
 
     private Follower follower;

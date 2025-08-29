@@ -13,8 +13,7 @@ import org.firstinspires.ftc.teamcode.opMode.OpModeTemplate;
 public class MotorDirectionTuner extends OpModeTemplate {
 
     /**
-     * This is a simple teleop routine for debugging your motor configuration.
-     * Pressing each of the buttons will power its respective motor.
+     * Rewrote this TeleOp from RR to test motor directions easily
      *
      * Button Mappings:
      *

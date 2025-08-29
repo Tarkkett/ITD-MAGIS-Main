@@ -28,14 +28,11 @@ public class DriveManager implements Manager<DriveManager._DriveState> {
 
     private Thread movementControlThread;
     private MovementControlRunnable movementControlRunnable;
-    Follower imuFollower;
 
     private double targetHeading = 0;
     private double currentHeading = 0;
     private boolean holdingHeading = false;
     private HardwareMap hwmap;
-
-    private final Pose startPose = new Pose(8, 63, Math.toRadians(0));
 
     public DriveManager(HardwareManager hardwareManager, Telemetry telemetry, GamepadPlus gamepadDriver, OuttakeManager outtakeManager, HardwareMap hardwareMap) {
         this.hardwareManager = hardwareManager;
@@ -43,14 +40,11 @@ public class DriveManager implements Manager<DriveManager._DriveState> {
         this.gamepadDriver = gamepadDriver;
         this.hwmap = hardwareMap;
 
-        imuFollower = new Follower(hwmap, FConstants.class, LConstants.class);
-        imuFollower.setStartingPose(startPose);
-
         configureDrive(outtakeManager);
     }
 
     private void configureDrive(OuttakeManager outtakeManager) {
-        movementControlRunnable = new MovementControlRunnable(telemetry, this, gamepadDriver, outtakeManager, imuFollower, hardwareManager);
+        movementControlRunnable = new MovementControlRunnable(telemetry, this, gamepadDriver, outtakeManager, hardwareManager);
         movementControlThread = new Thread(movementControlRunnable);
         movementControlThread.start();
     }

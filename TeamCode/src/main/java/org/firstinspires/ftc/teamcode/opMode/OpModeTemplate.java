@@ -22,8 +22,6 @@ public abstract class OpModeTemplate extends OpMode {
     protected Alliance team = Alliance.UNKNOWN;
     protected Side side = Side.UNKNOWN;
 
-
-
     protected GamepadPlus gamepad_driver;
     protected GamepadPlus gamepad_codriver;
 
@@ -73,6 +71,7 @@ public abstract class OpModeTemplate extends OpMode {
 
     }
 
+    //* Silly progress bar
     public void progress(int i) {
         progress += i;
     }

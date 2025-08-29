@@ -134,7 +134,6 @@ public class StateMachine implements State<StateMachine._RobotState> {
     public enum _RobotState{
         INTAKE,
         DEPOSIT,
-        TRANSFER,
         CALIBRATION,
         HOME
     }

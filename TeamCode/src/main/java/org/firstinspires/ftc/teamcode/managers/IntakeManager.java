@@ -132,8 +132,7 @@ public class IntakeManager implements Manager<IntakeManager._IntakeState> {
     public enum _SlideState implements Positionable {
         EXTENDED    (1000),
         TRANSFER    (200),
-        RETRACTED   (0),
-        TRANSFER_WAIT(580);
+        RETRACTED   (0);
 
         private final float position;
 

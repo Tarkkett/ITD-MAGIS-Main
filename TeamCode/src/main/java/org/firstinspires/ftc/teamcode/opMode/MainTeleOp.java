@@ -42,6 +42,7 @@ public class MainTeleOp extends OpModeTemplate {
         gamepad_driver.getGamepadButton(gamepad_driver.options)
                 .whenPressed(new ResetHeadingCommand(hardwareManager, driveManager));
 
+        //* ReINIT IMU
         gamepad_driver.getGamepadButton(gamepad_driver.dpad_Left)
                 .whenPressed(new ReInitialiseIMU(hardwareManager));
 
@@ -49,6 +50,7 @@ public class MainTeleOp extends OpModeTemplate {
         gamepad_codriver.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
                 .whenPressed(new ToggleOuttakeClawCommand(outtakeManager, gamepad_codriver));
 
+        //*Safety control during match start
         gamepad_driver.getGamepadButton(GamepadKeys.Button.A)
                 .whenPressed(new SetLiftPositionCommand(outtakeManager, OuttakeManager._LiftState.CLEARED));
 
